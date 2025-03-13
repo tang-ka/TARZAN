@@ -31,4 +31,6 @@
 *.out
 *.app
 
+# Debug Folder
 x64/
+TARZAN/x64/
