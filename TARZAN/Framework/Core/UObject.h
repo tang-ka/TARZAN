@@ -1,7 +1,6 @@
 #pragma once
 #include "stdafx.h"
 #include "Framework/Core/CEngineStatics.h"
-#include "Framework/Core/CObjectMeta.h"
 #include <unordered_map>
 
 class UObject {
