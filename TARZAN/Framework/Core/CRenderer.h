@@ -5,6 +5,7 @@
 #include "Framework\DirectXWrapper\CState.h"
 #include "Framework\DirectXWrapper\CBuffer.h"
 #include "./UCameraComponent.h"
+#include "CTextureManager.h"
 
 class CRenderer {
 private:
@@ -50,5 +51,8 @@ private:
 	CConstantBuffer<FMatrix>* _matrixBuffer = nullptr;
 	CConstantBuffer<FPrimitiveFlags>* _flagsBuffer = nullptr;
 	UCameraComponent* _mainCamera = nullptr;
+
+	CTextureManager* textureManager;
+
 };
 

@@ -6,16 +6,23 @@ cbuffer PrimitiveBuffer : register(b1)
 {
     uint Flags;
 };
+
+// 텍스처 및 샘플러 상태 추가
+Texture2D tex : register(t0); // 텍스처를 t0 슬롯에 바인딩
+SamplerState samplerState : register(s0); // 샘플러를 s0 슬롯에 바인딩
+
 struct VS_INPUT
 {
     float3 Position : POSITION;
     float4 Color : COLOR;
+    float2 TexCoord : TEXCOORD;
 };
 
 struct VS_OUTPUT
 {
     float4 Position : SV_POSITION;
     float4 Color : COLOR;
+    float2 TexCoord : TEXCOORD;
 };
 
 VS_OUTPUT VS(VS_INPUT input)
@@ -24,6 +31,11 @@ VS_OUTPUT VS(VS_INPUT input)
     
     // 정점 좌표를 4D 벡터로 변환 후 행렬 곱
     output.Position = mul(float4(input.Position.xyz, 1.f), WorldMatrix);
+    
+        
+    // 텍스처 좌표를 그대로 출력으로 전달
+    output.TexCoord = input.TexCoord;
+    
     //output.Position.z *= -1;
     //output.Position.xyz /= output.Position.w;
     //output.Position = float4(input.Position, 1.0f);
@@ -48,5 +60,9 @@ VS_OUTPUT VS(VS_INPUT input)
 
 float4 PS(VS_OUTPUT input) : SV_TARGET
 {
-    return input.Color; // 컬러 출력
+     // 텍스처에서 샘플링하여 색상을 반환
+    float4 textureColor = tex.Sample(samplerState, input.TexCoord); // 텍스처 샘플링
+    
+    // 텍스처 샘플링된 색상과 전달된 색상 혼합
+    return textureColor;// * input.Color; // 텍스처 색상에 기존 색상을 곱함
 }

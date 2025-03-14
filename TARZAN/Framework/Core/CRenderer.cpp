@@ -13,10 +13,21 @@ void CRenderer::Init(HWND hWnd) {
 	_flagsBuffer = new CConstantBuffer<FPrimitiveFlags>(_graphics->GetDevice(), _graphics->GetDeviceContext());
 	_flagsBuffer->Create();
 
+
+	std::wstring texturePath1 = L"TestTexure.dds";
+	textureManager = CTextureManager::GetInstance(_graphics->GetDevice(), _graphics->GetDeviceContext());
+	textureManager->LoadTexture(texturePath1);
+
+
 	SetVertexShader(L"Shader.hlsl", "VS", "vs_5_0");
 	SetPixelShader(L"Shader.hlsl", "PS", "ps_5_0");
 	SetRasterzierState(_graphics->GetFillMode());
 	_graphics->GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+
+	// 텍스처를 셰이더에 바인딩
+	ID3D11ShaderResourceView* textureView = textureManager->GetTextureView(texturePath1);  // 텍스처의 셰이더 리소스 뷰를 얻음
+	textureManager->BindTextureToShader(_graphics->GetDeviceContext(), textureView, 0);  // 0번 슬롯에 텍스처 바인딩
 }
 
 void CRenderer::SetVertexShader(const FWString filename, FString funcname, FString version) {
