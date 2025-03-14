@@ -85,14 +85,14 @@ void UWorldGridComponent::Render()
 {
     CGraphics* graphics = CRenderer::Instance()->GetGraphics();
     ID3D11DeviceContext* context = graphics->GetDeviceContext();
-    CRenderer::Instance()->SetRasterzierState();
+    //CRenderer::Instance()->SetRasterzierState(D3D11_FILL_SOLID);
     if (!context) return;
 
     context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
     // 선(Line List) 토폴로지 설정
     UPrimitiveComponent::Render();
 
-    //graphics->GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+    graphics->GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
     // DrawIndexed를 호출하여 grid를 렌더링합니다.
     // 이게 지금 문젠가 Start Base Index Location이 잘못된 거 같기도 하고
