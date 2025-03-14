@@ -16,8 +16,18 @@
 #include <list>
 #include <string>
 #include <sstream>
+#include <unordered_map>
+#include <algorithm>
+
 template <typename T> using TArray = std::vector<T>;
 template <typename T> using TLinkedList = std::list<T>;
+
+template <typename Key, typename Value, typename Policy = std::unordered_map<Key, Value>>
+using TMap = Policy;
+
+template <typename T1, typename T2>
+using TPair = std::pair<T1, T2>;
+
 using int32 = int;
 using uint32 = unsigned int;
 using FString = std::string;
@@ -73,9 +83,11 @@ enum EPrimitiveFlag {
 	PRIMITIVE_FLAG_SELECTED = 1 << 1,
 };
 
+#include "Framework/Core/FNameEntryRegistry.h"
+
 /* FName */
 #ifndef WITH_CASE_PRESERVING_NAME
-#define WITH_CASE_PRESERVING_NAME 0
+#define WITH_CASE_PRESERVING_NAME 1
 #endif
 
 enum { NAME_SIZE = 1024 };
@@ -83,10 +95,15 @@ enum { NAME_SIZE = 1024 };
 * 
 * DisplayName은 원래의 이름 문자열을 대소문자 그대로 유지하여 저장합니다.
 * 
-* 기본적으로 현재 프로젝트는 WITH_CASE_PRESERVING_NAME 0입니다.
+* 기본적으로 현재 프로젝트는 WITH_CASE_PRESERVING_NAME 1입니다.
 */
 struct FName
 {
+	FName()
+	{
+		*this = FName("UObject");
+	}
+
 	FName(char* pStr)
 	{
 		FString tmpStr(pStr);
@@ -95,7 +112,13 @@ struct FName
 
 	FName(FString str)
 	{
+		DisplayIndex =  FNameEntryRegistry::Get().FindOrAddNameEntry(str);
+
+		FString LowerString = str;
 		
+		TranslateLower(LowerString);
+
+		ComparisonIndex = FNameEntryRegistry::Get().FindOrAddNameEntry(LowerString);
 	}
 
 	int32 DisplayIndex;
@@ -104,6 +127,22 @@ struct FName
 	bool operator==(const FName& Other) const
 	{
 		return !Compare(Other);
+	}
+
+	FName& operator=(const FString& Other)
+	{
+		DisplayIndex = FNameEntryRegistry::Get().FindOrAddNameEntry(Other);
+
+		FString LowerString = Other;
+		TranslateLower(LowerString);
+		ComparisonIndex = FNameEntryRegistry::Get().FindOrAddNameEntry(LowerString);
+
+		return *this;
+	}
+
+	FName& operator=(const char* Other)
+	{
+		return *this = FString(Other);
 	}
 
 	/* 같다면 0, 작으면 -1, 크다면 1 */
@@ -136,12 +175,12 @@ struct FName
 
 	FString ToString() const
 	{
-
+		return FNameEntryRegistry::Get().GetNameString(DisplayIndex);
 	}
 
 	void ToString(FString& Out) const
 	{
-
+		Out = FNameEntryRegistry::Get().GetNameString(DisplayIndex);
 	}
 
 	/**
@@ -149,9 +188,20 @@ struct FName
 	 */
 	static constexpr inline uint32 StringBufferSize = NAME_SIZE + 1 + 10; // NAME_SIZE includes null-terminator
 
-	void AppendString(FString& Out) const
+	void AppendString(FString& Out)
 	{
+		uint32 ExistIndex = FNameEntryRegistry::Get().FindOrAddNameEntry(Out);
 
+		FString FrontStr = FNameEntryRegistry::Get().GetNameString(DisplayIndex);
+		FString BackStr = FNameEntryRegistry::Get().GetNameString(ExistIndex);
+
+		FString MergedStr = FrontStr + BackStr;
+		
+		DisplayIndex = FNameEntryRegistry::Get().FindOrAddNameEntry(MergedStr);
+		
+		// to lower-case
+		TranslateLower(MergedStr);
+		ComparisonIndex = FNameEntryRegistry::Get().FindOrAddNameEntry(MergedStr);
 	}
 
 private:
@@ -162,5 +212,13 @@ private:
 #else
 		return ComparisonIndex;
 #endif
+	}
+
+	void TranslateLower(FString& InString)
+	{
+		for (char& c : InString)
+		{
+			c = tolower(c);
+		}
 	}
 };
