@@ -9,6 +9,9 @@
 #include "Framework/Core/UArrowComponent.h"
 #include "Framework/Core/UGizmoComponent.h"
 #include "Framework/Core/UDiscHollowComponent.h"
+
+#include "Framework/Core/UWorldGridComponent.h"
+
 extern int SCR_WIDTH;
 extern int SCR_HEIGHT;
 const int TARGET_FPS = 60;
@@ -111,8 +114,15 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	//ground->SetRelativeScale3D({ 10,5,3 });
 	//ground->SetRelativeLocation({ 0,-10,0 });
 	//arrow->SetRelativeScale3D({ 3,3,3 });
+
+
+	// 이거 이래 하는게 맞나..?
+	// TO-DO: refactor
 	UCoordArrowComponent* coordArrow = new UCoordArrowComponent();
 	coordArrow->SetRelativeScale3D({ 50000,50000,50000 });
+	
+	UWorldGridComponent* worldGrid = new UWorldGridComponent();
+	worldGrid->GenerateGrid(1000, 1.f);
 
 	MSG msg = {};
 	while (msg.message != WM_QUIT) {
@@ -157,6 +167,10 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 		guiController->RenderEditor();
 		gGizmo->Render();
 		coordArrow->Render();
+
+		// TO-DO: refactor
+		worldGrid->Render();
+
 		guiController->RenderFrame();
 		CRenderer::Instance()->GetGraphics()->RenderEnd();
 		Time::Instance()->_query_frame_end_time();

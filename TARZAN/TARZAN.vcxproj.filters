@@ -105,8 +105,6 @@
     <ClCompile Include="Framework\Core\UPrimitiveComponent.cpp">
       <Filter>소스 파일\Framework\Core</Filter>
     </ClCompile>
-    <ClCompile Include="USphereComponent.cpp">
-    </ClCompile>
     <ClCompile Include="GuiController.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -148,6 +146,24 @@
     </ClCompile>
     <ClCompile Include="DataManager.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="GuiConsole.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Core\UGizmoComponent.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Core\USphereComponent.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Core\UDiscComponent.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Core\UDiscHollowComponent.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Core\UWorldGridComponent.cpp">
+      <Filter>소스 파일\Framework\Core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -205,9 +221,6 @@
     <ClInclude Include="Framework\Core\UPrimitiveComponent.h">
       <Filter>헤더 파일\Framework\Core</Filter>
     </ClInclude>
-    <ClInclude Include="USphereComponent.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="Framework\Core\Time.h">
       <Filter>헤더 파일\Framework\Core</Filter>
     </ClInclude>
@@ -258,6 +271,27 @@
     </ClInclude>
     <ClInclude Include="Include\json.hpp">
       <Filter>헤더 파일\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="GuiConsole.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\jsonWrite.hpp">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Core\UGizmoComponent.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Core\USphereComponent.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Core\UDiscComponent.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Core\UDiscHollowComponent.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Core\UWorldGridComponent.h">
+      <Filter>헤더 파일\Framework\Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
