@@ -134,13 +134,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="CTextureManager.cpp" />
     <ClCompile Include="DataManager.cpp" />
     <ClCompile Include="Framework\Core\AActor.cpp" />
     <ClCompile Include="Framework\Core\CEngineStatics.cpp" />
     <ClCompile Include="Framework\Core\CRenderer.cpp" />
     <ClCompile Include="Framework\Core\Engine.cpp" />
+    <ClCompile Include="Framework\Core\FName.cpp" />
     <ClCompile Include="Framework\Core\Input.cpp" />
+    <ClCompile Include="Framework\Core\SceneManager.cpp" />
     <ClCompile Include="Framework\Core\Time.cpp" />
     <ClCompile Include="Framework\Core\UActorComponent.cpp" />
     <ClCompile Include="Framework\Core\UArrowComponent.cpp" />
@@ -188,7 +189,6 @@
     <ClCompile Include="Framework\Core\UDiscComponent.cpp" />
     <ClCompile Include="Framework\Core\UDiscHollowComponent.cpp" />
     <ClCompile Include="UWorld.cpp" />
-    <ClCompile Include="VertexProvider.cpp" />
     <FxCompile Include="Shader.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <FileType>Document</FileType>
@@ -199,14 +199,15 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CTextureManager.h" />
     <ClInclude Include="DataManager.h" />
     <ClInclude Include="Framework\Core\AActor.h" />
     <ClInclude Include="Framework\Core\CEngineStatics.h" />
     <ClInclude Include="Framework\Core\CRenderer.h" />
     <ClInclude Include="Framework\Core\Engine.h" />
-    <ClInclude Include="Framework\Core\FNameEntryRegistry.h" />
+    <ClInclude Include="Framework\Core\FName.h" />
     <ClInclude Include="Framework\Core\Input.h" />
+    <ClInclude Include="Framework\Core\SceneManager.h" />
+    <ClInclude Include="Framework\Core\Singleton.h" />
     <ClInclude Include="Framework\Core\Time.h" />
     <ClInclude Include="Framework\Core\UActorComponent.h" />
     <ClInclude Include="Framework\Core\UArrowComponent.h" />
@@ -244,7 +245,6 @@
     <ClInclude Include="Framework\Core\UDiscComponent.h" />
     <ClInclude Include="Framework\Core\UDiscHollowComponent.h" />
     <ClInclude Include="UWorld.h" />
-    <ClInclude Include="VertexProvider.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ImGui\imgui.ini" />
