@@ -161,6 +161,24 @@
     <ClCompile Include="Framework\Core\Engine.cpp">
       <Filter>소스 파일\Core</Filter>
     </ClCompile>
+    <ClCompile Include="GuiConsole.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Core\UGizmoComponent.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Core\USphereComponent.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Core\UDiscComponent.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Core\UDiscHollowComponent.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Core\UWorldGridComponent.cpp">
+      <Filter>소스 파일\Framework\Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\json.hpp">
@@ -291,6 +309,8 @@
     </ClInclude>
     <ClInclude Include="Framework\Core\Singleton.h">
       <Filter>소스 파일\Core</Filter>
+    <ClInclude Include="Framework\Core\UWorldGridComponent.h">
+      <Filter>헤더 파일\Framework\Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

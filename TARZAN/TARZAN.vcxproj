@@ -151,6 +151,7 @@
     <ClCompile Include="Framework\Core\UPlaneComponent.cpp" />
     <ClCompile Include="Framework\Core\UPrimitiveComponent.cpp" />
     <ClCompile Include="Framework\Core\USceneComponent.cpp" />
+    <ClCompile Include="Framework\Core\UWorldGridComponent.cpp" />
     <ClCompile Include="Framework\DirectXWrapper\CBuffer.cpp" />
     <ClCompile Include="Framework\DirectXWrapper\CGraphics.cpp" />
     <ClCompile Include="Framework\DirectXWrapper\CInputLayout.cpp" />
@@ -215,6 +216,7 @@
     <ClInclude Include="Framework\Core\UPlaneComponent.h" />
     <ClInclude Include="Framework\Core\UPrimitiveComponent.h" />
     <ClInclude Include="Framework\Core\USceneComponent.h" />
+    <ClInclude Include="Framework\Core\UWorldGridComponent.h" />
     <ClInclude Include="Framework\DirectXWrapper\CBuffer.h" />
     <ClInclude Include="Framework\DirectXWrapper\CGraphics.h" />
     <ClInclude Include="Framework\DirectXWrapper\CInputLayout.h" />

@@ -41,7 +41,9 @@ inline void CVertexBuffer<T>::Create(const std::vector<T>& vertices) {
 	this->_count = static_cast<UINT32>(vertices.size());
 
 	D3D11_BUFFER_DESC desc = {};
-	desc.Usage = D3D11_USAGE_IMMUTABLE;			// immutable: gpu가 읽기 전용으로 접근할 수 있다.
+	//desc.Usage = D3D11_USAGE_IMMUTABLE;			// immutable: gpu가 읽기 전용으로 접근할 수 있다.
+	//desc.Usage = D3D11_USAGE_DYNAMIC;		// immutable: gpu가 읽기 전용으로 접근할 수 있다.
+	desc.Usage = D3D11_USAGE_DEFAULT;
 	desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;	// vertex buffer로 사용하겠다.
 	desc.ByteWidth = (UINT32)(this->_stride * this->_count);	// buffer 크기 지정
 
@@ -67,7 +69,8 @@ inline void CIndexBuffer::Create(const std::vector<UINT32>& indices) {
 	this->_count = static_cast<UINT32>(indices.size());
 
 	D3D11_BUFFER_DESC desc = {};						// buffer의 종류, 용도 등을 지정
-	desc.Usage = D3D11_USAGE_IMMUTABLE;			// immutable: gpu가 읽기 전용으로 접근할 수 있다.
+	//desc.Usage = D3D11_USAGE_IMMUTABLE;			// immutable: gpu가 읽기 전용으로 접근할 수 있다.
+	desc.Usage = D3D11_USAGE_DEFAULT;			// immutable: gpu가 읽기 전용으로 접근할 수 있다.
 	desc.BindFlags = D3D11_BIND_INDEX_BUFFER;	// index buffer로 사용하겠다.
 	desc.ByteWidth = (UINT32)(sizeof(UINT32) * this->_count);	// buffer 크기 지정
 
