@@ -31,5 +31,10 @@
 *.out
 *.app
 
+# Debug Folder
 x64/
-/.vs
+TARZAN/x64/
+
+# vs folder
+.vs/
+TARZAN/.vs/

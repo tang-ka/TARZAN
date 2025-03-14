@@ -72,3 +72,95 @@ enum EPrimitiveFlag {
 	PRIMITIVE_FLAG_DISABLE = 1 << 0,
 	PRIMITIVE_FLAG_SELECTED = 1 << 1,
 };
+
+/* FName */
+#ifndef WITH_CASE_PRESERVING_NAME
+#define WITH_CASE_PRESERVING_NAME 0
+#endif
+
+enum { NAME_SIZE = 1024 };
+/* WITH_CASE_PRESERVING_NAME 이 활성화되어 있으면 DisplayName으로 비교합니다.
+* 
+* DisplayName은 원래의 이름 문자열을 대소문자 그대로 유지하여 저장합니다.
+* 
+* 기본적으로 현재 프로젝트는 WITH_CASE_PRESERVING_NAME 0입니다.
+*/
+struct FName
+{
+	FName(char* pStr)
+	{
+		FString tmpStr(pStr);
+		*this = FName(tmpStr);
+	}
+
+	FName(FString str)
+	{
+		
+	}
+
+	int32 DisplayIndex;
+	int32 ComparisonIndex;
+
+	bool operator==(const FName& Other) const
+	{
+		return !Compare(Other);
+	}
+
+	/* 같다면 0, 작으면 -1, 크다면 1 */
+	inline int32 Compare(const FName& Other) const
+	{
+		const int32 rhs = GetDisplayIndexFast();
+		const int32 lhs = Other.GetDisplayIndexFast();
+
+		if (rhs < lhs)
+		{
+			return -1;
+		}
+		else if (rhs > lhs)
+		{
+			return 1;
+		}
+		return 0;
+	}
+
+	inline int32 GetComparisonIndex() const
+	{
+		return ComparisonIndex;
+	}
+
+	inline int32 GetDisplayIndex() const
+	{
+		const int32 Index = GetDisplayIndexFast();
+		return Index;
+	}
+
+	FString ToString() const
+	{
+
+	}
+
+	void ToString(FString& Out) const
+	{
+
+	}
+
+	/**
+	 * Buffer size required for any null-terminated FName string, i.e. [name] '_' [digits] '\0'
+	 */
+	static constexpr inline uint32 StringBufferSize = NAME_SIZE + 1 + 10; // NAME_SIZE includes null-terminator
+
+	void AppendString(FString& Out) const
+	{
+
+	}
+
+private:
+	inline int32 GetDisplayIndexFast() const
+	{
+#if WITH_CASE_PRESERVING_NAME
+		return DisplayIndex;
+#else
+		return ComparisonIndex;
+#endif
+	}
+};
