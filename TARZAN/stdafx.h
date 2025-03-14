@@ -112,13 +112,13 @@ struct FName
 
 	FName(FString str)
 	{
-		DisplayIndex =  FNameEntryRegistry::Get().FindOrAddNameEntry(str);
+		DisplayIndex =  FNameEntryRegistry::GetInstance().FindOrAddNameEntry(str);
 
 		FString LowerString = str;
 		
 		TranslateLower(LowerString);
 
-		ComparisonIndex = FNameEntryRegistry::Get().FindOrAddNameEntry(LowerString);
+		ComparisonIndex = FNameEntryRegistry::GetInstance().FindOrAddNameEntry(LowerString);
 	}
 
 	int32 DisplayIndex;
@@ -131,11 +131,11 @@ struct FName
 
 	FName& operator=(const FString& Other)
 	{
-		DisplayIndex = FNameEntryRegistry::Get().FindOrAddNameEntry(Other);
+		DisplayIndex = FNameEntryRegistry::GetInstance().FindOrAddNameEntry(Other);
 
 		FString LowerString = Other;
 		TranslateLower(LowerString);
-		ComparisonIndex = FNameEntryRegistry::Get().FindOrAddNameEntry(LowerString);
+		ComparisonIndex = FNameEntryRegistry::GetInstance().FindOrAddNameEntry(LowerString);
 
 		return *this;
 	}
@@ -175,12 +175,12 @@ struct FName
 
 	FString ToString() const
 	{
-		return FNameEntryRegistry::Get().GetNameString(DisplayIndex);
+		return FNameEntryRegistry::GetInstance().GetNameString(DisplayIndex);
 	}
 
 	void ToString(FString& Out) const
 	{
-		Out = FNameEntryRegistry::Get().GetNameString(DisplayIndex);
+		Out = FNameEntryRegistry::GetInstance().GetNameString(DisplayIndex);
 	}
 
 	/**
@@ -190,18 +190,18 @@ struct FName
 
 	void AppendString(FString& Out)
 	{
-		uint32 ExistIndex = FNameEntryRegistry::Get().FindOrAddNameEntry(Out);
+		uint32 ExistIndex = FNameEntryRegistry::GetInstance().FindOrAddNameEntry(Out);
 
-		FString FrontStr = FNameEntryRegistry::Get().GetNameString(DisplayIndex);
-		FString BackStr = FNameEntryRegistry::Get().GetNameString(ExistIndex);
+		FString FrontStr = FNameEntryRegistry::GetInstance().GetNameString(DisplayIndex);
+		FString BackStr = FNameEntryRegistry::GetInstance().GetNameString(ExistIndex);
 
 		FString MergedStr = FrontStr + BackStr;
 		
-		DisplayIndex = FNameEntryRegistry::Get().FindOrAddNameEntry(MergedStr);
+		DisplayIndex = FNameEntryRegistry::GetInstance().FindOrAddNameEntry(MergedStr);
 		
 		// to lower-case
 		TranslateLower(MergedStr);
-		ComparisonIndex = FNameEntryRegistry::Get().FindOrAddNameEntry(MergedStr);
+		ComparisonIndex = FNameEntryRegistry::GetInstance().FindOrAddNameEntry(MergedStr);
 	}
 
 private:

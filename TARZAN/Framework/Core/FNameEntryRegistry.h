@@ -1,5 +1,5 @@
 #pragma once
-#include "Framework/Core/Singleton.h"
+#include "Singleton.h"
 
 class FNameEntryRegistry : public TSingleton<FNameEntryRegistry>
 {
