@@ -48,7 +48,7 @@ void UWorld::RemoveActor(UActorComponent* comp)
 
 void UWorld::ClearWorld()
 {
-    UEngine::Get().GetGizmo()->Detach();
+    UEngine::GetInstance().GetGizmo()->Detach();
     UCameraComponent* cam = nullptr;
     while (!actorList.empty())
     {

@@ -22,7 +22,7 @@ LRESULT UEngine::WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		PostQuitMessage(0);
 		break;
 	case WM_LBUTTONDOWN:
-		if (UEngine::Get().GetWorld())
+		if (UEngine::GetInstance().GetWorld())
 		{
 			auto cam = CRenderer::Instance()->GetMainCamera();
 			Input::Instance()->SpawnMouseRay(cam->View(), cam->PerspectiveProjection());
@@ -58,7 +58,7 @@ LRESULT UEngine::WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				camera->UpdateRatio(aspectRatio);
 			}
 
-			if (GuiController* GUI = UEngine::Get().GetGUI())
+			if (GuiController* GUI = UEngine::GetInstance().GetGUI())
 			{
 				GUI->Resize();
 			}

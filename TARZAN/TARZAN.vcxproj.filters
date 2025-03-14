@@ -1,326 +1,312 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="소스 파일">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="리소스 파일">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
-    <Filter Include="Shader">
-      <UniqueIdentifier>{3492a764-7518-4c73-a2f4-59a06b7b2c3f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\Time">
-      <UniqueIdentifier>{f9609bd7-18d4-4008-b5ad-f58ec702e32a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\RenderingPipeline">
-      <UniqueIdentifier>{63833def-b160-4f3c-83ea-709b42e1f1e7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\Math">
-      <UniqueIdentifier>{a581bc30-355f-4a47-ba81-59380652d813}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\Core">
-      <UniqueIdentifier>{704f9afa-8f0c-40b0-b10b-674ee84d0cf9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\Component">
-      <UniqueIdentifier>{e36a26a6-2b7f-46f1-9d57-1c652e1b3084}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\GUI">
-      <UniqueIdentifier>{1b4b7c57-6e0a-46f9-afa9-45c6448f6e6a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\GUI\ImGui">
-      <UniqueIdentifier>{de038ed1-9c50-4dd6-a1d7-38af225e24ea}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Include">
-      <UniqueIdentifier>{aec81e03-3931-4ee5-b9b8-76177004370b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\Input">
-      <UniqueIdentifier>{10bab1ec-d172-4fd9-a813-efd0dd85f1ee}</UniqueIdentifier>
-    </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="stdafx.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="Framework\DirectXWrapper\CBuffer.cpp">
-      <Filter>소스 파일\RenderingPipeline</Filter>
-    </ClCompile>
-    <ClCompile Include="Framework\DirectXWrapper\CGraphics.cpp">
-      <Filter>소스 파일\RenderingPipeline</Filter>
-    </ClCompile>
-    <ClCompile Include="Framework\DirectXWrapper\CInputLayout.cpp">
-      <Filter>소스 파일\RenderingPipeline</Filter>
-    </ClCompile>
-    <ClCompile Include="Framework\DirectXWrapper\CShader.cpp">
-      <Filter>소스 파일\RenderingPipeline</Filter>
-    </ClCompile>
-    <ClCompile Include="Framework\DirectXWrapper\CState.cpp">
-      <Filter>소스 파일\RenderingPipeline</Filter>
-    </ClCompile>
-    <ClCompile Include="Framework\Core\AActor.cpp">
-      <Filter>소스 파일\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="Framework\Core\CEngineStatics.cpp">
-      <Filter>소스 파일\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="Framework\Core\UActorComponent.cpp">
-      <Filter>소스 파일\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="Framework\Core\UObject.cpp">
-      <Filter>소스 파일\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="Framework\Core\USceneComponent.cpp">
-      <Filter>소스 파일\Core</Filter>
-    </ClCompile>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="Math\FMatrix.cpp">
-      <Filter>소스 파일\Math</Filter>
+      <Filter>Sources\97. Math</Filter>
     </ClCompile>
     <ClCompile Include="Math\FVector.cpp">
-      <Filter>소스 파일\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="Framework\Core\UPrimitiveComponent.cpp">
-      <Filter>소스 파일\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="DataManager.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="Framework\Core\CRenderer.cpp">
-      <Filter>소스 파일\RenderingPipeline</Filter>
-    </ClCompile>
-    <ClCompile Include="Framework\Core\Time.cpp">
-      <Filter>소스 파일\Time</Filter>
-    </ClCompile>
-    <ClCompile Include="Framework\Core\UArrowComponent.cpp">
-      <Filter>소스 파일\Component</Filter>
-    </ClCompile>
-    <ClCompile Include="Framework\Core\UCameraComponent.cpp">
-      <Filter>소스 파일\Component</Filter>
-    </ClCompile>
-    <ClCompile Include="Framework\Core\UCoordArrowComponent.cpp">
-      <Filter>소스 파일\Component</Filter>
-    </ClCompile>
-    <ClCompile Include="Framework\Core\UCubeComponent.cpp">
-      <Filter>소스 파일\Component</Filter>
-    </ClCompile>
-    <ClCompile Include="Framework\Core\UDiscComponent.cpp">
-      <Filter>소스 파일\Component</Filter>
-    </ClCompile>
-    <ClCompile Include="Framework\Core\UDiscHollowComponent.cpp">
-      <Filter>소스 파일\Component</Filter>
-    </ClCompile>
-    <ClCompile Include="Framework\Core\UGizmoComponent.cpp">
-      <Filter>소스 파일\Component</Filter>
-    </ClCompile>
-    <ClCompile Include="Framework\Core\UPlaneComponent.cpp">
-      <Filter>소스 파일\Component</Filter>
-    </ClCompile>
-    <ClCompile Include="Framework\Core\USphereComponent.cpp">
-      <Filter>소스 파일\Component</Filter>
-    </ClCompile>
-    <ClCompile Include="ImGui\imgui.cpp">
-      <Filter>소스 파일\GUI\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="ImGui\imgui_demo.cpp">
-      <Filter>소스 파일\GUI\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="ImGui\imgui_draw.cpp">
-      <Filter>소스 파일\GUI\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="ImGui\imgui_impl_dx11.cpp">
-      <Filter>소스 파일\GUI\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="ImGui\imgui_impl_win32.cpp">
-      <Filter>소스 파일\GUI\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="ImGui\imgui_tables.cpp">
-      <Filter>소스 파일\GUI\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="ImGui\imgui_widgets.cpp">
-      <Filter>소스 파일\GUI\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="GuiConsole.cpp">
-      <Filter>소스 파일\GUI</Filter>
+      <Filter>Sources\97. Math</Filter>
     </ClCompile>
     <ClCompile Include="GuiController.cpp">
-      <Filter>소스 파일\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="UWorld.cpp">
-      <Filter>소스 파일\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="Framework\Core\Input.cpp">
-      <Filter>소스 파일\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="Framework\Core\FNameEntryRegistry.cpp">
-      <Filter>소스 파일\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="Framework\Core\Engine.cpp">
-      <Filter>소스 파일\Core</Filter>
+      <Filter>Sources\03. GUI</Filter>
     </ClCompile>
     <ClCompile Include="GuiConsole.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>Sources\03. GUI</Filter>
     </ClCompile>
-    <ClCompile Include="Framework\Core\UGizmoComponent.cpp">
-      <Filter>소스 파일</Filter>
+    <ClCompile Include="ImGui\imgui.cpp">
+      <Filter>Include\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="Framework\Core\USphereComponent.cpp">
-      <Filter>소스 파일</Filter>
+    <ClCompile Include="ImGui\imgui_demo.cpp">
+      <Filter>Include\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGui\imgui_draw.cpp">
+      <Filter>Include\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGui\imgui_impl_dx11.cpp">
+      <Filter>Include\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGui\imgui_impl_win32.cpp">
+      <Filter>Include\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGui\imgui_tables.cpp">
+      <Filter>Include\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGui\imgui_widgets.cpp">
+      <Filter>Include\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Core\UArrowComponent.cpp">
+      <Filter>Sources\02. Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Core\UCameraComponent.cpp">
+      <Filter>Sources\02. Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Core\UCoordArrowComponent.cpp">
+      <Filter>Sources\02. Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Core\UCubeComponent.cpp">
+      <Filter>Sources\02. Component</Filter>
     </ClCompile>
     <ClCompile Include="Framework\Core\UDiscComponent.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>Sources\02. Component</Filter>
     </ClCompile>
     <ClCompile Include="Framework\Core\UDiscHollowComponent.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>Sources\02. Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Core\UGizmoComponent.cpp">
+      <Filter>Sources\02. Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Core\UPlaneComponent.cpp">
+      <Filter>Sources\02. Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Core\USphereComponent.cpp">
+      <Filter>Sources\02. Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Core\AActor.cpp">
+      <Filter>Sources\01. Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\DirectXWrapper\CBuffer.cpp">
+      <Filter>Sources\04. Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\DirectXWrapper\CGraphics.cpp">
+      <Filter>Sources\04. Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\DirectXWrapper\CInputLayout.cpp">
+      <Filter>Sources\04. Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Core\CRenderer.cpp">
+      <Filter>Sources\04. Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\DirectXWrapper\CShader.cpp">
+      <Filter>Sources\04. Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Core\Input.cpp">
+      <Filter>Sources\99. Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Core\Time.cpp">
+      <Filter>Sources\98. TIme</Filter>
+    </ClCompile>
+    <ClCompile Include="DataManager.cpp">
+      <Filter>Sources\11. Manager</Filter>
     </ClCompile>
     <ClCompile Include="Framework\Core\UWorldGridComponent.cpp">
-      <Filter>소스 파일\Framework\Core</Filter>
+      <Filter>Sources\02. Component</Filter>
     </ClCompile>
+    <ClCompile Include="Framework\Core\UActorComponent.cpp">
+      <Filter>Sources\01. Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Core\UObject.cpp">
+      <Filter>Sources\01. Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Core\UPrimitiveComponent.cpp">
+      <Filter>Sources\01. Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Core\USceneComponent.cpp">
+      <Filter>Sources\01. Core</Filter>
+    </ClCompile>
+    <ClCompile Include="UWorld.cpp">
+      <Filter>Sources\01. Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Core\Engine.cpp">
+      <Filter>Sources\01. Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Core\CEngineStatics.cpp">
+      <Filter>Sources\01. Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\DirectXWrapper\CState.cpp">
+      <Filter>Sources\04. Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Core\FNameEntryRegistry.cpp">
+      <Filter>Sources\01. Core</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexProvider.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Include\json.hpp">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="DataManager.h">
-      <Filter>소스 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="stdafx.h">
-      <Filter>소스 파일</Filter>
-    </ClInclude>
+    <ClInclude Include="stdafx.h" />
     <ClInclude Include="Math\FMatrix.h">
-      <Filter>소스 파일\Math</Filter>
+      <Filter>Sources\97. Math</Filter>
     </ClInclude>
     <ClInclude Include="Math\FVector.h">
-      <Filter>소스 파일\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Framework\DirectXWrapper\CState.h">
-      <Filter>소스 파일\RenderingPipeline</Filter>
-    </ClInclude>
-    <ClInclude Include="Framework\DirectXWrapper\CBuffer.h">
-      <Filter>소스 파일\RenderingPipeline</Filter>
-    </ClInclude>
-    <ClInclude Include="Framework\DirectXWrapper\CGraphics.h">
-      <Filter>소스 파일\RenderingPipeline</Filter>
-    </ClInclude>
-    <ClInclude Include="Framework\DirectXWrapper\CInputLayout.h">
-      <Filter>소스 파일\RenderingPipeline</Filter>
-    </ClInclude>
-    <ClInclude Include="Framework\DirectXWrapper\CShader.h">
-      <Filter>소스 파일\RenderingPipeline</Filter>
-    </ClInclude>
-    <ClInclude Include="Framework\Core\USceneComponent.h">
-      <Filter>소스 파일\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Framework\Core\AActor.h">
-      <Filter>소스 파일\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Framework\Core\CEngineStatics.h">
-      <Filter>소스 파일\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Framework\Core\UActorComponent.h">
-      <Filter>소스 파일\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Framework\Core\UObject.h">
-      <Filter>소스 파일\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Framework\Core\UPrimitiveComponent.h">
-      <Filter>소스 파일\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Framework\Core\CRenderer.h">
-      <Filter>소스 파일\RenderingPipeline</Filter>
-    </ClInclude>
-    <ClInclude Include="Framework\Core\Time.h">
-      <Filter>소스 파일\Time</Filter>
-    </ClInclude>
-    <ClInclude Include="Framework\Core\UArrowComponent.h">
-      <Filter>소스 파일\Component</Filter>
-    </ClInclude>
-    <ClInclude Include="Framework\Core\UCameraComponent.h">
-      <Filter>소스 파일\Component</Filter>
-    </ClInclude>
-    <ClInclude Include="Framework\Core\UCoordArrowComponent.h">
-      <Filter>소스 파일\Component</Filter>
-    </ClInclude>
-    <ClInclude Include="Framework\Core\UCubeComponent.h">
-      <Filter>소스 파일\Component</Filter>
-    </ClInclude>
-    <ClInclude Include="Framework\Core\UDiscComponent.h">
-      <Filter>소스 파일\Component</Filter>
-    </ClInclude>
-    <ClInclude Include="Framework\Core\UDiscHollowComponent.h">
-      <Filter>소스 파일\Component</Filter>
-    </ClInclude>
-    <ClInclude Include="Framework\Core\UGizmoComponent.h">
-      <Filter>소스 파일\Component</Filter>
-    </ClInclude>
-    <ClInclude Include="Framework\Core\UPlaneComponent.h">
-      <Filter>소스 파일\Component</Filter>
-    </ClInclude>
-    <ClInclude Include="Framework\Core\USphereComponent.h">
-      <Filter>소스 파일\Component</Filter>
-    </ClInclude>
-    <ClInclude Include="ImGui\imconfig.h">
-      <Filter>소스 파일\GUI\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="ImGui\imgui.h">
-      <Filter>소스 파일\GUI\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="ImGui\imgui_impl_dx11.h">
-      <Filter>소스 파일\GUI\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="ImGui\imgui_impl_win32.h">
-      <Filter>소스 파일\GUI\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="ImGui\imgui_internal.h">
-      <Filter>소스 파일\GUI\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="ImGui\imstb_rectpack.h">
-      <Filter>소스 파일\GUI\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="ImGui\imstb_textedit.h">
-      <Filter>소스 파일\GUI\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="ImGui\imstb_truetype.h">
-      <Filter>소스 파일\GUI\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="GuiConsole.h">
-      <Filter>소스 파일\GUI</Filter>
+      <Filter>Sources\97. Math</Filter>
     </ClInclude>
     <ClInclude Include="GuiController.h">
-      <Filter>소스 파일\GUI</Filter>
+      <Filter>Sources\03. GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GuiConsole.h">
+      <Filter>Sources\03. GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGui\imconfig.h">
+      <Filter>Include\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGui\imgui.h">
+      <Filter>Include\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGui\imgui_impl_dx11.h">
+      <Filter>Include\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGui\imgui_impl_win32.h">
+      <Filter>Include\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGui\imgui_internal.h">
+      <Filter>Include\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGui\imstb_rectpack.h">
+      <Filter>Include\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGui\imstb_textedit.h">
+      <Filter>Include\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGui\imstb_truetype.h">
+      <Filter>Include\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Core\UArrowComponent.h">
+      <Filter>Sources\02. Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Core\UCameraComponent.h">
+      <Filter>Sources\02. Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Core\UCoordArrowComponent.h">
+      <Filter>Sources\02. Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Core\UCubeComponent.h">
+      <Filter>Sources\02. Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Core\UDiscComponent.h">
+      <Filter>Sources\02. Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Core\UDiscHollowComponent.h">
+      <Filter>Sources\02. Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Core\UGizmoComponent.h">
+      <Filter>Sources\02. Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Core\UPlaneComponent.h">
+      <Filter>Sources\02. Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Core\USphereComponent.h">
+      <Filter>Sources\02. Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Core\AActor.h">
+      <Filter>Sources\01. Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\DirectXWrapper\CBuffer.h">
+      <Filter>Sources\04. Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\DirectXWrapper\CGraphics.h">
+      <Filter>Sources\04. Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\DirectXWrapper\CInputLayout.h">
+      <Filter>Sources\04. Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Core\CRenderer.h">
+      <Filter>Sources\04. Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\DirectXWrapper\CShader.h">
+      <Filter>Sources\04. Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Core\Input.h">
+      <Filter>Sources\99. Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Core\Time.h">
+      <Filter>Sources\98. TIme</Filter>
+    </ClInclude>
+    <ClInclude Include="Singleton.h">
+      <Filter>Sources\10. AbstractClass</Filter>
     </ClInclude>
     <ClInclude Include="Include\jsonWrite.hpp">
       <Filter>Include</Filter>
     </ClInclude>
+    <ClInclude Include="Include\json.hpp">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="DataManager.h">
+      <Filter>Sources\11. Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Core\UWorldGridComponent.h">
+      <Filter>Sources\02. Component</Filter>
+    </ClInclude>
     <ClInclude Include="UWorld.h">
-      <Filter>소스 파일\Core</Filter>
+      <Filter>Sources\01. Core</Filter>
     </ClInclude>
-    <ClInclude Include="Framework\Core\Input.h">
-      <Filter>소스 파일\Input</Filter>
+    <ClInclude Include="Framework\Core\UActorComponent.h">
+      <Filter>Sources\01. Core</Filter>
     </ClInclude>
-    <ClInclude Include="Framework\Core\FNameEntryRegistry.h">
-      <Filter>소스 파일\Core</Filter>
+    <ClInclude Include="Framework\Core\UObject.h">
+      <Filter>Sources\01. Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Core\UPrimitiveComponent.h">
+      <Filter>Sources\01. Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Core\USceneComponent.h">
+      <Filter>Sources\01. Core</Filter>
     </ClInclude>
     <ClInclude Include="Framework\Core\Engine.h">
-      <Filter>소스 파일\Core</Filter>
+      <Filter>Sources\01. Core</Filter>
     </ClInclude>
-    <ClInclude Include="Framework\Core\Singleton.h">
-      <Filter>소스 파일\Core</Filter>
-    <ClInclude Include="Framework\Core\UWorldGridComponent.h">
-      <Filter>헤더 파일\Framework\Core</Filter>
+    <ClInclude Include="Framework\Core\CEngineStatics.h">
+      <Filter>Sources\01. Core</Filter>
     </ClInclude>
+    <ClInclude Include="Framework\DirectXWrapper\CState.h">
+      <Filter>Sources\04. Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Core\FNameEntryRegistry.h">
+      <Filter>Sources\01. Core</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexProvider.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Sources">
+      <UniqueIdentifier>{5e68a029-b629-4ea6-8cbf-5ce3c370e860}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\01. Core">
+      <UniqueIdentifier>{35b2a348-12ae-4813-b67a-75a2321f9b10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include">
+      <UniqueIdentifier>{c0ab5d61-fb09-4928-b3ce-c8a6dda3f055}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader">
+      <UniqueIdentifier>{08da8f74-b81d-4b6b-b4d9-f9539caca440}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\02. Component">
+      <UniqueIdentifier>{053c9444-46d2-43d1-9379-12ed507c016b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\03. GUI">
+      <UniqueIdentifier>{04b85143-b7e8-4a3e-b093-74afd147a4ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\10. AbstractClass">
+      <UniqueIdentifier>{cd68633a-4dae-4572-bbbf-15f76f9049b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\11. Manager">
+      <UniqueIdentifier>{6d241f4a-d0e4-4581-a1e0-131fcd6ee109}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\97. Math">
+      <UniqueIdentifier>{e4b7e2c5-d797-4f63-a23c-0b03b11bc903}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\98. TIme">
+      <UniqueIdentifier>{784f8b04-987c-4cab-b16e-662188a94826}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\99. Input">
+      <UniqueIdentifier>{9faf0999-9862-4bff-aff4-584cfc2646ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\ImGui">
+      <UniqueIdentifier>{f3e53e95-2d4a-4475-910e-6ef5b45248f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\04. Rendering">
+      <UniqueIdentifier>{ff837de5-93f3-4f92-8298-c154255ebdd9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\05. Util">
+      <UniqueIdentifier>{7e177d1f-280a-4d2b-b7e2-05349ce804c1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ImGui\imgui.ini">
+      <Filter>Include\ImGui</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ImGui\imgui.ini">
-      <Filter>소스 파일\GUI\ImGui</Filter>
-    </None>
   </ItemGroup>
 </Project>

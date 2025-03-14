@@ -54,7 +54,7 @@ void GuiController::NewFrame()
 		EPrimitiveColor neareastAxis = GetNearestGizmo(nearestGizmoDistance);
 
 		if (neareastActorComp == nullptr && neareastAxis == EPrimitiveColor::NONE) {
-			UEngine::Get().GetGizmo()->Detach();
+			UEngine::GetInstance().GetGizmo()->Detach();
 			UPrimitiveComponent* downcast = dynamic_cast<UPrimitiveComponent*>(_selected);
 			if (downcast)
 				downcast->renderFlags &= ~PRIMITIVE_FLAG_SELECTED;
@@ -72,16 +72,16 @@ void GuiController::NewFrame()
 				if (downcast)
 					downcast->renderFlags |= PRIMITIVE_FLAG_SELECTED;
 
-				UEngine::Get().GetGizmo()->AttachTo(dynamic_cast<UPrimitiveComponent*>(_selected));
-				UEngine::Get().GetGizmo()->selectedAxis = EPrimitiveColor::NONE;
+				UEngine::GetInstance().GetGizmo()->AttachTo(dynamic_cast<UPrimitiveComponent*>(_selected));
+				UEngine::GetInstance().GetGizmo()->selectedAxis = EPrimitiveColor::NONE;
 			}
 			else  {
-				UEngine::Get().GetGizmo()->selectedAxis = neareastAxis;
+				UEngine::GetInstance().GetGizmo()->selectedAxis = neareastAxis;
 			}
 		}
 	}
 	if (Input::Instance()->IsMouseButtonReleased(0) && !_io->WantCaptureMouse) {
-		UEngine::Get().GetGizmo()->selectedAxis = EPrimitiveColor::NONE;
+		UEngine::GetInstance().GetGizmo()->selectedAxis = EPrimitiveColor::NONE;
 	}
 }
 
@@ -95,7 +95,7 @@ UActorComponent* GuiController::GetNearestActorComponents(float& distance) {
 
 EPrimitiveColor GuiController::GetNearestGizmo(float& distance)
 {
-	if (!UEngine::Get().GetGizmo()->isGizmoActivated)
+	if (!UEngine::GetInstance().GetGizmo()->isGizmoActivated)
 	{
 		distance = FLT_MAX;
 		return EPrimitiveColor::NONE;
@@ -109,19 +109,19 @@ EPrimitiveColor GuiController::GetNearestGizmo(float& distance)
 	float minDistance = FLT_MAX;
 	EPrimitiveColor pickedAxis = EPrimitiveColor::NONE;
 
-	if (UEngine::Get().GetGizmo()->ArrowX->PickObjectByRayIntersection(pickPosition, viewMatrix, &hitDistance[EPrimitiveColor::RED_X])) {
+	if (UEngine::GetInstance().GetGizmo()->ArrowX->PickObjectByRayIntersection(pickPosition, viewMatrix, &hitDistance[EPrimitiveColor::RED_X])) {
 		if (hitDistance[EPrimitiveColor::RED_X] < minDistance) {
 			minDistance = hitDistance[EPrimitiveColor::RED_X];
 			pickedAxis = EPrimitiveColor::RED_X;
 		}
 	}
-	if (UEngine::Get().GetGizmo()->ArrowY->PickObjectByRayIntersection(pickPosition, viewMatrix, &hitDistance[EPrimitiveColor::GREEN_Y])) {
+	if (UEngine::GetInstance().GetGizmo()->ArrowY->PickObjectByRayIntersection(pickPosition, viewMatrix, &hitDistance[EPrimitiveColor::GREEN_Y])) {
 		if (hitDistance[EPrimitiveColor::GREEN_Y] < minDistance) {
 			minDistance = hitDistance[EPrimitiveColor::GREEN_Y];
 			pickedAxis = EPrimitiveColor::GREEN_Y;
 		}
 	}
-	if (UEngine::Get().GetGizmo()->ArrowZ->PickObjectByRayIntersection(pickPosition, viewMatrix, &hitDistance[EPrimitiveColor::BLUE_Z])) {
+	if (UEngine::GetInstance().GetGizmo()->ArrowZ->PickObjectByRayIntersection(pickPosition, viewMatrix, &hitDistance[EPrimitiveColor::BLUE_Z])) {
 		if (hitDistance[EPrimitiveColor::BLUE_Z] < minDistance) {
 			minDistance = hitDistance[EPrimitiveColor::BLUE_Z];
 			pickedAxis = EPrimitiveColor::BLUE_Z;
@@ -271,7 +271,7 @@ void GuiController::RenderEditor() {
 		downcast->SetRelativeScale3D(FVector(downcastScale[0], downcastScale[1], downcastScale[2]));
 
 		if ( ImGui::Button("Delete") ) {
-			UEngine::Get().GetGizmo()->Detach();
+			UEngine::GetInstance().GetGizmo()->Detach();
 			world->RemoveActor(_selected);
 			_selected = nullptr;
 		}
