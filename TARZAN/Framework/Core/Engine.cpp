@@ -208,5 +208,6 @@ void UEngine::InitWorld()
 
 	// 근데 이렇게 하는게 맞나 싶음. 이거 동적으로 어차피 사용해야 하는데, WireFrame 설정하는 곳에서 추가로 Grid사이즈 정할까
 	WorldGrid = new UWorldGridComponent();
-	WorldGrid->GenerateGrid(10, 1.f);
+	
+	WorldGrid->GenerateGrid(CRenderer::Instance()->GetMainCamera()->GetRelativeLocation().x, CRenderer::Instance()->GetMainCamera()->GetRelativeLocation().z, 10, 1.f);
 }
