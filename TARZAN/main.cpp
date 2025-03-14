@@ -82,8 +82,6 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	winClass.lpfnWndProc = WinProc;
 	RegisterClass(&winClass);
 
-
-
 	RECT rc = { 0, 0, SCR_WIDTH, SCR_HEIGHT };
 	AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
 	HWND hWnd = CreateWindow(winClassName, winTitleName,

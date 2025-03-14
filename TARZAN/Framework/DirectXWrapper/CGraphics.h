@@ -12,6 +12,9 @@ public:
 	ID3D11DeviceContext* GetDeviceContext() { return _deviceContext; }
 	void ResizeBuffers(int width, int height);
 
+	D3D11_FILL_MODE GetFillMode() const;
+	void SetFillMode(D3D11_FILL_MODE fillMode);
+
 private:
 	HWND _hWnd;
 	uint32 _width = SCR_WIDTH;
@@ -29,6 +32,7 @@ private:
 	ID3D11DepthStencilState* depthStencilState;
 
 	D3D11_VIEWPORT _viewPort = {};
+	D3D11_FILL_MODE _fillMode;
 
 	float _clearColor[4] = { 0.02f, 0.02f, 0.02f, 1.f };
 

@@ -22,7 +22,7 @@ public:
     TSingleton(TSingleton&&) = delete;
     TSingleton& operator=(TSingleton&&) = delete;
 
-    static Derived& Get();
+    static Derived& GetInstance();
 };
 
 
@@ -34,7 +34,7 @@ TSingleton<Derived>::~TSingleton()
 }
 
 template <typename Derived>
-Derived& TSingleton<Derived>::Get()
+Derived& TSingleton<Derived>::GetInstance()
 {
     if (Instance == nullptr)
     {
