@@ -92,7 +92,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 		nullptr, nullptr, hInstance, nullptr
 	);
 
-	CRenderer::Instance()->Init(hWnd); // maincamera ����
+	CRenderer::Instance()->Init(hWnd); // maincamera
 	Time::Instance()->Init();
 	Input::Instance()->Init(hInstance, hWnd, SCR_WIDTH, SCR_HEIGHT);
 
@@ -102,15 +102,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 	UGizmoComponent* Gizmo = new UGizmoComponent();
 
-	//Gizmo->AttachToComponent(sphere);
-	// Gizmo->AttachToComponent(obj2);
-
 	gGizmo = Gizmo;
 
-	//worldArrow->SetRelativeScale3D({ 100,100,100 });
-	//ground->SetRelativeScale3D({ 10,5,3 });
-	//ground->SetRelativeLocation({ 0,-10,0 });
-	//arrow->SetRelativeScale3D({ 3,3,3 });
 	UCoordArrowComponent* coordArrow = new UCoordArrowComponent();
 	coordArrow->SetRelativeScale3D({ 50000,50000,50000 });
 
@@ -122,27 +115,6 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 			DispatchMessage(&msg);
 		}
 
-		////////////////////////////////
-		// CUBE - ARROW 따라가는지 
-		//if (Input::Instance()->IsKeyPressed(DIKEYBOARD_B))
-		//{
-		//	guiController->world->ClearWorld();
-		//}
-		//if (Input::Instance()->IsKeyPressed(DIKEYBOARD_N))
-		//{
-		//	guiController->world->SaveWorld("TestLevel");
-		//	//mainScene->RemoveActor(sphere);
-		//}
-		//if (Input::Instance()->IsKeyPressed(DIKEYBOARD_M))
-		//{
-		//	guiController->world->LoadWorld("TestLevel");
-		//}
-
-		//CRenderer::Instance()->GetCamera()->PrintLoc(L"CAM");
-		//obj->PrintLoc(L"obj");
-
-		// 테스트용
-		////////////////////////////////
 		//Input::Instance()->Frame();
 		Input::Instance()->Frame();
 		//Input::Instance()->Unacquire();

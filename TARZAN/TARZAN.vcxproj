@@ -229,6 +229,7 @@
     <ClInclude Include="Include\jsonWrite.hpp" />
     <ClInclude Include="Math\FMatrix.h" />
     <ClInclude Include="Math\FVector.h" />
+    <ClInclude Include="Singleton.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Framework\Core\UGizmoComponent.h" />
     <ClInclude Include="Framework\Core\USphereComponent.h" />
