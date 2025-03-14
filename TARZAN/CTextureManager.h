@@ -11,11 +11,20 @@ using namespace Microsoft::WRL;
 
 class CTextureManager {
 public:
+
+    std::wstring TexturePaths[2] = {
+        L"Texture/TestTexure.dds",
+        L"Texture/FontTexture.dds"
+    };
+
+    int slotCount = 0;
+
+    const int NumberOfTexture= sizeof(TexturePaths) / sizeof(TexturePaths[0]);
     // 싱글턴 인스턴스 얻기
     static CTextureManager* GetInstance(ID3D11Device* device, ID3D11DeviceContext* context);
 
     // 텍스처 로드 함수 (DDS 포맷)
-    bool LoadTexture(const std::wstring& filePath);
+    void LoadSetTexture(ID3D11DeviceContext* DeviceContext);
 
     // 텍스처를 셰이더에 바인딩 (동적으로 적용)
     void BindTexture(const std::wstring& textureName, UINT slot = 0);

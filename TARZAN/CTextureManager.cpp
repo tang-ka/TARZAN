@@ -30,23 +30,30 @@ CTextureManager* CTextureManager::GetInstance(ID3D11Device* device, ID3D11Device
 }
 
 // 텍스처 로드
-bool CTextureManager::LoadTexture(const std::wstring& filePath) {
+void CTextureManager::LoadSetTexture(ID3D11DeviceContext* DeviceContext) {
     ScratchImage image;
-    HRESULT hr = LoadFromDDSFile(filePath.c_str(), DDS_FLAGS_NONE, nullptr, image);
-    if (FAILED(hr)) {
-        return false;
+
+
+    for (auto path : TexturePaths)
+    {
+        HRESULT hr = LoadFromDDSFile(path.c_str(), DDS_FLAGS_NONE, nullptr, image);
+        if (FAILED(hr)) {
+            return;
+        }
+
+        const TexMetadata& metadata = image.GetMetadata();
+
+        ID3D11ShaderResourceView* textureView = nullptr;
+        hr = CreateShaderResourceView(Device, image.GetImages(), image.GetImageCount(), metadata, &textureView);
+        if (FAILED(hr)) {
+            return;
+        }
+
+        m_textureMap[path] = textureView;
+
+     
+       BindTextureToShader(DeviceContext, textureView, slotCount++);  // 0번 슬롯에 텍스처 바인딩
     }
-
-    const TexMetadata& metadata = image.GetMetadata();
-
-    ID3D11ShaderResourceView* textureView = nullptr;
-    hr = CreateShaderResourceView(Device, image.GetImages(), image.GetImageCount(), metadata, &textureView);
-    if (FAILED(hr)) {
-        return false;
-    }
-
-    m_textureMap[filePath] = textureView;
-    return true;
 }
 
 // 텍스처 바인딩 (동적으로 적용)

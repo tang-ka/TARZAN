@@ -117,10 +117,7 @@
     <ClCompile Include="Framework\DirectXWrapper\CState.cpp">
       <Filter>Sources\04. Rendering</Filter>
     </ClCompile>
-    <ClCompile Include="Framework\Core\FNameEntryRegistry.cpp">
-      <Filter>Sources\01. Core</Filter>
-    </ClCompile>
-    <ClCompile Include="VertexProvider.cpp" />
+    <ClCompile Include="CTextureManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -250,10 +247,8 @@
     <ClInclude Include="Framework\DirectXWrapper\CState.h">
       <Filter>Sources\04. Rendering</Filter>
     </ClInclude>
-    <ClInclude Include="Framework\Core\FNameEntryRegistry.h">
-      <Filter>Sources\01. Core</Filter>
-    </ClInclude>
-    <ClInclude Include="VertexProvider.h" />
+    <ClInclude Include="CTextureManager.h" />
+    <ClInclude Include="Framework\Core\FName.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Sources">
@@ -308,5 +303,6 @@
     <FxCompile Include="Shader.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
+    <FxCompile Include="FontShader.hlsl" />
   </ItemGroup>
 </Project>
