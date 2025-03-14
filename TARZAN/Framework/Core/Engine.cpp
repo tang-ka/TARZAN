@@ -4,6 +4,7 @@
 #include "Framework/Core/UGizmoComponent.h"
 #include "Framework/Core/CRenderer.h"
 #include "UWorld.h"
+#include "UWorldGridComponent.h"
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -126,6 +127,8 @@ void UEngine::Run()
 		Controller->RenderEditor();
 		UGizmo->Render();
 		Arrow->Render();
+		// 동적으로 변경하려면 여기에 따로 WorldGrid->Update를 추가해야 할 것 같은데
+		WorldGrid->Render();
 		Controller->RenderFrame();
 
 		CRenderer::Instance()->GetGraphics()->RenderEnd();
@@ -201,4 +204,8 @@ void UEngine::InitWorld()
 
 	Arrow = new UCoordArrowComponent();
 	Arrow->SetRelativeScale3D({ 50000,50000,50000 });
+
+	// 근데 이렇게 하는게 맞나 싶음. 이거 동적으로 어차피 사용해야 하는데, WireFrame 설정하는 곳에서 추가로 Grid사이즈 정할까
+	WorldGrid = new UWorldGridComponent();
+	WorldGrid->GenerateGrid(10, 1.f);
 }

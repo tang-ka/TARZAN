@@ -20,3 +20,4 @@ struct FVertexSimple {
 	float r, g, b, a;
 	static TArray<D3D11_INPUT_ELEMENT_DESC> descs;
 };
+

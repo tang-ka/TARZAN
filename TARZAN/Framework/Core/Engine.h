@@ -6,6 +6,7 @@ class UGizmoComponent;
 class UWorld;
 class GuiController;
 class UCoordArrowComponent;
+class UWorldGridComponent;
 
 enum class EScreenMode
 {
@@ -73,5 +74,6 @@ private:
     UWorld* World = nullptr;
     GuiController* Controller = nullptr;
     UCoordArrowComponent* Arrow = nullptr;
+    UWorldGridComponent* WorldGrid = nullptr;
 };
 
