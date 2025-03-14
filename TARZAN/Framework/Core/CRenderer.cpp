@@ -57,7 +57,7 @@ void CRenderer::ResetPixelShader() {
 	SafeRelease(&_vertexShader);
 }
 
-void CRenderer::SetRasterzierState(D3D11_FILL_MODE fillMode) {
+void CRenderer::SetRasterzierState(D3D11_FILL_MODE fillMode = D3D11_FILL_SOLID) {
 	_rasterizerState = new CRasterzierState(_graphics->GetDevice());
 	_rasterizerState->Create(fillMode);
 	_graphics->GetDeviceContext()->RSSetState(_rasterizerState->Get());
