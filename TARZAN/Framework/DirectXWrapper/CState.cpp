@@ -25,9 +25,12 @@ void CSamplerState::Create() {
 	HRESULT hr = _device->CreateSamplerState(&_desc, &_samplerState);
 }
 
-void CRasterzierState::Create() {
+
+
+void CRasterzierState::Create(D3D11_FILL_MODE fillMode) {
 	D3D11_RASTERIZER_DESC desc = {};
-	desc.FillMode = D3D11_FILL_SOLID;
+	//desc.FillMode = D3D11_FILL_SOLID;
+	desc.FillMode = fillMode;
 	desc.CullMode = D3D11_CULL_BACK;
 	//desc.CullMode = D3D11_CULL_FRONT;
 	desc.FrontCounterClockwise = false;

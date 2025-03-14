@@ -36,7 +36,7 @@ public:
 	};
 	ID3D11RasterizerState* Get() { return _rasterizerState; }
 
-	void Create();
+	void Create(D3D11_FILL_MODE fillMode);
 private:
 	ID3D11RasterizerState* _rasterizerState;
 };

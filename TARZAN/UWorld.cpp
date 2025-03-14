@@ -6,8 +6,8 @@
 UWorld::UWorld()
 {
     UCameraComponent* camera = SpawnCamera();
-    camera->SetRelativeLocation({ 0, 4.0f, -5.0f });
-    camera->SetRelativeRotation({ -0.7f, 0, 0 });
+    camera->SetRelativeLocation({ 0, 13.0f, -14.0f });
+    camera->SetRelativeRotation({ -0.8f, 0, 0 });
     CRenderer::Instance()->SetMainCamera(camera);
     SpawnCoordArrowActor();
 }
@@ -81,7 +81,6 @@ void UWorld::ConvertNDC_VIEW(int mouse_X, int mouse_Y, FVector& pickPosition, FM
 
 UActorComponent* UWorld::PickingByRay(int mouse_X, int mouse_Y, float& dist)
 {
-
     FVector pickPosition;
     FMatrix viewMatrix = FMatrix::Identity;
    
@@ -108,8 +107,6 @@ UActorComponent* UWorld::PickingByRay(int mouse_X, int mouse_Y, float& dist)
     return nearestActorComp;
 }
 
-
-
 int UWorld::GetActorCount() const
 {
     return actorList.size();
@@ -119,7 +116,6 @@ const TLinkedList<UActorComponent*>& UWorld::GetActors() const
 {
     return actorList;
 }
-
 
 UCameraComponent* UWorld::SpawnCamera()
 {
@@ -152,7 +148,6 @@ UPlaneComponent* UWorld::SpawnPlaneActor()
 UCoordArrowComponent* UWorld::SpawnCoordArrowActor()
 {
     return SpawnActor<UCoordArrowComponent>(false);
-    // return SpawnActor<UCoordArrowComponent>();
 }
 
 UDiscComponent* UWorld::SpawnDiscActor()

@@ -107,7 +107,7 @@ void UWorldGridComponent::Render()
 {
     CGraphics* graphics = CRenderer::Instance()->GetGraphics();
     ID3D11DeviceContext* context = graphics->GetDeviceContext();
-    CRenderer::Instance()->SetRasterzierState();
+    //CRenderer::Instance()->SetRasterzierState(D3D11_FILL_SOLID);
     if (!context) return;
 
     context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);

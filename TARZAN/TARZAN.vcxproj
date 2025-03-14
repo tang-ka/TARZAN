@@ -139,7 +139,6 @@
     <ClCompile Include="Framework\Core\CEngineStatics.cpp" />
     <ClCompile Include="Framework\Core\CRenderer.cpp" />
     <ClCompile Include="Framework\Core\Engine.cpp" />
-    <ClCompile Include="Framework\Core\FNameEntryRegistry.cpp" />
     <ClCompile Include="Framework\Core\Input.cpp" />
     <ClCompile Include="Framework\Core\Time.cpp" />
     <ClCompile Include="Framework\Core\UActorComponent.cpp" />
@@ -236,6 +235,7 @@
     <ClInclude Include="Include\jsonWrite.hpp" />
     <ClInclude Include="Math\FMatrix.h" />
     <ClInclude Include="Math\FVector.h" />
+    <ClInclude Include="Singleton.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Framework\Core\UGizmoComponent.h" />
     <ClInclude Include="Framework\Core\USphereComponent.h" />
