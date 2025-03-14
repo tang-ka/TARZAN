@@ -99,6 +99,11 @@ enum { NAME_SIZE = 1024 };
 */
 struct FName
 {
+	FName()
+	{
+		*this = FName("UObject");
+	}
+
 	FName(char* pStr)
 	{
 		FString tmpStr(pStr);
@@ -122,6 +127,22 @@ struct FName
 	bool operator==(const FName& Other) const
 	{
 		return !Compare(Other);
+	}
+
+	FName& operator=(const FString& Other)
+	{
+		DisplayIndex = FNameEntryRegistry::Get().FindOrAddNameEntry(Other);
+
+		FString LowerString = Other;
+		TranslateLower(LowerString);
+		ComparisonIndex = FNameEntryRegistry::Get().FindOrAddNameEntry(LowerString);
+
+		return *this;
+	}
+
+	FName& operator=(const char* Other)
+	{
+		return *this = FString(Other);
 	}
 
 	/* 같다면 0, 작으면 -1, 크다면 1 */

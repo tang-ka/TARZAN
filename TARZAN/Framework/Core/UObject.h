@@ -7,7 +7,9 @@ class UObject {
 private:
 	uint32 _uuid;
 	uint32 _internalIndex;		// ???
+	FName Name;
 	static std::unordered_map<void*, size_t> _allocationMap;
+
 public:
 	UObject();
 	virtual ~UObject();
