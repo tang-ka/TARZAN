@@ -49,7 +49,7 @@ void UGizmoComponent::Update()
 	//ArrowY->IsOverrideScale3D = true;
 	//ArrowZ->IsOverrideScale3D = true;
 
-	// ����� �ƹ��͵� �Ⱥپ�����
+	// �����?�ƹ��͵� �Ⱥپ�����
  	if (GetAttachParent() == nullptr)
 		return;
 
@@ -99,7 +99,7 @@ void UGizmoComponent::Update()
 
 	// @@@@@@@@@@@@@@@@@@@@@@@@
 	//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-	// 포지션 오버라이드해서 RELATIVE기준으로 안움직이게
+	// ?��????�버?�이?�해??RELATIVE기�??�로 ?��?직이�?
  	auto newPos = selectedArrow->Front() * effectiveMovement + GetAttachParent()->GetRelativeLocation();
 	GetAttachParent()->SetRelativeLocation(newPos);
 	ImGui::Begin("Gizmo Attached");

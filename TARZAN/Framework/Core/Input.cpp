@@ -1,10 +1,8 @@
 #include "stdafx.h"
 #include "Input.h"
 #include "Framework/Core/UCoordArrowComponent.h"
+#include "Framework/Core/Engine.h"
 #include "UWorld.h"
-
-//class UWorld;
-extern UWorld* gMainScene;
 
 Input* Input::_instance = nullptr;
 
@@ -232,7 +230,7 @@ UCoordArrowComponent* Input::SpawnMouseRay(const FMatrix& viewMatrix, const FMat
 	FMatrix viewProjInv = (viewMatrix * projectionMatrix).Inverse();
 	GetMouseRay(o, d, viewMatrix, projectionMatrix);
 
-	auto a = gMainScene->SpawnCoordArrowActor();
+	auto a = UEngine::Get().GetWorld()->SpawnCoordArrowActor();
 	auto s = d.Magnitude();
 	//auto x = -asin(d.y);
 	auto x = atan2(d.y, d.z);

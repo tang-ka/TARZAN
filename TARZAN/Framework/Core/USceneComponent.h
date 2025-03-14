@@ -55,34 +55,34 @@ public:
 	//void SetWorldVelocity(const FVector NewWorldVelocity);
 
 public:
-	// 주의!! hierarchy는 바뀌지 않음 
+	// 주의!! hierarchy??바뀌�? ?�음 
 	void SetValuesFromMatrix(const FMatrix mat);
 	//void UpdateComponentVelocity();
 
-// ��� ����
+// ���?����
 private:
 	USceneComponent* AttachParent = nullptr;
 	TArray<USceneComponent*> AttachChildern;
 
 public:
 	const TArray<USceneComponent*>& GetAttachChildren() const; // ���������� ���� children�� ��ȯ
-	void GetChildrenComponents(TArray<USceneComponent*>& Children) const; // ��ͷ� �Ʒ��� ��� children ��ȯ
+	void GetChildrenComponents(TArray<USceneComponent*>& Children) const; // ��ͷ�?�Ʒ��� ���?children ��ȯ
 	USceneComponent* GetAttachParent() const;
-	void GetParentComponents(TArray<USceneComponent*>& Parents) const; // ��ͷ� root���� ��ȯ
+	void GetParentComponents(TArray<USceneComponent*>& Parents) const; // ��ͷ�?root���� ��ȯ
 
 	void SetupAttachment(TArray<USceneComponent*>& Children); // �ڽ� ���� ���� ����
 
 	// �θ��ڽ� ���踦 ������ ���ϴ� �� �Լ� ����
 	bool AttachToComponent(USceneComponent* Parent); // �θ� ���� ���������� false
 
-// �����
+// �����?
 public:
 	void PrintLoc(std::wstring msg) const;
 
 
 public:
 	//FMatrix DEBUG_TRANSFORMATION_OVERRIDE = FMatrix::Identity;
-	// flag 설정시 강제로 이 상태로 렌더
+	// flag ?�정??강제�????�태�??�더
 	FVector OverrideLocation = FVector::Zero;
 	FVector OverrideRotation = FVector::Zero;
 	FVector OverrideScale3D = FVector::One;
