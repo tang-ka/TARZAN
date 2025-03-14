@@ -116,9 +116,9 @@ void USceneManager::ClearDirty()
 void USceneManager::SetNewName(UObject* Actor, EPrimitiveType PrimitiveType)
 {
 	int& Count = NextIndices[PrimitiveType];
-	Count++;
 
 	FString NewName = GetPrimitiveTypeString(PrimitiveType) + "_" + std::to_string(Count);
+	Count++;
 	Actor->SetName(NewName);
 }
 
