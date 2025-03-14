@@ -14,6 +14,8 @@ public:
     // grid 범위 (-gridCount ~ +gridCount) 및 단위 크기(unitSize)를 설정하여 grid를 생성
     void GenerateGrid(int gridCount, float unitSize);
 
+    void UpdateGrid();
+
     // UPrimitiveComponent에서 상속받은 Render 함수 오버라이드
     virtual void Render() override;
 
