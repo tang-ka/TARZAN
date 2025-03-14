@@ -4,7 +4,7 @@
 enum EPrimitiveColor;
 class CGraphics;
 class UActorComponent;
-class UWorld;
+class SceneManagerView;
 
 class GuiController {
 public:
@@ -19,9 +19,14 @@ public:
 	void RenderFrame();
 	void RenderEditor();
 	void Resize();
-	UWorld* world;
-	UActorComponent* _selected;
+	
 	GuiConsole* GetConcolWindow();
+	
+	UActorComponent* _selected;
+	SceneManagerView* SceneView;
+
+private:
+	void CreateSceneManagerPanel();
 
 private:
 	ImGuiContext* _context;

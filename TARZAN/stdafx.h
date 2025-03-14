@@ -87,3 +87,10 @@ enum EPrimitiveFlag {
 	PRIMITIVE_FLAG_DISABLE = 1 << 0,
 	PRIMITIVE_FLAG_SELECTED = 1 << 1,
 };
+
+enum EPrimitiveType
+{
+	CUBE,
+	SPHERE,
+	PLANE
+};

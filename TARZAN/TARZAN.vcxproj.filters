@@ -117,10 +117,10 @@
     <ClCompile Include="Framework\DirectXWrapper\CState.cpp">
       <Filter>Sources\04. Rendering</Filter>
     </ClCompile>
-    <ClCompile Include="Framework\Core\FNameEntryRegistry.cpp">
-      <Filter>Sources\01. Core</Filter>
+    <ClCompile Include="CTextureManager.cpp" />
+    <ClCompile Include="Framework\Core\SceneManager.cpp">
+      <Filter>Sources\11. Manager</Filter>
     </ClCompile>
-    <ClCompile Include="VertexProvider.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -250,10 +250,11 @@
     <ClInclude Include="Framework\DirectXWrapper\CState.h">
       <Filter>Sources\04. Rendering</Filter>
     </ClInclude>
-    <ClInclude Include="Framework\Core\FNameEntryRegistry.h">
-      <Filter>Sources\01. Core</Filter>
+    <ClInclude Include="CTextureManager.h" />
+    <ClInclude Include="Framework\Core\FName.h" />
+    <ClInclude Include="Framework\Core\SceneManager.h">
+      <Filter>Sources\11. Manager</Filter>
     </ClInclude>
-    <ClInclude Include="VertexProvider.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Sources">
