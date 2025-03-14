@@ -6,6 +6,7 @@ CGraphics::CGraphics(HWND hWnd): _hWnd(hWnd) {
 	CreateRenderTargetView();
 	CreateDepthStencilBuffer();
 	SetViewport(_width, _height);
+	SetFillMode(D3D11_FILL_SOLID);
 }
 
 CGraphics::~CGraphics() {
@@ -83,6 +84,16 @@ void CGraphics::ResizeBuffers(int width, int height)
 		if (depthStencilView)
 			_deviceContext->ClearDepthStencilView(depthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 	}
+}
+
+D3D11_FILL_MODE CGraphics::GetFillMode() const
+{
+	return _fillMode;
+}
+
+void CGraphics::SetFillMode(D3D11_FILL_MODE fillMode)
+{
+	_fillMode = fillMode;
 }
 
 

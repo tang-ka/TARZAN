@@ -17,6 +17,7 @@ private:
 		delete _pixelShader;
 		delete _graphics;
 	};
+
 public:
 	static CRenderer* Instance() {
 		if (_instance == nullptr)
@@ -34,11 +35,12 @@ public:
 	void ResetVertexShader();
 	void SetPixelShader(const FWString filename, FString funcname, FString version);
 	void ResetPixelShader();
-	void SetRasterzierState();
+	void SetRasterzierState(D3D11_FILL_MODE fillMode);
 	void SetTransformToConstantBuffer(FMatrix matrix);
 	void SetFlagsToConstantBuffer(FPrimitiveFlags flags);
 	UCameraComponent* GetMainCamera() const;
 	void SetMainCamera(UCameraComponent* camera);
+
 private:
 	CGraphics* _graphics = nullptr;
 	CVertexShader* _vertexShader = nullptr;

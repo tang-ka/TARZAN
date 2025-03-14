@@ -8,6 +8,7 @@
 #include "Framework/Core/Engine.h"
 #include "UWorld.h"
 
+
 GuiController::GuiController(HWND hWnd, CGraphics* graphics): hWnd(hWnd) {
 	IMGUI_CHECKVERSION();
 	_context = ImGui::CreateContext();
@@ -63,12 +64,12 @@ void GuiController::NewFrame()
 			if (nearestActorDistance < nearestGizmoDistance) {
 
 				UPrimitiveComponent* downcast = dynamic_cast<UPrimitiveComponent*>(_selected);
-				if ( downcast )
-				downcast->renderFlags &= ~PRIMITIVE_FLAG_SELECTED;
-			
+				if (downcast)
+					downcast->renderFlags &= ~PRIMITIVE_FLAG_SELECTED;
+
 				_selected = neareastActorComp;
 				downcast = dynamic_cast<UPrimitiveComponent*>(_selected);
-				if ( downcast )
+				if (downcast)
 					downcast->renderFlags |= PRIMITIVE_FLAG_SELECTED;
 
 				UEngine::Get().GetGizmo()->AttachTo(dynamic_cast<UPrimitiveComponent*>(_selected));
@@ -78,7 +79,6 @@ void GuiController::NewFrame()
 				UEngine::Get().GetGizmo()->selectedAxis = neareastAxis;
 			}
 		}
-		
 	}
 	if (Input::Instance()->IsMouseButtonReleased(0) && !_io->WantCaptureMouse) {
 		UEngine::Get().GetGizmo()->selectedAxis = EPrimitiveColor::NONE;
@@ -86,11 +86,11 @@ void GuiController::NewFrame()
 }
 
 UActorComponent* GuiController::GetNearestActorComponents(float& distance) {
-		int x, y;
-		Input::Instance()->GetMouseLocation(x, y);
-		//_selected = 
-		UActorComponent* nearestActor = world->PickingByRay(x, y, distance); //_selected
-		return nearestActor;	
+	int x, y;
+	Input::Instance()->GetMouseLocation(x, y);
+	//_selected = 
+	UActorComponent* nearestActor = world->PickingByRay(x, y, distance); //_selected
+	return nearestActor;
 }
 
 EPrimitiveColor GuiController::GetNearestGizmo(float& distance)
@@ -140,6 +140,7 @@ void GuiController::RenderFrame()
 }
 
 void GuiController::RenderEditor() {
+#pragma region Control Panel
 	float controllWindowWidth = static_cast<float>(SCR_WIDTH) * 0.3f;
 	float controllWindowHeight = static_cast<float>(SCR_HEIGHT) * 0.25f;
 	float controllWindowPosX = (static_cast<float>(SCR_WIDTH) - controllWindowWidth) * 0.f;
@@ -150,20 +151,26 @@ void GuiController::RenderEditor() {
 	ImGui::SetNextWindowSizeConstraints(ImVec2(300.0f, 0.0f), ImVec2(300.0f, FLT_MAX));
 
 	const char* primitiveItems[] = { "Cube", "Sphere", "Plane" };
-	ImGui::Begin("Control Panel",nullptr, ImGuiWindowFlags_AlwaysAutoResize);
+	const char* viewModes[] = { "Lit", "Unlit", "Wireframe" };
 
-	ImGui::Text("FPS: %.2f (%.2fms)", 1/Time::GetDeltaTime(), 1000.f * Time::GetDeltaTime());
+	D3D11_FILL_MODE currentFillMode = CRenderer::Instance()->GetGraphics()->GetFillMode();
+	//int selectedMode = (currentFillMode == D3D11_FILL_SOLID) ? 0 : (currentFillMode == D3D11_FILL_WIREFRAME) ? 2 : 1;
+
+	ImGui::Begin("Control Panel", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
+
+	ImGui::Text("FPS: %.2f (%.2fms)", 1 / Time::GetDeltaTime(), 1000.f * Time::GetDeltaTime());
 	ImGui::Text("UObject Count: %d", CEngineStatics::TotalAllocationCount);
 	ImGui::Text("UObject Bytes: %d", CEngineStatics::TotalAllocationBytes);
 	ImGui::Separator();
+	/***********************************/
 
 	ImGui::Text("UActorComponent Count: %d", world->GetActorCount());
 
 	ImGui::Combo("Primitive", &_selectedPrimitive, primitiveItems, ARRAYSIZE(primitiveItems));
-	if ( ImGui::Button("Create") ) {
-
+	if (ImGui::Button("Create"))
+	{
 		for (int i = 0; i < _spawnNumber; i++) {
-			switch ( _selectedPrimitive ) {
+			switch (_selectedPrimitive) {
 			case 0:
 				world->SpawnCubeActor();
 				break;
@@ -179,8 +186,9 @@ void GuiController::RenderEditor() {
 	ImGui::SameLine(0.f, 5.f);
 	ImGui::InputInt("Number of Spawn", &_spawnNumber, 1, 50);
 	ImGui::Separator();
+	/***********************************/
 
-	if ( _spawnNumber < 0 ) 
+	if (_spawnNumber < 0)
 		_spawnNumber = 0;
 
 	ImGui::InputText("Scene Name", _sceneNameBuffer, ARRAYSIZE(_sceneNameBuffer));
@@ -188,7 +196,7 @@ void GuiController::RenderEditor() {
 		world->ClearWorld();
 		_selected = nullptr;
 		UPrimitiveComponent* downcast = dynamic_cast<UPrimitiveComponent*>(_selected);
-		if ( downcast )
+		if (downcast)
 			downcast->renderFlags &= ~PRIMITIVE_FLAG_SELECTED;
 	}
 	if (ImGui::Button("Save Scene")) {
@@ -198,31 +206,55 @@ void GuiController::RenderEditor() {
 		world->LoadWorld(_sceneNameBuffer);
 		_selected = nullptr;
 		UPrimitiveComponent* downcast = dynamic_cast<UPrimitiveComponent*>(_selected);
-		if ( downcast )
+		if (downcast)
 			downcast->renderFlags &= ~PRIMITIVE_FLAG_SELECTED;
 	}
 	ImGui::Separator();
+	/*********************************/
+
 	ImGui::Text("Camera");
 	UCameraComponent* mainCam = CRenderer::Instance()->GetMainCamera();
 	if (mainCam) {
 		mainCam->RenderUI();
 	}
+	ImGui::Separator();
+	/***********************************/
+
+	ImGui::Text("ViewMode");
+	ImGui::SameLine();
+
+	if (ImGui::Combo("##", &_selectedMode, viewModes, IM_ARRAYSIZE(viewModes)))
+	{
+		// 선택 변경 시 실행할 코드
+		D3D11_FILL_MODE newMode = D3D11_FILL_SOLID;
+		switch (_selectedMode)
+		{
+		case 0: newMode = D3D11_FILL_SOLID; break; // Lit 모드 처리
+		case 1: newMode = D3D11_FILL_SOLID; break; // Unlit 모드 처리
+		case 2: newMode = D3D11_FILL_WIREFRAME; break; // Wireframe 모드 처리
+		}
+
+		CRenderer::Instance()->SetRasterzierState(newMode);
+	}
+
 	ImGui::End();
+#pragma endregion
+
+#pragma region Property window
 	float propertyWindowWidth = static_cast<float>(SCR_WIDTH) * 0.3f;
 	float propertyWindowHeight = static_cast<float>(SCR_HEIGHT) * 0.25f;
 	float propertyWindowPosX = (static_cast<float>(SCR_WIDTH) - propertyWindowWidth) * 1.f;
 	float propertyWindowPosY = (static_cast<float>(SCR_HEIGHT) - propertyWindowHeight) * 0.f;
 	ImGui::SetNextWindowPos(ImVec2(propertyWindowPosX, propertyWindowPosY));
 	ImGui::SetNextWindowSize(ImVec2(propertyWindowWidth, 0.0f));
-	ImGui::Begin("Property",0);
+	ImGui::Begin("Property", 0);
 	USceneComponent* downcast = nullptr;
 	if (_selected)
 		downcast = dynamic_cast<USceneComponent*>(_selected);
 	if (downcast != nullptr) {
-
 		ImGui::Text("UUID: %d", _selected->GetUUID());
-		
-		
+
+
 		FVector vec = downcast->GetRelativeLocation();
 		float downcastLocation[3] = { vec.x, vec.y, vec.z };
 		ImGui::DragFloat3("position", downcastLocation, 0.1f);
@@ -245,15 +277,14 @@ void GuiController::RenderEditor() {
 		}
 	}
 	ImGui::End();
+#pragma endregion
 
 	_console->Render();
 }
 
 void GuiController::Resize()
 {
-
 	_io->DisplaySize = ImVec2(static_cast<float>(SCR_WIDTH), static_cast<float>(SCR_HEIGHT));
-
 }
 
 GuiConsole* GuiController::GetConcolWindow()
