@@ -134,6 +134,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CTextureManager.cpp" />
     <ClCompile Include="DataManager.cpp" />
     <ClCompile Include="Framework\Core\AActor.cpp" />
     <ClCompile Include="Framework\Core\CEngineStatics.cpp" />
@@ -141,7 +142,6 @@
     <ClCompile Include="Framework\Core\Engine.cpp" />
     <ClCompile Include="Framework\Core\FName.cpp" />
     <ClCompile Include="Framework\Core\Input.cpp" />
-    <ClCompile Include="Framework\Core\SceneManager.cpp" />
     <ClCompile Include="Framework\Core\Time.cpp" />
     <ClCompile Include="Framework\Core\UActorComponent.cpp" />
     <ClCompile Include="Framework\Core\UArrowComponent.cpp" />
@@ -199,6 +199,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CTextureManager.h" />
     <ClInclude Include="DataManager.h" />
     <ClInclude Include="Framework\Core\AActor.h" />
     <ClInclude Include="Framework\Core\CEngineStatics.h" />
@@ -206,7 +207,6 @@
     <ClInclude Include="Framework\Core\Engine.h" />
     <ClInclude Include="Framework\Core\FName.h" />
     <ClInclude Include="Framework\Core\Input.h" />
-    <ClInclude Include="Framework\Core\SceneManager.h" />
     <ClInclude Include="Framework\Core\Singleton.h" />
     <ClInclude Include="Framework\Core\Time.h" />
     <ClInclude Include="Framework\Core\UActorComponent.h" />

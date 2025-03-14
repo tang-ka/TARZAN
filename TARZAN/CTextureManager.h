@@ -1,7 +1,7 @@
 #pragma once
 
 #include <d3d11.h>
-#include <Include/DirectXTex.h>
+#include <DirectXTex.h>
 #include <wrl/client.h>
 #include <string>
 #include <map>
