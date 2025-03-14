@@ -139,7 +139,6 @@
     <ClCompile Include="Framework\Core\CEngineStatics.cpp" />
     <ClCompile Include="Framework\Core\CRenderer.cpp" />
     <ClCompile Include="Framework\Core\Engine.cpp" />
-    <ClCompile Include="Framework\Core\FNameEntryRegistry.cpp" />
     <ClCompile Include="Framework\Core\Input.cpp" />
     <ClCompile Include="Framework\Core\Time.cpp" />
     <ClCompile Include="Framework\Core\UActorComponent.cpp" />

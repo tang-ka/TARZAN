@@ -155,9 +155,6 @@
     <ClCompile Include="Framework\Core\Input.cpp">
       <Filter>소스 파일\Input</Filter>
     </ClCompile>
-    <ClCompile Include="Framework\Core\FNameEntryRegistry.cpp">
-      <Filter>소스 파일\Core</Filter>
-    </ClCompile>
     <ClCompile Include="Framework\Core\Engine.cpp">
       <Filter>소스 파일\Core</Filter>
     </ClCompile>
