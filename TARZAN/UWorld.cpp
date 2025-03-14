@@ -1,8 +1,7 @@
 #include "stdafx.h"
 #include "UWorld.h"
+#include "Framework/Core/Engine.h"
 #include "Framework/Core/UGizmoComponent.h"
-
-extern UGizmoComponent* gGizmo;
 
 UWorld::UWorld()
 {
@@ -49,7 +48,7 @@ void UWorld::RemoveActor(UActorComponent* comp)
 
 void UWorld::ClearWorld()
 {
-    gGizmo->Detach();
+    UEngine::Get().GetGizmo()->Detach();
     UCameraComponent* cam = nullptr;
     while (!actorList.empty())
     {

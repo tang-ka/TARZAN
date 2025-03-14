@@ -155,6 +155,12 @@
     <ClCompile Include="Framework\Core\Input.cpp">
       <Filter>소스 파일\Input</Filter>
     </ClCompile>
+    <ClCompile Include="Framework\Core\FNameEntryRegistry.cpp">
+      <Filter>소스 파일\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Core\Engine.cpp">
+      <Filter>소스 파일\Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\json.hpp">
@@ -276,6 +282,15 @@
     </ClInclude>
     <ClInclude Include="Framework\Core\Input.h">
       <Filter>소스 파일\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Core\FNameEntryRegistry.h">
+      <Filter>소스 파일\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Core\Engine.h">
+      <Filter>소스 파일\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Core\Singleton.h">
+      <Filter>소스 파일\Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
