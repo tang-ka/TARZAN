@@ -15,7 +15,7 @@ void CRenderer::Init(HWND hWnd) {
 
 	SetVertexShader(L"Shader.hlsl", "VS", "vs_5_0");
 	SetPixelShader(L"Shader.hlsl", "PS", "ps_5_0");
-	SetRasterzierState();
+	SetRasterzierState(_graphics->GetFillMode());
 	_graphics->GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
@@ -57,9 +57,9 @@ void CRenderer::ResetPixelShader() {
 	SafeRelease(&_vertexShader);
 }
 
-void CRenderer::SetRasterzierState() {
+void CRenderer::SetRasterzierState(D3D11_FILL_MODE fillMode) {
 	_rasterizerState = new CRasterzierState(_graphics->GetDevice());
-	_rasterizerState->Create();
+	_rasterizerState->Create(fillMode);
 	_graphics->GetDeviceContext()->RSSetState(_rasterizerState->Get());
 }
 
