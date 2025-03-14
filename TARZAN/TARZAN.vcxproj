@@ -156,7 +156,6 @@
     <ClCompile Include="Framework\Core\CEngineStatics.cpp" />
     <ClCompile Include="Framework\Core\CRenderer.cpp" />
     <ClCompile Include="Framework\Core\Engine.cpp" />
-    <ClCompile Include="Framework\Core\FName.cpp" />
     <ClCompile Include="Framework\Core\Input.cpp" />
     <ClCompile Include="Framework\Core\Time.cpp" />
     <ClCompile Include="Framework\Core\UActorComponent.cpp" />
@@ -223,7 +222,6 @@
     <ClInclude Include="Framework\Core\Engine.h" />
     <ClInclude Include="Framework\Core\FName.h" />
     <ClInclude Include="Framework\Core\Input.h" />
-    <ClInclude Include="Framework\Core\Singleton.h" />
     <ClInclude Include="Framework\Core\Time.h" />
     <ClInclude Include="Framework\Core\UActorComponent.h" />
     <ClInclude Include="Framework\Core\UArrowComponent.h" />
