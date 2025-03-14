@@ -134,6 +134,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CTextureManager.cpp" />
     <ClCompile Include="DataManager.cpp" />
     <ClCompile Include="Framework\Core\AActor.cpp" />
     <ClCompile Include="Framework\Core\CEngineStatics.cpp" />
@@ -197,6 +198,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CTextureManager.h" />
     <ClInclude Include="DataManager.h" />
     <ClInclude Include="Framework\Core\AActor.h" />
     <ClInclude Include="Framework\Core\CEngineStatics.h" />
