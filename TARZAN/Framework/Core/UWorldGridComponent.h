@@ -20,4 +20,9 @@ public:
     virtual void Render() override;
 
 private:
+
+    int lastPosX;
+    int lastPosZ;
+    int newPosX;
+    int newPosZ;
 };

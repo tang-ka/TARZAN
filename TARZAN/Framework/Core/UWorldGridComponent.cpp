@@ -13,7 +13,9 @@ UWorldGridComponent::UWorldGridComponent()
     CGraphics* graphics = CRenderer::Instance()->GetGraphics();
     _vertexBuffer = new CVertexBuffer<FVertexSimple>(graphics->GetDevice());
     _indexBuffer = new CIndexBuffer(graphics->GetDevice());
-    
+
+    lastPosX = std::floor(CRenderer::Instance()->GetMainCamera()->GetRelativeLocation().x);
+    lastPosZ = std::floor(CRenderer::Instance()->GetMainCamera()->GetRelativeLocation().z);
 }
 
 // 소멸자: 할당한 리소스 해제
@@ -39,7 +41,7 @@ void UWorldGridComponent::GenerateGrid(int gridCount, float unitSize)
 
         // FSimpleVertex 구조를 변경할 필요가 있어보임
         v1.x = x; v1.y = 0.0f; v1.z = -gridCount * unitSize;
-        v2.x = x; v2.y = 0.0f; v2.z = i ? gridCount * unitSize : 0;
+        v2.x = x; v2.y = 0.0f; v2.z = gridCount * unitSize ;
 
         v1.r = gridColor.x; v1.g = gridColor.y; v1.b = gridColor.z; v1.a = gridColor.w;
         v2.r = gridColor.x; v2.g = gridColor.y; v2.b = gridColor.z; v2.a = gridColor.w;
@@ -54,7 +56,7 @@ void UWorldGridComponent::GenerateGrid(int gridCount, float unitSize)
         float z = i * unitSize;
         FVertexSimple v1, v2;
         v1.x = -gridCount * unitSize; v1.y = 0.0f; v1.z = z;
-        v2.x = i ? gridCount * unitSize : 0;  v2.y = 0.0f; v2.z = z;
+        v2.x = gridCount * unitSize;  v2.y = 0.0f; v2.z = z;
 
         // 기본 색상 할당
         v1.r = gridColor.x; v1.g = gridColor.y; v1.b = gridColor.z; v1.a = gridColor.w;
@@ -77,8 +79,28 @@ void UWorldGridComponent::UpdateGrid()
 {
     UCameraComponent* MainCamera = CRenderer::Instance()->GetMainCamera();
 
-    float PosX = MainCamera->GetRelativeLocation().x;
-    float PosZ = MainCamera->GetRelativeLocation().z;
+    newPosX = std::floor(MainCamera->GetRelativeLocation().x);
+    newPosZ = std::floor(MainCamera->GetRelativeLocation().z);
+
+    if (newPosX > lastPosX)
+    {
+        SetRelativeLocation(GetRelativeLocation() + FVector(1.f, 0, 0));
+    }
+    if (newPosX < lastPosX)
+    {
+        SetRelativeLocation(GetRelativeLocation() + FVector(-1.f, 0, 0));
+    }
+    if (newPosZ > lastPosZ)
+    {
+        SetRelativeLocation(GetRelativeLocation() + FVector(0, 0, 1.f));
+    }
+    if (newPosZ < lastPosZ)
+    {
+        SetRelativeLocation(GetRelativeLocation() + FVector(0, 0, -1.f));
+    }
+
+    lastPosX = newPosX;
+    lastPosZ = newPosZ;
 }
 
 void UWorldGridComponent::Render()
@@ -92,7 +114,7 @@ void UWorldGridComponent::Render()
     // 선(Line List) 토폴로지 설정
     UPrimitiveComponent::Render();
 
-    //graphics->GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+    graphics->GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
     // DrawIndexed를 호출하여 grid를 렌더링합니다.
     // 이게 지금 문젠가 Start Base Index Location이 잘못된 거 같기도 하고
