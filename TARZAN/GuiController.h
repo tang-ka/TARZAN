@@ -31,12 +31,13 @@ public:
 	UActorComponent* _selected;
 	SceneManagerView* SceneView;
 
+	int _selectedGridScale;
+
 private:
 	void CreateSceneManagerPanel();
 
 	int GetSelectedGridScale() const { return _selectedGridScale; }
 	// 이게 1값으로 디폴트가 들어가서 그런가
-	int _selectedGridScale;
 	void SetSelectedGridScale(float scale);
 
 private:

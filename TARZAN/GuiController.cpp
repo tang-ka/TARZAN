@@ -261,8 +261,9 @@ void GuiController::RenderEditor() {
 		// 선택된 값에 따라 Grid Scale 업데이트
 		float newScale = gridScaleValues[_selectedGridScale];
 		// ConfigManager의 설정값 업데이트
-		
-		if (world) {
+
+		UWorld* World = UEngine::GetInstance().GetWorld();
+		if (World) {
 			UCameraComponent* cam = CRenderer::Instance()->GetMainCamera();
 			if (cam) {
 				float camX = cam->GetRelativeLocation().x;
