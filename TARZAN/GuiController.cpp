@@ -261,7 +261,8 @@ void GuiController::RenderEditor() {
 				int gridCount = 10;
 
 				// grid를 재생성하면서 새로운 grid scale을 반영
-				UEngine::GetInstance().GetWorldGridComponent()->GenerateGrid(std::floor(camX), std::floor(camZ), gridCount, newScale);
+				//UEngine::GetInstance().GetWorldGridComponent()->GenerateGrid(std::floor(camX), std::floor(camZ), gridCount, newScale);
+				UEngine::GetInstance().GetWorldGridComponent()->GenerateGrid(camX, camZ, gridCount, newScale);
 			}
 		}
 	}

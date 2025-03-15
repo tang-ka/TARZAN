@@ -76,7 +76,7 @@ private:
 /* Maybe should refactoring.. */
 private:
     UGizmoComponent* UGizmo = nullptr;
-    GuiController* Controller = nullptr;
+    GuiController* Controller=nullptr;
     UWorld* World = nullptr;
     UCoordArrowComponent* Arrow = nullptr;
     UWorldGridComponent* WorldGrid = nullptr;

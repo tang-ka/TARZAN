@@ -29,7 +29,8 @@ public:
 	GuiConsole* GetConcolWindow();
 
 	int GetSelectedGridScale() const { return _selectedGridScale; }
-	int _selectedGridScale = 1;
+	// 이게 1값으로 디폴트가 들어가서 그런가
+	int _selectedGridScale;
 	void SetSelectedGridScale(float scale);
 
 private:
