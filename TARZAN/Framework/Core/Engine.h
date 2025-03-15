@@ -7,6 +7,7 @@ class UWorld;
 class GuiController;
 class UCoordArrowComponent;
 class UWorldGridComponent;
+class USceneManager;
 
 enum class EScreenMode
 {
@@ -49,6 +50,8 @@ public:
     /* return: Main Gizmo */
     UGizmoComponent* GetGizmo();
 
+    USceneManager* GetSceneManager();
+
 private:
     bool InitWindow(int32 InScreenWidth, int32 InScreenHeight);
 
@@ -71,9 +74,9 @@ private:
 /* Maybe should refactoring.. */
 private:
     UGizmoComponent* UGizmo = nullptr;
-    UWorld* World = nullptr;
     GuiController* Controller = nullptr;
     UCoordArrowComponent* Arrow = nullptr;
     UWorldGridComponent* WorldGrid = nullptr;
+    USceneManager* SceneManager = nullptr;
 };
 
