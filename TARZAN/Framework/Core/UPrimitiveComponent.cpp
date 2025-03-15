@@ -16,13 +16,17 @@ void UPrimitiveComponent::Render() {
 	uint32 offset = _vertexBuffer->GetOffset();
 	graphics->GetDeviceContext()->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
 	graphics->GetDeviceContext()->IASetIndexBuffer(_indexBuffer->Get(), DXGI_FORMAT_R32_UINT, 0);
+
 	FMatrix m = GetComponentTransform();
 	CRenderer::Instance()->SetTransformToConstantBuffer(m);
 	CRenderer::Instance()->SetFlagsToConstantBuffer({ renderFlags });
+
 	if (indices.size() > 0)
 		graphics->GetDeviceContext()->DrawIndexed(indices.size(), 0, 0);
 	else
 		graphics->GetDeviceContext()->Draw(vertices.size(), 0);
+
+        RenderBoundingBox();
 }
 
 
@@ -139,4 +143,63 @@ int UPrimitiveComponent::CheckRayIntersection(FVector& rayOrigin, FVector& rayDi
 
     *pfNearHitDistance = fNearHitDistance;
     return nIntersections;
+}
+
+void UPrimitiveComponent::UpdateBoundingBox()
+{
+    if (vertices.empty()) return;
+
+    boundingBox = FBoundingBox();
+
+    for (const auto& vertex : vertices)
+    {
+        boundingBox.ExpandToInclude({ vertex.x, vertex.y, vertex.z });
+    }
+
+    CreateBoundingBoxBuffer();
+}
+
+void UPrimitiveComponent::RenderBoundingBox()
+{
+    if (!_boundingBoxVertexBuffer || !_boundingBoxIndexBuffer || !isShowBoundingBox) return;
+
+    ID3D11DeviceContext* context = CRenderer::Instance()->GetGraphics()->GetDeviceContext();
+
+    // 입력 버퍼 설정
+    ID3D11Buffer* vertexBuffer = _boundingBoxVertexBuffer->Get();
+    uint32 stride = sizeof(FVertexSimple);
+    uint32 offset = 0;
+    context->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
+    context->IASetIndexBuffer(_boundingBoxIndexBuffer->Get(), DXGI_FORMAT_R32_UINT, 0);
+
+    // 선(라인)으로 렌더링
+    context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+
+    // Transform 설정 (Bounding Box는 모델 좌표계 그대로)
+    CRenderer::Instance()->SetTransformToConstantBuffer(GetComponentTransform());
+
+    // Bounding Box 그리기
+    context->DrawIndexed(24, 0, 0); // 12개의 선, 24개 인덱스
+}
+
+void UPrimitiveComponent::CreateBoundingBoxBuffer()
+{
+    ID3D11Device* device = CRenderer::Instance()->GetGraphics()->GetDevice();
+
+    // Bounding Box의 Vertex 및 Index 생성
+    TArray<FVertexSimple> vertices = boundingBox.GenerateVertices({ 1.0f, 0.0f, 0.0f, 1.0f }); // 빨간색
+    TArray<uint32> indices = boundingBox.GenerateIndices();
+
+    // Vertex Buffer 생성
+    if (!_boundingBoxVertexBuffer)
+        _boundingBoxVertexBuffer = new CVertexBuffer<FVertexSimple>(device);
+
+    _boundingBoxVertexBuffer->Create(vertices);
+
+    // Index Buffer 생성
+    if (!_boundingBoxIndexBuffer)
+        _boundingBoxIndexBuffer = new CIndexBuffer(device);
+
+    _boundingBoxIndexBuffer->Create(indices);
+    _boundingBoxIndexBuffer->)
 }
