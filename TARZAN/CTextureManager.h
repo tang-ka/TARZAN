@@ -29,11 +29,11 @@ public:
     // 텍스처를 셰이더에 바인딩 (동적으로 적용)
     void BindTexture(const std::wstring& textureName, UINT slot = 0);
 
-    // 모든 텍스처 해제
-    void Cleanup();
-
     // 텍스처를 셰이더에 바인딩하는 함수
     void BindTextureToShader(ID3D11DeviceContext* context, ID3D11ShaderResourceView* textureView, UINT slot);
+
+    // 샘플러 생성 함수 추가
+    void CreateSamplerState(ID3D11Device* device);
 
     // 텍스처의 셰이더 리소스 뷰를 반환하는 함수
     ID3D11ShaderResourceView* GetTextureView(const std::wstring& filePath);
@@ -47,6 +47,7 @@ private:
     // 소멸자
     ~CTextureManager();
 
+    ID3D11SamplerState* SamplerState;
     ID3D11Device* Device;  // DX11 디바이스
     ID3D11DeviceContext* Context;  // DX11 디바이스 컨텍스트
     std::map<std::wstring, ID3D11ShaderResourceView*> m_textureMap;  // 텍스처 파일 경로와 뷰를 매핑

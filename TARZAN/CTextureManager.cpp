@@ -65,14 +65,6 @@ void CTextureManager::BindTexture(const std::wstring& textureName, UINT slot) {
     }
 }
 
-// 싱글턴 객체 해제
-void CTextureManager::Cleanup() {
-    if (s_instance) {
-        delete s_instance;
-        s_instance = nullptr;
-    }
-}
-
 
 ID3D11ShaderResourceView* CTextureManager::GetTextureView(const std::wstring& filePath) {
     auto it = m_textureMap.find(filePath);
@@ -85,5 +77,24 @@ ID3D11ShaderResourceView* CTextureManager::GetTextureView(const std::wstring& fi
 // 셰이더에 텍스처 바인딩 함수
 void CTextureManager::BindTextureToShader(ID3D11DeviceContext* context, ID3D11ShaderResourceView* textureView, UINT slot) {
     context->PSSetShaderResources(slot, 1, &textureView);  // 픽셀 셰이더에 텍스처 바인딩
+    context->PSSetSamplers(0, 1, &SamplerState);
+}
+
+void CTextureManager::CreateSamplerState(ID3D11Device* device)
+{
+    D3D11_SAMPLER_DESC sampDesc = {};
+    sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;  // 선형 필터링
+    sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;  // 래핑 모드
+    sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+    sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+    sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+    sampDesc.MinLOD = 0;
+    sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+    HRESULT hr = device->CreateSamplerState(&sampDesc, &SamplerState);
+    if (FAILED(hr))
+    {
+        printf("Failed to create sampler state\n");
+    }
 }
 

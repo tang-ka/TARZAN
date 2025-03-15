@@ -31,7 +31,19 @@ void UWorld::Render()
     for (auto* comp : actorList)
     {
         auto current = comp;
-        if (current) comp->Render();
+        if (current)
+        {
+            if (current->ObjType == EObjectType::Object)
+            {
+
+            }
+            else if(current->ObjType == EObjectType::Text)
+            {
+
+            }
+
+            comp->Render();
+        }
     }
 }
 

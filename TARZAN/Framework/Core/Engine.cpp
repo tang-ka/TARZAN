@@ -112,6 +112,9 @@ void UEngine::Run()
 			}
 		}
 
+	
+
+
 		Input::Instance()->Frame();
 
 		Controller->NewFrame();

@@ -15,13 +15,15 @@ void CRenderer::Init(HWND hWnd) {
 
 
 	textureManager = CTextureManager::GetInstance(_graphics->GetDevice(), _graphics->GetDeviceContext());
+	textureManager->CreateSamplerState(_graphics->GetDevice());
 	textureManager->LoadSetTexture(_graphics->GetDeviceContext());
+
+	SetRasterzierState(_graphics->GetFillMode());
+	_graphics->GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 
 	SetVertexShader(L"Shader.hlsl", "VS", "vs_5_0");
 	SetPixelShader(L"Shader.hlsl", "PS", "ps_5_0");
-	SetRasterzierState(_graphics->GetFillMode());
-	_graphics->GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
 void CRenderer::SetVertexShader(const FWString filename, FString funcname, FString version) {
