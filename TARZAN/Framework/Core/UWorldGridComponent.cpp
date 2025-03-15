@@ -5,6 +5,9 @@
 #include <d3d11.h>
 #include <cstring>
 
+#include "GuiController.h"
+#include "ConfigManager.h"
+
 // 생성자: 멤버 초기화
 UWorldGridComponent::UWorldGridComponent()
 {
@@ -28,8 +31,18 @@ UWorldGridComponent::~UWorldGridComponent()
 // GenerateGrid: -gridCount부터 gridCount까지 1단위 간격의 grid 선 정점 및 인덱스 생성
 void UWorldGridComponent::GenerateGrid(float posX, float posZ, int gridCount, float unitSize)
 {
+    // 여기에서 하는게 맞을까
+    vertices.clear();
+    indices.clear();
+
+    if (_vertexBuffer->Get())
+        _vertexBuffer->Get()->Release();
+    if (_indexBuffer->Get())
+        _indexBuffer->Get()->Release();
+
     // 색상값
     const FVector4 gridColor = { 0.f, 0.f, 0.f, 1.f };
+    gridScale = unitSize;
 
     // X축(수직선) 그리기: X 좌표가 일정하며 Z가 -gridCount ~ gridCount까지 변화
     for (int i = -gridCount; i <= gridCount; i++)
@@ -70,37 +83,75 @@ void UWorldGridComponent::GenerateGrid(float posX, float posZ, int gridCount, fl
     {
         indices.push_back(i);
     }
-
     _vertexBuffer->Create(vertices);
     _indexBuffer->Create(indices);
 }
 
 void UWorldGridComponent::UpdateGrid()
 {
+    UCameraComponent* mainCam = CRenderer::Instance()->GetMainCamera();
+    float camX = mainCam->GetRelativeLocation().x;
+    float camZ = mainCam->GetRelativeLocation().z;
+
+    // 현재 gridScale의 배수로 새 원점을 계산합니다.
+    float newOriginX = std::floor(camX / gridScale) * gridScale;
+    float newOriginZ = std::floor(camZ / gridScale) * gridScale;
+
+    // 만약 새 원점이 기존 원점과 다르다면, 그리드를 재생성합니다.
+    if (newOriginX != lastPosX || newOriginZ != lastPosZ)
+    {
+        //// 기존 grid 데이터 초기화
+        //vertices.clear();
+        //indices.clear();
+
+        //// 기존 GPU 버퍼 해제
+        //if (_vertexBuffer->Get())
+        //    _vertexBuffer->Get()->Release();
+        //if (_indexBuffer->Get())
+        //    _indexBuffer->Get()->Release();
+
+        // 새 원점 업데이트
+        lastPosX = newOriginX;
+        lastPosZ = newOriginZ;
+
+        // gridCount는 예시로 10, 필요에 따라 조정
+        int gridCount = 10;
+        // 새 원점과 gridScale을 사용해 grid를 재생성합니다.
+        GenerateGrid(lastPosX, lastPosZ, gridCount, gridScale);
+
+        return;
+    }
+
+    // 카메라가 아직 같은 grid cell 내에 있다면, 기존 로직으로 grid 위치를 미세하게 이동시킵니다.
     UCameraComponent* MainCamera = CRenderer::Instance()->GetMainCamera();
+    float cameraX = std::floor(MainCamera->GetRelativeLocation().x);
+    float cameraZ = std::floor(MainCamera->GetRelativeLocation().z);
 
-    newPosX = std::floor(MainCamera->GetRelativeLocation().x);
-    newPosZ = std::floor(MainCamera->GetRelativeLocation().z);
-
-    if (newPosX > lastPosX)
+    FVector offset(0.f, 0.f, 0.f);
+    if (cameraX >= lastPosX + gridScale)
     {
-        SetRelativeLocation(GetRelativeLocation() + FVector(1.f, 0, 0));
+        offset.x = gridScale;
     }
-    if (newPosX < lastPosX)
+    else if (cameraX <= lastPosX - gridScale)
     {
-        SetRelativeLocation(GetRelativeLocation() + FVector(-1.f, 0, 0));
-    }
-    if (newPosZ > lastPosZ)
-    {
-        SetRelativeLocation(GetRelativeLocation() + FVector(0, 0, 1.f));
-    }
-    if (newPosZ < lastPosZ)
-    {
-        SetRelativeLocation(GetRelativeLocation() + FVector(0, 0, -1.f));
+        offset.x = -gridScale;
     }
 
-    lastPosX = newPosX;
-    lastPosZ = newPosZ;
+    if (cameraZ >= lastPosZ + gridScale)
+    {
+        offset.z = gridScale;
+    }
+    else if (cameraZ <= lastPosZ - gridScale)
+    {
+        offset.z = -gridScale;
+    }
+
+    if (offset != FVector())
+    {
+        SetRelativeLocation(GetRelativeLocation() + offset);
+        lastPosX = cameraX;
+        lastPosZ = cameraZ;
+    }
 }
 
 void UWorldGridComponent::Render()
