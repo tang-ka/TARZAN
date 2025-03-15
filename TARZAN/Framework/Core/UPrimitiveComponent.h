@@ -11,6 +11,8 @@ public:
 	TArray<FVertexSimple> vertices;
 	TArray<uint32> indices;
 
+	bool isBill;
+
 	virtual void Render();
 	virtual bool IntersectsRay(const FVector& rayOrigin, const FVector& rayDir, float& dist) { return false; }
 	virtual void GenerateRayForPicking(const FVector& pickPosition, const FMatrix& viewMatrix, FVector* pickRayOrigin, FVector* rayDirection) override;

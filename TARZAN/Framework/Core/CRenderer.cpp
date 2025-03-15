@@ -74,15 +74,19 @@ void CRenderer::SetTransformToConstantBuffer(FMatrix matrix,bool isBill) {
 	//FMatrix view = matrix * _mainCamera->GetRelativeTransform().Inverse();
 	FMatrix view = _mainCamera->View();
 
-
 	FMatrix viewNoRotation = FMatrix::Identity;
-	// View 행렬에서 위치 정보만 추출하여 viewNoRotation에 적용
-	viewNoRotation.m[0][3] = -view.m[0][3];  // X 위치
-	viewNoRotation.m[1][3] = -view.m[1][3];  // Y 위치
-	viewNoRotation.m[2][3] = -view.m[2][3];  // Z 위치
+	if (isBill)
+	{
+		// View 행렬에서 위치 정보만 추출하여 viewNoRotation에 적용
+		viewNoRotation.m[0][3] = -view.m[0][3];  // X 위치
+		viewNoRotation.m[1][3] = -view.m[1][3];  // Y 위치
+		viewNoRotation.m[2][3] = -view.m[2][3];  // Z 위치
+	}
+
+	FMatrix RealView = isBill ? viewNoRotation : view;
 
 	FMatrix projection = _mainCamera->Projection();
-	matrix = matrix * viewNoRotation;
+	matrix = matrix * RealView;
 	matrix = matrix * projection;
 	_matrixBuffer->CopyData(matrix);
 	ID3D11Buffer* constantBuffer = _matrixBuffer->Get();

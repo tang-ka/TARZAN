@@ -5,10 +5,15 @@
 // 생성자: 기본 텍스트는 "Default Text"로 설정
 UTextComponent::UTextComponent()
    
-{
+{   
     ObjType = EObjectType::Text; // 텍스트 UI 타입 설정
     
+    SetRelativeLocationZ(10.0f);
+    SetRelativeLocationX(8.0f);
+
     Text = L"Hello";
+
+    isBill = true;
 
 	float u = 2.0f/16.0f;
 	float v = 5.0f/16.0f;
