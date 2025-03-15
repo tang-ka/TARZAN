@@ -4,7 +4,7 @@
 UCubeComponent::UCubeComponent() {
 
 	ObjType = EObjectType::Object;
-	isBill = true;
+	isBill = false;
 
 
 	vertices = {
