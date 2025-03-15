@@ -15,8 +15,9 @@ class GuiController : public TSingleton<GuiController>
 {
 public:
 	GuiController(){}
-	GuiController(HWND hWnd, CGraphics* graphics);
 	~GuiController();
+
+	void Init(HWND hWnd, CGraphics* graphics);
 
 	void NewFrame();
 	UActorComponent* GetNearestActorComponents(float& distance);

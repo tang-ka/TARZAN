@@ -11,21 +11,20 @@
 #include "ConfigManager.h"
 #include "Framework/Core/UWorldGridComponent.h"
 
+GuiController::~GuiController() {
+	ImGui_ImplDX11_Shutdown();
+	ImGui_ImplWin32_Shutdown();
+	ImGui::DestroyContext();
+}
 
-GuiController::GuiController(HWND hWnd, CGraphics* graphics): hWnd(hWnd) {
+void GuiController::Init(HWND hWnd, CGraphics* graphics)
+{
 	IMGUI_CHECKVERSION();
 	_context = ImGui::CreateContext();
 	_io = &ImGui::GetIO();
 	ImGui_ImplDX11_Init(graphics->GetDevice(), graphics->GetDeviceContext());
 	ImGui_ImplWin32_Init(hWnd);
 	_console = new GuiConsole(this);
-
-}
-
-GuiController::~GuiController() {
-	ImGui_ImplDX11_Shutdown();
-	ImGui_ImplWin32_Shutdown();
-	ImGui::DestroyContext();
 }
 
 void GuiController::NewFrame()
