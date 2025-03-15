@@ -1,10 +1,11 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "Engine.h"
 
 #include "Framework/Core/UGizmoComponent.h"
 #include "Framework/Core/CRenderer.h"
 #include "UWorld.h"
 #include "UWorldGridComponent.h"
+#include "Framework/Core/SceneManager.h"
 #include "ConfigManager.h"
 #include "GuiController.h"
 
@@ -12,7 +13,7 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg
 
 LRESULT UEngine::WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	// ImGuiÀÇ ¸Ş½ÃÁö¸¦ Ã³¸®
+	// ImGuiì˜ ë©”ì‹œì§€ë¥¼ ì²˜ë¦¬
 	if (ImGui_ImplWin32_WndProcHandler(hWnd, message, wParam, lParam))
 	{
 		return true;
@@ -116,19 +117,30 @@ void UEngine::Run()
 
 		Input::Instance()->Frame();
 
-		Controller->NewFrame();
-		Controller->world->Update();
+		Controller->NewFrame(); // GUI ìƒˆ í”„ë ˆì„ ìƒì„±
+		SceneManager->GetWorld()->Update(); // ì›”ë“œ ì•¡í„° ì—…ë°ì´íŠ¸
 
+		/* ì¹´ë©”ë¼ ê´€ë ¨ ì—…ë°ì´íŠ¸ */
 		CRenderer::Instance()->GetMainCamera()->allowKeyboardInput = !Controller->GetConcolWindow()->OnFocusing();
 		CRenderer::Instance()->GetMainCamera()->Update();
 		CRenderer::Instance()->GetMainCamera()->Render();
+
+		/* ë Œë”ë§ ì¤€ë¹„ */
 		CRenderer::Instance()->GetGraphics()->RenderBegin();
 
-		Controller->world->Render();
-		UGizmo->Update();
+		/* ì›”ë“œ ë Œë”ë§ */
+		SceneManager->GetWorld()->Render();
+
+		/* GUI ë Œë”ë§*/
 		Controller->RenderEditor();
+
+		/* ê¸°ì¦ˆëª¨ ì—…ë°ì´íŠ¸*/
+		UGizmo->Update();
 		UGizmo->Render();
+
+		/* ì›”ë“œ Axis ë Œë”ë§*/
 		Arrow->Render();
+		// ë™ì ìœ¼ë¡œ ë³€ê²½í•˜ë ¤ë©´ ì—¬ê¸°ì— ë”°ë¡œ WorldGrid->Updateë¥¼ ì¶”ê°€í•´ì•¼ í•  ê²ƒ ê°™ì€ë°
 		WorldGrid->UpdateGrid();
 		WorldGrid->Render();
 		Controller->RenderFrame();
@@ -154,12 +166,17 @@ GuiController* UEngine::GetGUI()
 
 UWorld* UEngine::GetWorld()
 {
-	return World;
+	return SceneManager->GetWorld();
 }
 
 UGizmoComponent* UEngine::GetGizmo()
 {
 	return UGizmo;
+}
+
+USceneManager* UEngine::GetSceneManager()
+{
+	return SceneManager;
 }
 
 bool UEngine::InitWindow(int32 InScreenWidth, int32 InScreenHeight)
@@ -171,7 +188,7 @@ bool UEngine::InitWindow(int32 InScreenWidth, int32 InScreenHeight)
 	winClass.lpfnWndProc = WinProc;
 	RegisterClass(&winClass);
 
-	// Window Handle »ı¼º
+	// Window Handle ìƒì„±
 	WindowHandle = CreateWindowExW(
 		0, WindowClassName, WindowTitle,
 		WS_POPUP | WS_VISIBLE | WS_OVERLAPPEDWINDOW,
@@ -180,7 +197,7 @@ bool UEngine::InitWindow(int32 InScreenWidth, int32 InScreenHeight)
 		nullptr, nullptr, WindowInstance, nullptr
 	);
 
-	// À©µµ¿ì Æ÷Ä¿½Ì
+	// ìœˆë„ìš° í¬ì»¤ì‹±
 	ShowWindow(WindowHandle, SW_SHOW);
 	SetForegroundWindow(WindowHandle);
 	SetFocus(WindowHandle);
@@ -202,7 +219,7 @@ void UEngine::InitGlobal()
 
 void UEngine::InitEditor()
 {
-	// editor.ini ÆÄÀÏ·ÎºÎÅÍ ¼³Á¤°ªÀ» ·Îµå
+	// editor.ini íŒŒì¼ë¡œë¶€í„° ì„¤ì •ê°’ì„ ë¡œë“œ
 	ConfigManager::GetInstance().LoadConfig();
 	if (ConfigManager::GetInstance().GetEditorConfig().WorldGridScale == 0.1f)
 		GuiController::GetInstance()._selectedGridScale = 0;
@@ -212,30 +229,30 @@ void UEngine::InitEditor()
 		GuiController::GetInstance()._selectedGridScale = 2;
 
 
-	// ImGui¿¡ ¹İ¿µµÉ grid scale °ªÀ» ¾÷µ¥ÀÌÆ®
-	// ¿©±â¼­ ¿Ö °ªÀÌ ¾È¹ÚÈ÷Áö
+	// ImGuiì— ë°˜ì˜ë  grid scale ê°’ì„ ì—…ë°ì´íŠ¸
+	// ì—¬ê¸°ì„œ ì™œ ê°’ì´ ì•ˆë°•íˆì§€
 	//GuiController::GetInstance().SetSelectedGridScale(ConfigManager::GetInstance().GetEditorConfig().WorldGridScale);
 
-	// UWorldGridComponent ¾÷µ¥ÀÌÆ®: ÇöÀç Ä«¸Ş¶ó À§Ä¡¸¦ ±âÁØÀ¸·Î grid¸¦ Àç»ı¼º
-	UWorldGridComponent* grid = GetWorldGridComponent(); // getter ÅëÇØ Á¢±Ù
+	// UWorldGridComponent ì—…ë°ì´íŠ¸: í˜„ì¬ ì¹´ë©”ë¼ ìœ„ì¹˜ë¥¼ ê¸°ì¤€ìœ¼ë¡œ gridë¥¼ ì¬ìƒì„±
+	UWorldGridComponent* grid = GetWorldGridComponent(); // getter í†µí•´ ì ‘ê·¼
 	UCameraComponent* mainCam = CRenderer::Instance()->GetMainCamera();
 	if (grid && mainCam)
 	{
 		float camX = mainCam->GetRelativeLocation().x;
 		float camZ = mainCam->GetRelativeLocation().z;
-		int gridCount = 10; // ¿¹½Ã °ª, ÇÊ¿ä¿¡ µû¶ó Á¶Á¤
+		int gridCount = 10; // ì˜ˆì‹œ ê°’, í•„ìš”ì— ë”°ë¼ ì¡°ì •
 		grid->GenerateGrid(camX, camZ, gridCount, ConfigManager::GetInstance().GetEditorConfig().WorldGridScale);
 	}
 	
 }
 //void UEngine::InitEditor()
 //{
-//	// editor.ini ÆÄÀÏ·ÎºÎÅÍ ¼³Á¤°ªÀ» ·ÎµåÇÕ´Ï´Ù.
+//	// editor.ini íŒŒì¼ë¡œë¶€í„° ì„¤ì •ê°’ì„ ë¡œë“œí•©ë‹ˆë‹¤.
 //	ConfigManager::GetInstance().LoadConfig();
 //	FEditorConfig config = ConfigManager::GetInstance().GetEditorConfig();
 //
-//	// ImGui¿¡ ¹İ¿µµÉ Grid Scale °ªÀ» ¾÷µ¥ÀÌÆ®ÇÕ´Ï´Ù.
-//	// (0.1, 1, 10 Áß ÇÏ³ª¿©¾ß ÇÕ´Ï´Ù. ´Ù¸¥ °ªÀÏ °æ¿ì ±âº»°ª 1À» »ç¿ëÇÕ´Ï´Ù.)
+//	// ImGuiì— ë°˜ì˜ë  Grid Scale ê°’ì„ ì—…ë°ì´íŠ¸í•©ë‹ˆë‹¤.
+//	// (0.1, 1, 10 ì¤‘ í•˜ë‚˜ì—¬ì•¼ í•©ë‹ˆë‹¤. ë‹¤ë¥¸ ê°’ì¼ ê²½ìš° ê¸°ë³¸ê°’ 1ì„ ì‚¬ìš©í•©ë‹ˆë‹¤.)
 //	if (config.WorldGridScale == 0.1f)
 //		GuiController::GetInstance()._selectedGridScale = 0;
 //	else if (config.WorldGridScale == 1.0f)
@@ -245,20 +262,20 @@ void UEngine::InitEditor()
 //	else
 //		GuiController::GetInstance()._selectedGridScale = 1;
 //
-//	// UWorldGridComponent ¾÷µ¥ÀÌÆ®: ÇöÀç Ä«¸Ş¶ó À§Ä¡¸¦ ±âÁØÀ¸·Î grid¸¦ Àç»ı¼ºÇÕ´Ï´Ù.
-//	UWorldGridComponent* grid = GetWorldGridComponent();  // UEngineÀÇ private ¸â¹ö¿¡ Á¢±ÙÇÏ´Â getter
+//	// UWorldGridComponent ì—…ë°ì´íŠ¸: í˜„ì¬ ì¹´ë©”ë¼ ìœ„ì¹˜ë¥¼ ê¸°ì¤€ìœ¼ë¡œ gridë¥¼ ì¬ìƒì„±í•©ë‹ˆë‹¤.
+//	UWorldGridComponent* grid = GetWorldGridComponent();  // UEngineì˜ private ë©¤ë²„ì— ì ‘ê·¼í•˜ëŠ” getter
 //	UCameraComponent* mainCam = CRenderer::Instance()->GetMainCamera();
 //	if (grid && mainCam)
 //	{
 //		float camX = mainCam->GetRelativeLocation().x;
 //		float camZ = mainCam->GetRelativeLocation().z;
-//		int gridCount = 10; // gridCount´Â ¿¹½Ã °ªÀÔ´Ï´Ù. ÇÊ¿ä¿¡ µû¶ó Á¶Á¤ÇÏ¼¼¿ä.
+//		int gridCount = 10; // gridCountëŠ” ì˜ˆì‹œ ê°’ì…ë‹ˆë‹¤. í•„ìš”ì— ë”°ë¼ ì¡°ì •í•˜ì„¸ìš”.
 //
-//		// ¼³Á¤ ÆÄÀÏ¿¡¼­ ÀĞ¾î¿Â WorldGridScale °ªÀ» »ç¿ëÇÏ¿© grid¸¦ »ı¼ºÇÕ´Ï´Ù.
+//		// ì„¤ì • íŒŒì¼ì—ì„œ ì½ì–´ì˜¨ WorldGridScale ê°’ì„ ì‚¬ìš©í•˜ì—¬ gridë¥¼ ìƒì„±í•©ë‹ˆë‹¤.
 //		grid->GenerateGrid(camX, camZ, gridCount, config.WorldGridScale);
 //	}
 //
-//	// (¿É¼Ç) Ä«¸Ş¶óÀÇ ¹Î°¨µµ µî ´Ù¸¥ ¼³Á¤µµ ¾÷µ¥ÀÌÆ® ÇÒ ¼ö ÀÖ½À´Ï´Ù.
+//	// (ì˜µì…˜) ì¹´ë©”ë¼ì˜ ë¯¼ê°ë„ ë“± ë‹¤ë¥¸ ì„¤ì •ë„ ì—…ë°ì´íŠ¸ í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.
 //	// if (mainCam)
 //	// {
 //	//     mainCam->SetCameraSensitivity(config.CameraSens);
@@ -268,15 +285,20 @@ void UEngine::InitEditor()
 
 void UEngine::InitWorld()
 {
+	SceneManager = new USceneManager();
+	SceneManager->Initialize();
+
 	Controller = new GuiController(WindowHandle, CRenderer::Instance()->GetGraphics());
-	Controller->world = new UWorld();
+
+	SceneManagerView* SceneView = new SceneManagerView(SceneManager);
+	Controller->SceneView = SceneView;
 
 	UGizmo = new UGizmoComponent();
 
 	Arrow = new UCoordArrowComponent();
 	Arrow->SetRelativeScale3D({ 50000,50000,50000 });
 
-	// ±Ùµ¥ ÀÌ·¸°Ô ÇÏ´Â°Ô ¸Â³ª ½ÍÀ½. ÀÌ°Å µ¿ÀûÀ¸·Î ¾îÂ÷ÇÇ »ç¿ëÇØ¾ß ÇÏ´Âµ¥, WireFrame ¼³Á¤ÇÏ´Â °÷¿¡¼­ Ãß°¡·Î Grid»çÀÌÁî Á¤ÇÒ±î
+	// ê·¼ë° ì´ë ‡ê²Œ í•˜ëŠ”ê²Œ ë§ë‚˜ ì‹¶ìŒ. ì´ê±° ë™ì ìœ¼ë¡œ ì–´ì°¨í”¼ ì‚¬ìš©í•´ì•¼ í•˜ëŠ”ë°, WireFrame ì„¤ì •í•˜ëŠ” ê³³ì—ì„œ ì¶”ê°€ë¡œ Gridì‚¬ì´ì¦ˆ ì •í• ê¹Œ
 	WorldGrid = new UWorldGridComponent();
 	
 	//WorldGrid->GenerateGrid(

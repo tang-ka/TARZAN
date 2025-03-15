@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "GuiConsole.h"
 #include "UWorld.h"
+#include "Framework/Core/Engine.h"
 
 int GuiConsole::Stricmp(const char* s1, const char* s2) { 
     int d; 
@@ -124,7 +125,7 @@ void GuiConsole::ExecCommand(const char* command_line) {
     FString str(command_line);
     TArray<FString> commands = StrSplit(str);
     if (commands[0] == "spawn") {
-        UWorld* world = _controller->world;
+        UWorld* world = UEngine::GetInstance().GetWorld();
 
         int count;
         if (commands.size() == 1) {

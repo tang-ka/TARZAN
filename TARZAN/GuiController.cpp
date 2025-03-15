@@ -7,6 +7,7 @@
 #include "Framework/Core/UGizmoComponent.h"
 #include "Framework/Core/Engine.h"
 #include "UWorld.h"
+#include "Framework/Core/SceneManager.h"
 #include "ConfigManager.h"
 #include "Framework/Core/UWorldGridComponent.h"
 
@@ -90,24 +91,29 @@ void GuiController::NewFrame()
 
 UActorComponent* GuiController::GetNearestActorComponents(float& distance) {
 	int x, y;
+
+	UWorld* World = UEngine::GetInstance().GetWorld();
+
 	Input::Instance()->GetMouseLocation(x, y);
-	//_selected = 
-	UActorComponent* nearestActor = world->PickingByRay(x, y, distance); //_selected
+	UActorComponent* nearestActor = World->PickingByRay(x, y, distance);
 	return nearestActor;
 }
 
 EPrimitiveColor GuiController::GetNearestGizmo(float& distance)
 {
+	
 	if (!UEngine::GetInstance().GetGizmo()->isGizmoActivated)
 	{
 		distance = FLT_MAX;
 		return EPrimitiveColor::NONE;
 	}
+	UWorld* World = UEngine::GetInstance().GetWorld();
+
 	int x, y;
 	Input::Instance()->GetMouseLocation(x, y);
 	FMatrix viewMatrix = FMatrix::Identity;
 	FVector pickPosition;
-	world->ConvertNDC_VIEW(x, y, pickPosition, viewMatrix);
+	World->ConvertNDC_VIEW(x, y, pickPosition, viewMatrix);
 	float hitDistance[4]{ FLT_MAX,FLT_MAX,FLT_MAX,FLT_MAX };
 	float minDistance = FLT_MAX;
 	EPrimitiveColor pickedAxis = EPrimitiveColor::NONE;
@@ -143,6 +149,11 @@ void GuiController::RenderFrame()
 }
 
 void GuiController::RenderEditor() {
+	UWorld* World = UEngine::GetInstance().GetWorld();
+	USceneManager* SceneManager = UEngine::GetInstance().GetSceneManager();
+
+	CreateSceneManagerPanel();
+
 #pragma region Control Panel
 	float controllWindowWidth = static_cast<float>(SCR_WIDTH) * 0.3f;
 	float controllWindowHeight = static_cast<float>(SCR_HEIGHT) * 0.25f;
@@ -167,7 +178,7 @@ void GuiController::RenderEditor() {
 	ImGui::Separator();
 	/***********************************/
 
-	ImGui::Text("UActorComponent Count: %d", world->GetActorCount());
+	ImGui::Text("UActorComponent Count: %d", World->GetActorCount());
 
 	ImGui::Combo("Primitive", &_selectedPrimitive, primitiveItems, ARRAYSIZE(primitiveItems));
 	if (ImGui::Button("Create"))
@@ -175,13 +186,13 @@ void GuiController::RenderEditor() {
 		for (int i = 0; i < _spawnNumber; i++) {
 			switch (_selectedPrimitive) {
 			case 0:
-				world->SpawnCubeActor();
+				SceneManager->SpawnActor(EPrimitiveType::CUBE);
 				break;
 			case 1:
-				world->SpawnSphereActor();
+				SceneManager->SpawnActor(EPrimitiveType::SPHERE);
 				break;
 			case 2:
-				world->SpawnPlaneActor();
+				SceneManager->SpawnActor(EPrimitiveType::PLANE);
 				break;
 			}
 		}
@@ -196,17 +207,17 @@ void GuiController::RenderEditor() {
 
 	ImGui::InputText("Scene Name", _sceneNameBuffer, ARRAYSIZE(_sceneNameBuffer));
 	if (ImGui::Button("New Scene")) {
-		world->ClearWorld();
+		World->ClearWorld();
 		_selected = nullptr;
 		UPrimitiveComponent* downcast = dynamic_cast<UPrimitiveComponent*>(_selected);
 		if (downcast)
 			downcast->renderFlags &= ~PRIMITIVE_FLAG_SELECTED;
 	}
 	if (ImGui::Button("Save Scene")) {
-		world->SaveWorld(_sceneNameBuffer);
+		World->SaveWorld(_sceneNameBuffer);
 	}
 	if (ImGui::Button("Load Scene")) {
-		world->LoadWorld(_sceneNameBuffer);
+		World->LoadWorld(_sceneNameBuffer);
 		_selected = nullptr;
 		UPrimitiveComponent* downcast = dynamic_cast<UPrimitiveComponent*>(_selected);
 		if (downcast)
@@ -228,13 +239,12 @@ void GuiController::RenderEditor() {
 
 	if (ImGui::Combo("##", &_selectedMode, viewModes, IM_ARRAYSIZE(viewModes)))
 	{
-		// ÏÑ†ÌÉù Î≥ÄÍ≤Ω Ïãú Ïã§ÌñâÌï† ÏΩîÎìú
 		D3D11_FILL_MODE newMode = D3D11_FILL_SOLID;
 		switch (_selectedMode)
 		{
-		case 0: newMode = D3D11_FILL_SOLID; break; // Lit Î™®Îìú Ï≤òÎ¶¨
-		case 1: newMode = D3D11_FILL_SOLID; break; // Unlit Î™®Îìú Ï≤òÎ¶¨
-		case 2: newMode = D3D11_FILL_WIREFRAME; break; // Wireframe Î™®Îìú Ï≤òÎ¶¨
+		case 0: newMode = D3D11_FILL_SOLID; break; // Lit
+		case 1: newMode = D3D11_FILL_SOLID; break; // Unlit
+		case 2: newMode = D3D11_FILL_WIREFRAME; break; // Wireframe
 		}
 
 		CRenderer::Instance()->SetRasterzierState(newMode);
@@ -248,19 +258,19 @@ void GuiController::RenderEditor() {
 	ImGui::SameLine();
 	if (ImGui::Combo("###", &_selectedGridScale, gridScaleItems, IM_ARRAYSIZE(gridScaleItems)))
 	{
-		// ÏÑ†ÌÉùÎêú Í∞íÏóê Îî∞Îùº Grid Scale ÏóÖÎç∞Ïù¥Ìä∏
+		// º±≈√µ» ∞™ø° µ˚∂Û Grid Scale æ˜µ•¿Ã∆Æ
 		float newScale = gridScaleValues[_selectedGridScale];
-		// ConfigManagerÏùò ÏÑ§Ï†ïÍ∞í ÏóÖÎç∞Ïù¥Ìä∏
+		// ConfigManager¿« º≥¡§∞™ æ˜µ•¿Ã∆Æ
 		
 		if (world) {
 			UCameraComponent* cam = CRenderer::Instance()->GetMainCamera();
 			if (cam) {
 				float camX = cam->GetRelativeLocation().x;
 				float camZ = cam->GetRelativeLocation().z;
-				// ÏòàÏãúÎ°ú gridCountÎ•º 10ÏúºÎ°ú ÏÑ§Ï†ï
+				// øπΩ√∑Œ gridCount∏¶ 10¿∏∑Œ º≥¡§
 				int gridCount = 10;
 
-				// gridÎ•º Ïû¨ÏÉùÏÑ±ÌïòÎ©¥ÏÑú ÏÉàÎ°úÏö¥ grid scaleÏùÑ Î∞òÏòÅ
+				// grid∏¶ ¿Áª˝º∫«œ∏Èº≠ ªı∑ŒøÓ grid scale¿ª π›øµ
 				//UEngine::GetInstance().GetWorldGridComponent()->GenerateGrid(std::floor(camX), std::floor(camZ), gridCount, newScale);
 				UEngine::GetInstance().GetWorldGridComponent()->GenerateGrid(camX, camZ, gridCount, newScale);
 			}
@@ -301,7 +311,8 @@ void GuiController::RenderEditor() {
 
 		if ( ImGui::Button("Delete") ) {
 			UEngine::GetInstance().GetGizmo()->Detach();
-			world->RemoveActor(_selected);
+			SceneManager->DeleteActorFromMap(_selected);
+			World->RemoveActor(_selected);
 			_selected = nullptr;
 		}
 	}
@@ -321,9 +332,46 @@ GuiConsole* GuiController::GetConcolWindow()
 	return _console;
 }
 
+void GuiController::CreateSceneManagerPanel()
+{
+	ImGui::SetNextWindowSize(ImVec2(300.f, 300.0f));
+	ImGui::Begin("SceneManager", 0);
+
+	if (ImGui::TreeNode("Primitive"))
+	{
+		SceneView->Update();
+		
+		TMap<uint32, UObject*> Actors = SceneView->GetActors();
+
+		for (const TPair<uint32, UObject*>& Pair : Actors)
+		{
+			FString ActorName = Pair.second->GetName().ToString();
+
+			if (ImGui::Selectable(ActorName.c_str()))
+			{
+				// º±≈√ Ω√ «“ ∞Õ
+
+				if (_selected)
+				{
+					UEngine::GetInstance().GetGizmo()->Detach();
+				}
+
+
+				UEngine::GetInstance().GetGizmo()->AttachTo(dynamic_cast<UPrimitiveComponent*>(Pair.second));
+				UEngine::GetInstance().GetGizmo()->selectedAxis = EPrimitiveColor::NONE;
+				_selected = dynamic_cast<UActorComponent*>(Pair.second);
+			}
+		}
+
+		ImGui::TreePop();
+	}
+
+	ImGui::End();
+}
+
 void GuiController::SetSelectedGridScale(float scale)
 {
-	// grid scale Í∞íÏóê Îî∞Îùº ÏΩ§Î≥¥ Î∞ïÏä§Ïùò ÏÑ†ÌÉù Ïù∏Îç±Ïä§Î•º ÏÑ§Ï†ïÌï©ÎãàÎã§.
+	// grid scale ∞™ø° µ˚∂Û ƒﬁ∫∏ π⁄Ω∫¿« º±≈√ ¿Œµ¶Ω∫∏¶ º≥¡§«’¥œ¥Ÿ.
 	if (scale == 0.1f)
 		_selectedGridScale = 0;
 	else if (scale == 1.0f)
@@ -331,5 +379,5 @@ void GuiController::SetSelectedGridScale(float scale)
 	else if (scale == 10.0f)
 		_selectedGridScale = 2;
 	else
-		_selectedGridScale = 1; // Í∏∞Î≥∏Í∞í
+		_selectedGridScale = 1; // ±‚∫ª∞™
 }

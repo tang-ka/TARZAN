@@ -36,6 +36,8 @@ public:
 	uint32 GetUUID() { return _uuid; }
 	uint32 GetId() { return _internalIndex; }
 
+	FName GetName() { return Name; }
+	void SetName(FString NewName) { Name = NewName; }
 	
 };
 

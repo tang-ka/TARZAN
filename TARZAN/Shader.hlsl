@@ -64,5 +64,5 @@ float4 PS(VS_OUTPUT input) : SV_TARGET
     float4 textureColor = tex.Sample(samplerState, input.TexCoord); // 텍스처 샘플링
     
     // 텍스처 샘플링된 색상과 전달된 색상 혼합
-    return textureColor;// * input.Color; // 텍스처 색상에 기존 색상을 곱함
+    return textureColor * input.Color; // 텍스처 색상에 기존 색상을 곱함
 }

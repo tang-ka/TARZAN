@@ -7,6 +7,7 @@
 enum EPrimitiveColor;
 class CGraphics;
 class UActorComponent;
+class SceneManagerView;
 class UWorld;
 class UWorldGridComponent;
 
@@ -24,9 +25,14 @@ public:
 	void RenderFrame();
 	void RenderEditor();
 	void Resize();
-	UWorld* world;
-	UActorComponent* _selected;
+	
 	GuiConsole* GetConcolWindow();
+	
+	UActorComponent* _selected;
+	SceneManagerView* SceneView;
+
+private:
+	void CreateSceneManagerPanel();
 
 	int GetSelectedGridScale() const { return _selectedGridScale; }
 	// 이게 1값으로 디폴트가 들어가서 그런가
