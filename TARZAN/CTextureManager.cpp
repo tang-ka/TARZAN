@@ -19,21 +19,26 @@ CTextureManager::~CTextureManager() {
 }
 
 // 싱글턴 인스턴스 얻기
-CTextureManager* CTextureManager::GetInstance(ID3D11Device* device, ID3D11DeviceContext* context) {
-    if (s_instance == nullptr) {
-        // 최초 호출 시 인스턴스 생성
-        if (device == nullptr || context == nullptr) {
-            throw std::runtime_error("Device and context must be provided during the first call.");
-        }
-        s_instance = new CTextureManager(device, context);
-    }
+CTextureManager* CTextureManager::GetInstance() {
+
+    assert(s_instance != nullptr);
     return s_instance;
 }
 
-// 텍스처 로드
-void CTextureManager::LoadSetTexture(ID3D11DeviceContext* DeviceContext) {
-    ScratchImage image;
+void CTextureManager::SetDeviceAndContext(ID3D11Device* device, ID3D11DeviceContext* context)
+{
+    if (!s_instance) {
+        if (!device || !context) {
+            throw std::runtime_error("Device and context must be provided when initializing.");
+        }
+        s_instance = new CTextureManager(device, context);
+    }
+}
 
+
+// 텍스처 로드
+void CTextureManager::LoadSetTexture() {
+    ScratchImage image;
 
     for (auto path : TexturePaths)
     {
@@ -49,7 +54,7 @@ void CTextureManager::LoadSetTexture(ID3D11DeviceContext* DeviceContext) {
         if (FAILED(hr)) {
             return;
         }
-
+      
         m_textureMap[path] = textureView;  
     }
 }
@@ -71,7 +76,7 @@ void CTextureManager::BindTextureToShader(EObjectType type)
     Context->PSSetSamplers(0, 1, &SamplerState);
 }
 
-void CTextureManager::CreateSamplerState(ID3D11Device* device)
+void CTextureManager::CreateSamplerState()
 {
     D3D11_SAMPLER_DESC sampDesc = {};
     sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;  // 선형 필터링
@@ -82,7 +87,7 @@ void CTextureManager::CreateSamplerState(ID3D11Device* device)
     sampDesc.MinLOD = 0;
     sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
-    HRESULT hr = device->CreateSamplerState(&sampDesc, &SamplerState);
+    HRESULT hr = Device->CreateSamplerState(&sampDesc, &SamplerState);
     if (FAILED(hr))
     {
         printf("Failed to create sampler state\n");

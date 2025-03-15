@@ -23,16 +23,18 @@ public:
 
     const int NumberOfTexture= sizeof(TexturePaths) / sizeof(TexturePaths[0]);
     // 싱글턴 인스턴스 얻기
-    static CTextureManager* GetInstance(ID3D11Device* device, ID3D11DeviceContext* context);
+    static CTextureManager* GetInstance();
+
+    static void SetDeviceAndContext(ID3D11Device* device, ID3D11DeviceContext* context);
 
     // 텍스처 로드 함수 (DDS 포맷)
-    void LoadSetTexture(ID3D11DeviceContext* DeviceContext);
+    void LoadSetTexture();
 
     // 텍스처를 셰이더에 바인딩하는 함수
     void BindTextureToShader(EObjectType type);
 
     // 샘플러 생성 함수 추가
-    void CreateSamplerState(ID3D11Device* device);
+    void CreateSamplerState();
 
     // 텍스처의 셰이더 리소스 뷰를 반환하는 함수
     ID3D11ShaderResourceView* GetTextureView(const std::wstring& filePath);

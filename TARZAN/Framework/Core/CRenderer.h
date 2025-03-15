@@ -41,7 +41,7 @@ public:
 	void SetFlagsToConstantBuffer(FPrimitiveFlags flags);
 	UCameraComponent* GetMainCamera() const;
 	void SetMainCamera(UCameraComponent* camera);
-	CTextureManager* GetTextureManager();
+
 private:
 	CGraphics* _graphics = nullptr;
 	CVertexShader* _vertexShader = nullptr;
@@ -51,6 +51,6 @@ private:
 	CConstantBuffer<FMatrix>* _matrixBuffer = nullptr;
 	CConstantBuffer<FPrimitiveFlags>* _flagsBuffer = nullptr;
 	UCameraComponent* _mainCamera = nullptr;
-	CTextureManager* textureManager;
+	
 };
 

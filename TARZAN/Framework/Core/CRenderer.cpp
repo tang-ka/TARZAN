@@ -12,11 +12,11 @@ void CRenderer::Init(HWND hWnd) {
 	_matrixBuffer->Create();
 	_flagsBuffer = new CConstantBuffer<FPrimitiveFlags>(_graphics->GetDevice(), _graphics->GetDeviceContext());
 	_flagsBuffer->Create();
+	CTextureManager::SetDeviceAndContext(_graphics->GetDevice(), _graphics->GetDeviceContext());
 
-
-	textureManager = CTextureManager::GetInstance(_graphics->GetDevice(), _graphics->GetDeviceContext());
-	textureManager->CreateSamplerState(_graphics->GetDevice());
-	textureManager->LoadSetTexture(_graphics->GetDeviceContext());
+	
+	CTextureManager::GetInstance()->CreateSamplerState();
+	CTextureManager::GetInstance()->LoadSetTexture();
 
 	SetRasterzierState(_graphics->GetFillMode());
 	_graphics->GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -109,8 +109,4 @@ void CRenderer::SetMainCamera(UCameraComponent* camera)
 	_mainCamera = camera;
 }
 
-CTextureManager* CRenderer::GetTextureManager()
-{
-	return textureManager;
-}
 

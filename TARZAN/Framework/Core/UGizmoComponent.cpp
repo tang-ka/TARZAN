@@ -113,6 +113,9 @@ void UGizmoComponent::Update()
 void UGizmoComponent::Render()
 {
 	if (isGizmoActivated) {
+	
+		CTextureManager::GetInstance()->BindTextureToShader(EObjectType::Object);
+
 		ArrowX->Render();
 		ArrowY->Render();
 		ArrowZ->Render();

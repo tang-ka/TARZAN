@@ -11,8 +11,6 @@ UWorld::UWorld()
     camera->SetRelativeRotation({ -0.8f, 0, 0 });
     CRenderer::Instance()->SetMainCamera(camera);
     SpawnCoordArrowActor();
-
-    TextureManager = CRenderer::Instance()->GetTextureManager();
 }
 
 UWorld::~UWorld()
@@ -36,7 +34,7 @@ void UWorld::Render()
         auto current = comp;
         if (current)
         {
-            TextureManager->BindTextureToShader(comp->ObjType);
+            CTextureManager::GetInstance()->BindTextureToShader(comp->ObjType);
             comp->Render();
         }
     }
