@@ -5,9 +5,11 @@
 #include <wrl/client.h>
 #include <string>
 #include <map>
+#include <EObjectType.h>
 
 using namespace DirectX;
 using namespace Microsoft::WRL;
+
 
 class CTextureManager {
 public:
@@ -26,11 +28,8 @@ public:
     // 텍스처 로드 함수 (DDS 포맷)
     void LoadSetTexture(ID3D11DeviceContext* DeviceContext);
 
-    // 텍스처를 셰이더에 바인딩 (동적으로 적용)
-    void BindTexture(const std::wstring& textureName, UINT slot = 0);
-
     // 텍스처를 셰이더에 바인딩하는 함수
-    void BindTextureToShader(ID3D11DeviceContext* context, ID3D11ShaderResourceView* textureView, UINT slot);
+    void BindTextureToShader(EObjectType type);
 
     // 샘플러 생성 함수 추가
     void CreateSamplerState(ID3D11Device* device);

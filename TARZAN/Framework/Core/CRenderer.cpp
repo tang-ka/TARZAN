@@ -70,11 +70,19 @@ void CRenderer::SetRasterzierState(D3D11_FILL_MODE fillMode = D3D11_FILL_SOLID) 
 	_graphics->GetDeviceContext()->RSSetState(_rasterizerState->Get());
 }
 
-void CRenderer::SetTransformToConstantBuffer(FMatrix matrix) {
+void CRenderer::SetTransformToConstantBuffer(FMatrix matrix,bool isBill) {
 	//FMatrix view = matrix * _mainCamera->GetRelativeTransform().Inverse();
 	FMatrix view = _mainCamera->View();
+
+
+	FMatrix viewNoRotation = FMatrix::Identity;
+	// View 행렬에서 위치 정보만 추출하여 viewNoRotation에 적용
+	viewNoRotation.m[0][3] = -view.m[0][3];  // X 위치
+	viewNoRotation.m[1][3] = -view.m[1][3];  // Y 위치
+	viewNoRotation.m[2][3] = -view.m[2][3];  // Z 위치
+
 	FMatrix projection = _mainCamera->Projection();
-	matrix = matrix * view;
+	matrix = matrix * viewNoRotation;
 	matrix = matrix * projection;
 	_matrixBuffer->CopyData(matrix);
 	ID3D11Buffer* constantBuffer = _matrixBuffer->Get();
@@ -96,3 +104,9 @@ void CRenderer::SetMainCamera(UCameraComponent* camera)
 {
 	_mainCamera = camera;
 }
+
+CTextureManager* CRenderer::GetTextureManager()
+{
+	return textureManager;
+}
+

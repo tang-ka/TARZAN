@@ -117,7 +117,12 @@
     <ClCompile Include="Framework\DirectXWrapper\CState.cpp">
       <Filter>Sources\04. Rendering</Filter>
     </ClCompile>
-    <ClCompile Include="CTextureManager.cpp" />
+    <ClCompile Include="CTextureManager.cpp">
+      <Filter>Sources\11. Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="UTextComponent.cpp">
+      <Filter>Sources\02. Component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -247,8 +252,16 @@
     <ClInclude Include="Framework\DirectXWrapper\CState.h">
       <Filter>Sources\04. Rendering</Filter>
     </ClInclude>
-    <ClInclude Include="CTextureManager.h" />
     <ClInclude Include="Framework\Core\FName.h" />
+    <ClInclude Include="CTextureManager.h">
+      <Filter>Sources\11. Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="EObjectType.h">
+      <Filter>Sources\05. Util</Filter>
+    </ClInclude>
+    <ClInclude Include="UTextComponent.h">
+      <Filter>Sources\02. Component</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Sources">
@@ -303,6 +316,8 @@
     <FxCompile Include="Shader.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
-    <FxCompile Include="FontShader.hlsl" />
+    <FxCompile Include="FontShader.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

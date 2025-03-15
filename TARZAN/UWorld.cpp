@@ -2,6 +2,7 @@
 #include "UWorld.h"
 #include "Framework/Core/Engine.h"
 #include "Framework/Core/UGizmoComponent.h"
+#include <EObjectType.h>
 
 UWorld::UWorld()
 {
@@ -10,6 +11,8 @@ UWorld::UWorld()
     camera->SetRelativeRotation({ -0.8f, 0, 0 });
     CRenderer::Instance()->SetMainCamera(camera);
     SpawnCoordArrowActor();
+
+    TextureManager = CRenderer::Instance()->GetTextureManager();
 }
 
 UWorld::~UWorld()
@@ -33,15 +36,7 @@ void UWorld::Render()
         auto current = comp;
         if (current)
         {
-            if (current->ObjType == EObjectType::Object)
-            {
-
-            }
-            else if(current->ObjType == EObjectType::Text)
-            {
-
-            }
-
+            TextureManager->BindTextureToShader(comp->ObjType);
             comp->Render();
         }
     }
@@ -155,6 +150,11 @@ USphereComponent* UWorld::SpawnSphereActor()
 UPlaneComponent* UWorld::SpawnPlaneActor()
 {
     return SpawnActor<UPlaneComponent>();
+}
+
+UTextComponent* UWorld::SpawnTextActor()
+{
+    return SpawnActor<UTextComponent>();
 }
 
 UCoordArrowComponent* UWorld::SpawnCoordArrowActor()

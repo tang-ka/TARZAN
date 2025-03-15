@@ -203,6 +203,7 @@
     <ClCompile Include="Framework\Core\USphereComponent.cpp" />
     <ClCompile Include="Framework\Core\UDiscComponent.cpp" />
     <ClCompile Include="Framework\Core\UDiscHollowComponent.cpp" />
+    <ClCompile Include="UTextComponent.cpp" />
     <ClCompile Include="UWorld.cpp" />
     <FxCompile Include="FontShader.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
@@ -222,6 +223,7 @@
   <ItemGroup>
     <ClInclude Include="CTextureManager.h" />
     <ClInclude Include="DataManager.h" />
+    <ClInclude Include="EObjectType.h" />
     <ClInclude Include="Framework\Core\AActor.h" />
     <ClInclude Include="Framework\Core\CEngineStatics.h" />
     <ClInclude Include="Framework\Core\CRenderer.h" />
@@ -264,6 +266,7 @@
     <ClInclude Include="Framework\Core\USphereComponent.h" />
     <ClInclude Include="Framework\Core\UDiscComponent.h" />
     <ClInclude Include="Framework\Core\UDiscHollowComponent.h" />
+    <ClInclude Include="UTextComponent.h" />
     <ClInclude Include="UWorld.h" />
   </ItemGroup>
   <ItemGroup>

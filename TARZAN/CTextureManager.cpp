@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "CTextureManager.h"
 
+
 // 싱글턴 인스턴스
 CTextureManager* CTextureManager::s_instance = nullptr;
 
@@ -49,19 +50,7 @@ void CTextureManager::LoadSetTexture(ID3D11DeviceContext* DeviceContext) {
             return;
         }
 
-        m_textureMap[path] = textureView;
-
-     
-       BindTextureToShader(DeviceContext, textureView, slotCount++);  // 0번 슬롯에 텍스처 바인딩
-    }
-}
-
-// 텍스처 바인딩 (동적으로 적용)
-void CTextureManager::BindTexture(const std::wstring& textureName, UINT slot) {
-    auto it = m_textureMap.find(textureName);
-    if (it != m_textureMap.end()) {
-        // 셰이더에 텍스처를 바인딩
-        Context->PSSetShaderResources(slot, 1, &it->second);
+        m_textureMap[path] = textureView;  
     }
 }
 
@@ -75,9 +64,11 @@ ID3D11ShaderResourceView* CTextureManager::GetTextureView(const std::wstring& fi
 }
 
 // 셰이더에 텍스처 바인딩 함수
-void CTextureManager::BindTextureToShader(ID3D11DeviceContext* context, ID3D11ShaderResourceView* textureView, UINT slot) {
-    context->PSSetShaderResources(slot, 1, &textureView);  // 픽셀 셰이더에 텍스처 바인딩
-    context->PSSetSamplers(0, 1, &SamplerState);
+void CTextureManager::BindTextureToShader(EObjectType type)
+{
+    std::wstring path = TexturePaths[(int)type];
+    Context->PSSetShaderResources(0, 1, &m_textureMap[path]);  // 픽셀 셰이더에 텍스처 바인딩
+    Context->PSSetSamplers(0, 1, &SamplerState);
 }
 
 void CTextureManager::CreateSamplerState(ID3D11Device* device)
@@ -97,4 +88,7 @@ void CTextureManager::CreateSamplerState(ID3D11Device* device)
         printf("Failed to create sampler state\n");
     }
 }
+
+
+
 
