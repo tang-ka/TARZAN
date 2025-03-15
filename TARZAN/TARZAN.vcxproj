@@ -152,6 +152,7 @@
   <ItemGroup>
     <ClCompile Include="CTextureManager.cpp" />
     <ClCompile Include="DataManager.cpp" />
+    <ClCompile Include="ConfigManager.cpp" />
     <ClCompile Include="Framework\Core\AActor.cpp" />
     <ClCompile Include="Framework\Core\CEngineStatics.cpp" />
     <ClCompile Include="Framework\Core\CRenderer.cpp" />
@@ -216,6 +217,7 @@
   <ItemGroup>
     <ClInclude Include="CTextureManager.h" />
     <ClInclude Include="DataManager.h" />
+    <ClInclude Include="ConfigManager.h" />
     <ClInclude Include="Framework\Core\AActor.h" />
     <ClInclude Include="Framework\Core\CEngineStatics.h" />
     <ClInclude Include="Framework\Core\CRenderer.h" />

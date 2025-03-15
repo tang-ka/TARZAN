@@ -7,6 +7,8 @@
 #include "Framework/Core/UGizmoComponent.h"
 #include "Framework/Core/Engine.h"
 #include "UWorld.h"
+#include "ConfigManager.h"
+#include "Framework/Core/UWorldGridComponent.h"
 
 
 GuiController::GuiController(HWND hWnd, CGraphics* graphics): hWnd(hWnd) {
@@ -16,6 +18,7 @@ GuiController::GuiController(HWND hWnd, CGraphics* graphics): hWnd(hWnd) {
 	ImGui_ImplDX11_Init(graphics->GetDevice(), graphics->GetDeviceContext());
 	ImGui_ImplWin32_Init(hWnd);
 	_console = new GuiConsole(this);
+
 }
 
 GuiController::~GuiController() {
@@ -237,6 +240,31 @@ void GuiController::RenderEditor() {
 		CRenderer::Instance()->SetRasterzierState(newMode);
 	}
 
+	ImGui::Separator();
+	/***********************************/
+	const char* gridScaleItems[] = { "0.1","1", "10" };
+	const float gridScaleValues[3] = { 0.1f,1.0f, 10.0f };
+	ImGui::Text("Grid Scale");
+	ImGui::SameLine();
+	if (ImGui::Combo("###", &_selectedGridScale, gridScaleItems, IM_ARRAYSIZE(gridScaleItems)))
+	{
+		// 선택된 값에 따라 Grid Scale 업데이트
+		float newScale = gridScaleValues[_selectedGridScale];
+		// ConfigManager의 설정값 업데이트
+		
+		if (world) {
+			UCameraComponent* cam = CRenderer::Instance()->GetMainCamera();
+			if (cam) {
+				float camX = cam->GetRelativeLocation().x;
+				float camZ = cam->GetRelativeLocation().z;
+				// 예시로 gridCount를 10으로 설정
+				int gridCount = 10;
+
+				// grid를 재생성하면서 새로운 grid scale을 반영
+				UEngine::GetInstance().GetWorldGridComponent()->GenerateGrid(std::floor(camX), std::floor(camZ), gridCount, newScale);
+			}
+		}
+	}
 	ImGui::End();
 #pragma endregion
 
@@ -290,4 +318,17 @@ void GuiController::Resize()
 GuiConsole* GuiController::GetConcolWindow()
 {
 	return _console;
+}
+
+void GuiController::SetSelectedGridScale(float scale)
+{
+	// grid scale 값에 따라 콤보 박스의 선택 인덱스를 설정합니다.
+	if (scale == 0.1f)
+		_selectedGridScale = 0;
+	else if (scale == 1.0f)
+		_selectedGridScale = 1;
+	else if (scale == 10.0f)
+		_selectedGridScale = 2;
+	else
+		_selectedGridScale = 1; // 기본값
 }

@@ -49,10 +49,15 @@ public:
     /* return: Main Gizmo */
     UGizmoComponent* GetGizmo();
 
+    UWorldGridComponent* GetWorldGridComponent() const { return WorldGrid; }
+
 private:
     bool InitWindow(int32 InScreenWidth, int32 InScreenHeight);
 
     void InitGlobal();
+
+    // test
+    void InitEditor();
 
     void InitWorld();
 
@@ -71,8 +76,8 @@ private:
 /* Maybe should refactoring.. */
 private:
     UGizmoComponent* UGizmo = nullptr;
-    UWorld* World = nullptr;
     GuiController* Controller = nullptr;
+    UWorld* World = nullptr;
     UCoordArrowComponent* Arrow = nullptr;
     UWorldGridComponent* WorldGrid = nullptr;
 };
