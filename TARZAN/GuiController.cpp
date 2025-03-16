@@ -201,7 +201,7 @@ void GuiController::RenderEditor() {
 				SceneManager->SpawnActor(EPrimitiveType::PLANE);
 				break;
 			case 3:
-				world->SpawnTextActor();
+				SceneManager->SpawnActor(EPrimitiveType::TEXT);
 				break;
 			}
 		}

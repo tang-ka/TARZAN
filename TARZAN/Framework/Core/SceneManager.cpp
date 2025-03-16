@@ -43,6 +43,11 @@ void USceneManager::SpawnActor(EPrimitiveType PrimitiveType)
 			SpawnActor = PrimaryWorld->SpawnPlaneActor();
 			break;
 		}
+		case TEXT:
+		{
+			SpawnActor = PrimaryWorld->SpawnTextActor();
+			break;
+		}
 		default:
 		{
 			SpawnActor = nullptr;
@@ -63,26 +68,31 @@ void USceneManager::SpawnActor(FString Name, EPrimitiveType PrimitiveType)
 
 	switch (PrimitiveType)
 	{
-	case CUBE:
-	{
-		SpawnActor = PrimaryWorld->SpawnCubeActor();
-		break;
-	}
-	case SPHERE:
-	{
-		SpawnActor = PrimaryWorld->SpawnSphereActor();
-		break;
-	}
-	case PLANE:
-	{
-		SpawnActor = PrimaryWorld->SpawnPlaneActor();
-		break;
-	}
-	default:
-	{
-		SpawnActor = nullptr;
-		break;
-	}
+		case CUBE:
+		{
+			SpawnActor = PrimaryWorld->SpawnCubeActor();
+			break;
+		}
+		case SPHERE:
+		{
+			SpawnActor = PrimaryWorld->SpawnSphereActor();
+			break;
+		}
+		case PLANE:
+		{
+			SpawnActor = PrimaryWorld->SpawnPlaneActor();
+			break;
+		}
+		case TEXT:
+		{
+			SpawnActor = PrimaryWorld->SpawnTextActor();
+			break;
+		}
+		default:
+		{
+			SpawnActor = nullptr;
+			break;
+		}
 	}
 
 	if (SpawnActor)
@@ -143,6 +153,8 @@ FString USceneManager::GetPrimitiveTypeString(EPrimitiveType PrimitiveType)
 			return FString("Sphere");
 		case PLANE:
 			return FString("Plane");
+		case TEXT:
+			return FString("Text");
 		default:
 			return FString("NAME_NONE");
 	}
