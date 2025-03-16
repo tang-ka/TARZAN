@@ -39,8 +39,8 @@ void ConfigManager::LoadConfig()
     std::wstring scaleStr = GetValue(L"EditorConfig", L"WorldGridScale", L"1");
     ConfigManager::GetInstance()._editorConfig.WorldGridScale = static_cast<float>(_wtof(scaleStr.c_str()));
 
-    std::wstring sensStr = GetValue(L"EditorConfig", L"CameraSens", L"1");
-    ConfigManager::GetInstance()._editorConfig.CameraSens = static_cast<float>(_wtof(sensStr.c_str()));
+    std::wstring sensStr = GetValue(L"EditorConfig", L"CameraSpeed", L"1");
+    ConfigManager::GetInstance()._editorConfig.CameraSpeed = static_cast<float>(_wtof(sensStr.c_str()));
 }
 
 void ConfigManager::SaveConfig() const
@@ -50,17 +50,19 @@ void ConfigManager::SaveConfig() const
 
     SetValue(L"EditorConfig", L"bIsOrthgonal", ConfigManager::GetInstance()._editorConfig.bIsOrthogonal ? L"true" : L"false");
     SetValue(L"EditorConfig", L"WorldGridScale", std::to_wstring(ConfigManager::GetInstance()._editorConfig.WorldGridScale));
-    SetValue(L"EditorConfig", L"CameraSens", std::to_wstring(ConfigManager::GetInstance()._editorConfig.CameraSens));
+    SetValue(L"EditorConfig", L"CameraSpeed", std::to_wstring(ConfigManager::GetInstance()._editorConfig.CameraSpeed));
 }
 
 void ConfigManager::Shutdown()
 {
     // 예를 들어, UEngine이 WorldGridComponent를 private 멤버로 가지고 있고, public getter가 있다면:
     UWorldGridComponent* grid = UEngine::GetInstance().GetWorldGridComponent();
-    if (grid)
+    UCameraComponent* camera= CRenderer::Instance()->GetMainCamera();
+    if (grid && camera)
     {
         // ConfigManager의 설정값을 현재 grid의 값으로 업데이트
         ConfigManager::GetInstance()._editorConfig.WorldGridScale = grid->GetGridScale();
+        ConfigManager::GetInstance()._editorConfig.CameraSpeed = camera->CameraSpeed;
     }
 
     // 그 외의 shutdown 작업

@@ -51,5 +51,6 @@ private:
 	char _sceneNameBuffer[256] = "";
 	int _selectedPrimitive = 0, _spawnNumber = 1;
 	int _selectedMode = 0;
+	int _selectedCameraSpeed = 0;
 };
 

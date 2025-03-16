@@ -233,10 +233,10 @@ void GuiController::RenderEditor() {
 	ImGui::Separator();
 	/***********************************/
 
-	ImGui::Text("ViewMode");
+	ImGui::Text("View Mode");
 	ImGui::SameLine();
 
-	if (ImGui::Combo("##", &_selectedMode, viewModes, IM_ARRAYSIZE(viewModes)))
+	if (ImGui::Combo("##ViewMode", &_selectedMode, viewModes, IM_ARRAYSIZE(viewModes)))
 	{
 		D3D11_FILL_MODE newMode = D3D11_FILL_SOLID;
 		switch (_selectedMode)
@@ -255,7 +255,7 @@ void GuiController::RenderEditor() {
 	const float gridScaleValues[3] = { 0.1f,1.0f, 10.0f };
 	ImGui::Text("Grid Scale");
 	ImGui::SameLine();
-	if (ImGui::Combo("###", &_selectedGridScale, gridScaleItems, IM_ARRAYSIZE(gridScaleItems)))
+	if (ImGui::Combo("##GridScale", &_selectedGridScale, gridScaleItems, IM_ARRAYSIZE(gridScaleItems)))
 	{
 		// 선택된 값에 따라 Grid Scale 업데이트
 		float newScale = gridScaleValues[_selectedGridScale];
@@ -276,6 +276,24 @@ void GuiController::RenderEditor() {
 			}
 		}
 	}
+	ImGui::Separator();
+	/***********************************/
+	const char* cameraSpeedItems[] = { "1","2", "5", "10"};
+	const float cameraSpeedValues[4] = { 1.f,2.f, 5.f, 10.f };
+	ImGui::Text("Camera Speed");
+	ImGui::SameLine();
+	if (ImGui::Combo("##CameraSpeed", &_selectedCameraSpeed, cameraSpeedItems, IM_ARRAYSIZE(cameraSpeedItems)))
+	{
+		UWorld* World = UEngine::GetInstance().GetWorld();
+		if (World) {
+			UCameraComponent* cam = CRenderer::Instance()->GetMainCamera();
+			if (cam)
+			{
+				float newSpeed = cameraSpeedValues[_selectedCameraSpeed];
+				cam->CameraSpeed = newSpeed;
+			}
+		}
+	}
 	ImGui::End();
 #pragma endregion
 
@@ -292,7 +310,6 @@ void GuiController::RenderEditor() {
 		downcast = dynamic_cast<USceneComponent*>(_selected);
 	if (downcast != nullptr) {
 		ImGui::Text("UUID: %d", _selected->GetUUID());
-
 
 		FVector vec = downcast->GetRelativeLocation();
 		float downcastLocation[3] = { vec.x, vec.y, vec.z };
