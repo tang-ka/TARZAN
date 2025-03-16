@@ -100,3 +100,9 @@ void CRenderer::SetMainCamera(UCameraComponent* camera)
 {
 	_mainCamera = camera;
 }
+
+void CRenderer::SetDepthStencil(ID3D11DepthStencilState* pDSState)
+{
+	// Bind OMSetDepthStencilState ( Default Stencil Ref Value : 1 )
+	_graphics->GetDeviceContext()->OMSetDepthStencilState(pDSState, 1);
+}

@@ -21,7 +21,7 @@ private:
 	// picking
 	bool picked = false;
 	EPrimitiveColor color;
-	//static ID3D11DepthStencilState* noDepthWriteState;
-	//static ID3D11DepthStencilState* previousWriteState;
+	
+	CBlendState* ArrowBlendState;
 };
 
