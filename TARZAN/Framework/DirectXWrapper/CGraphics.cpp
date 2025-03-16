@@ -96,6 +96,12 @@ void CGraphics::SetFillMode(D3D11_FILL_MODE fillMode)
 	_fillMode = fillMode;
 }
 
+void CGraphics::ClearDepthStencilView()
+{
+	// Stencil Buffer to 0;
+	_deviceContext->ClearDepthStencilView(depthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+}
+
 
 
 void CGraphics::CreateDeviceAndSwapChain() {
@@ -174,7 +180,7 @@ void CGraphics::CreateDepthStencilBuffer()
 	descDepth.SampleDesc.Count = 1;
 	descDepth.SampleDesc.Quality = 0;
 	descDepth.Usage = D3D11_USAGE_DEFAULT;
-	descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL; // Depth Stencil Flag
 	descDepth.CPUAccessFlags = 0;
 	descDepth.MiscFlags = 0;
 	hr = _device->CreateTexture2D(&descDepth, nullptr, &depthStencilBuffer);

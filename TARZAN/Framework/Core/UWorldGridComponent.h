@@ -16,13 +16,13 @@ public:
 
     void UpdateGrid();
 
+    float GetGridScale() const { return gridScale; }
+
     // UPrimitiveComponent에서 상속받은 Render 함수 오버라이드
     virtual void Render() override;
 
 private:
-
-    int lastPosX;
-    int lastPosZ;
-    int newPosX;
-    int newPosZ;
+    int lastPosX = 0;
+    int lastPosZ = 0;
+    float gridScale;
 };

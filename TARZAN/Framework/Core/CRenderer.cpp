@@ -77,10 +77,10 @@ void CRenderer::SetTransformToConstantBuffer(FMatrix matrix,bool isBill) {
 	FMatrix viewNoRotation = FMatrix::Identity;
 	if (isBill)
 	{
-		// View Çà·Ä¿¡¼­ À§Ä¡ Á¤º¸¸¸ ÃßÃâÇÏ¿© viewNoRotation¿¡ Àû¿ë
-		viewNoRotation.m[0][3] = -view.m[0][3];  // X À§Ä¡
-		viewNoRotation.m[1][3] = -view.m[1][3];  // Y À§Ä¡
-		viewNoRotation.m[2][3] = -view.m[2][3];  // Z À§Ä¡
+		// View í–‰ë ¬ì—ì„œ ìœ„ì¹˜ ì •ë³´ë§Œ ì¶”ì¶œí•˜ì—¬ viewNoRotationì— ì ìš©
+		viewNoRotation.m[0][3] = -view.m[0][3];  // X ìœ„ì¹˜
+		viewNoRotation.m[1][3] = -view.m[1][3];  // Y ìœ„ì¹˜
+		viewNoRotation.m[2][3] = -view.m[2][3];  // Z ìœ„ì¹˜
 	}
 
 	FMatrix RealView = isBill ? viewNoRotation : view;
@@ -109,4 +109,10 @@ void CRenderer::SetMainCamera(UCameraComponent* camera)
 	_mainCamera = camera;
 }
 
+
+void CRenderer::SetDepthStencil(ID3D11DepthStencilState* pDSState)
+{
+	// Bind OMSetDepthStencilState ( Default Stencil Ref Value : 1 )
+	_graphics->GetDeviceContext()->OMSetDepthStencilState(pDSState, 1);
+}
 

@@ -6,7 +6,7 @@
 
 class UPrimitiveComponent: public USceneComponent {
 public:
-	UPrimitiveComponent(): renderFlags(0) {}
+	UPrimitiveComponent(): renderFlags(0), StencilRefNum(1) {}
 	virtual ~UPrimitiveComponent();
 	TArray<FVertexSimple> vertices;
 	TArray<uint32> indices;
@@ -21,7 +21,11 @@ public:
 
 	virtual int CheckRayIntersection(FVector& rayOrigin, FVector& rayDirection, float* pfNearHitDistance);
 	uint32 renderFlags;
+	uint32 StencilRefNum;
 protected:
 	CVertexBuffer<FVertexSimple>* _vertexBuffer = nullptr;
 	CIndexBuffer* _indexBuffer = nullptr;
+
+	CDepthStencilState* DepthStencilState = nullptr;
+	CBlendState* BlendState = nullptr;
 };
