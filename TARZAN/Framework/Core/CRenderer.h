@@ -42,6 +42,8 @@ public:
 	UCameraComponent* GetMainCamera() const;
 	void SetMainCamera(UCameraComponent* camera);
 
+	void SetDepthStencil(ID3D11DepthStencilState* pDSState);
+
 private:
 	CGraphics* _graphics = nullptr;
 	CVertexShader* _vertexShader = nullptr;
