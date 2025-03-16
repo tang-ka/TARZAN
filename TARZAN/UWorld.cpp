@@ -2,6 +2,7 @@
 #include "UWorld.h"
 #include "Framework/Core/Engine.h"
 #include "Framework/Core/UGizmoComponent.h"
+#include <EObjectType.h>
 
 UWorld::UWorld()
 {
@@ -31,7 +32,11 @@ void UWorld::Render()
     for (auto* comp : actorList)
     {
         auto current = comp;
-        if (current) comp->Render();
+        if (current)
+        {
+            CTextureManager::GetInstance()->BindTextureToShader(comp->ObjType);
+            comp->Render();
+        }
     }
 }
 
@@ -143,6 +148,11 @@ USphereComponent* UWorld::SpawnSphereActor()
 UPlaneComponent* UWorld::SpawnPlaneActor()
 {
     return SpawnActor<UPlaneComponent>();
+}
+
+UTextComponent* UWorld::SpawnTextActor()
+{
+    return SpawnActor<UTextComponent>();
 }
 
 UCoordArrowComponent* UWorld::SpawnCoordArrowActor()

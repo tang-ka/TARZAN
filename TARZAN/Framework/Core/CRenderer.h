@@ -37,7 +37,7 @@ public:
 	void SetPixelShader(const FWString filename, FString funcname, FString version);
 	void ResetPixelShader();
 	void SetRasterzierState(D3D11_FILL_MODE fillMode);
-	void SetTransformToConstantBuffer(FMatrix matrix);
+	void SetTransformToConstantBuffer(FMatrix matrix, bool isBill=false);
 	void SetFlagsToConstantBuffer(FPrimitiveFlags flags);
 	UCameraComponent* GetMainCamera() const;
 	void SetMainCamera(UCameraComponent* camera);
@@ -53,8 +53,6 @@ private:
 	CConstantBuffer<FMatrix>* _matrixBuffer = nullptr;
 	CConstantBuffer<FPrimitiveFlags>* _flagsBuffer = nullptr;
 	UCameraComponent* _mainCamera = nullptr;
-
-	CTextureManager* textureManager;
-
+	
 };
 

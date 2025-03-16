@@ -170,7 +170,7 @@ void GuiController::RenderEditor() {
 
 	ImGui::SetNextWindowSizeConstraints(ImVec2(300.0f, 0.0f), ImVec2(300.0f, FLT_MAX));
 
-	const char* primitiveItems[] = { "Cube", "Sphere", "Plane" };
+	const char* primitiveItems[] = { "Cube", "Sphere", "Plane","Text"};
 	const char* viewModes[] = { "Lit", "Unlit", "Wireframe" };
 
 	D3D11_FILL_MODE currentFillMode = CRenderer::Instance()->GetGraphics()->GetFillMode();
@@ -199,6 +199,9 @@ void GuiController::RenderEditor() {
 				break;
 			case 2:
 				SceneManager->SpawnActor(EPrimitiveType::PLANE);
+				break;
+			case 3:
+				world->SpawnTextActor();
 				break;
 			}
 		}

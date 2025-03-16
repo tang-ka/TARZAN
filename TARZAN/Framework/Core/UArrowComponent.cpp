@@ -12,6 +12,7 @@ UArrowComponent::UArrowComponent(EPrimitiveColor axis) : UPrimitiveComponent(), 
 	std::ifstream objFile(filepath.c_str());
 	FVector color = AxisColors[axis];
 
+	ObjType = EObjectType::Object;
 
 	if (objFile) {
 

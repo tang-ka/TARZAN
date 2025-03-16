@@ -34,7 +34,7 @@ void UPrimitiveComponent::Render() {
 	graphics->GetDeviceContext()->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
 	graphics->GetDeviceContext()->IASetIndexBuffer(_indexBuffer->Get(), DXGI_FORMAT_R32_UINT, 0);
 	FMatrix m = GetComponentTransform();
-	CRenderer::Instance()->SetTransformToConstantBuffer(m);
+	CRenderer::Instance()->SetTransformToConstantBuffer(m,isBill);
 	CRenderer::Instance()->SetFlagsToConstantBuffer({ renderFlags });
 	if (indices.size() > 0)
 		graphics->GetDeviceContext()->DrawIndexed(indices.size(), 0, 0);
