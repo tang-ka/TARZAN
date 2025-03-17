@@ -14,6 +14,7 @@ void CRenderer::Init(HWND hWnd) {
     _flagsBuffer = std::make_unique<CConstantBuffer<FPrimitiveFlags>>(_graphics->GetDevice(), _graphics->GetDeviceContext());
     _flagsBuffer->Create();
 
+    CTextureManager::SetDeviceAndContext(_graphics->GetDevice(), _graphics->GetDeviceContext());
 	
 	CTextureManager::GetInstance()->CreateSamplerState();
 	CTextureManager::GetInstance()->LoadSetTexture();

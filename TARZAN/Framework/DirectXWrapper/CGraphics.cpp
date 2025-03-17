@@ -107,7 +107,7 @@ void CGraphics::SetFillMode(D3D11_FILL_MODE fillMode) {
 void CGraphics::ClearDepthStencilView()
 {
 	// Stencil Buffer to 0;
-	_deviceContext->ClearDepthStencilView(depthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+	_deviceContext->ClearDepthStencilView(depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 }
 
 
