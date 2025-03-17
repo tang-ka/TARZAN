@@ -4,7 +4,7 @@
 CRenderer* CRenderer::_instance = nullptr;
 
 CRenderer::CRenderer() {
-    // ÃÊ±âÈ­´Â Init()¿¡¼­ ÁøÇàÇÕ´Ï´Ù.
+    // ï¿½Ê±ï¿½È­ï¿½ï¿½ Init()ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½.
 }
 
 void CRenderer::Init(HWND hWnd) {
@@ -24,7 +24,7 @@ void CRenderer::Init(HWND hWnd) {
     SetRasterzierState(_graphics->GetFillMode());
     _graphics->GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-    // ÅØ½ºÃ³ ¹ÙÀÎµù
+    // ï¿½Ø½ï¿½Ã³ ï¿½ï¿½ï¿½Îµï¿½
     ID3D11ShaderResourceView* textureView = textureManager->GetTextureView(texturePath1);
     textureManager->BindTextureToShader(_graphics->GetDeviceContext(), textureView, 0);
 }
@@ -73,6 +73,7 @@ void CRenderer::SetRasterzierState(D3D11_FILL_MODE fillMode) {
     _graphics->GetDeviceContext()->RSSetState(_rasterizerState->Get());
 }
 
+
 void CRenderer::SetTransformToConstantBuffer(FMatrix matrix) {
     FMatrix view = _mainCamera->View();
     FMatrix projection = _mainCamera->Projection();
@@ -95,3 +96,11 @@ UCameraComponent* CRenderer::GetMainCamera() const {
 void CRenderer::SetMainCamera(UCameraComponent* camera) {
     _mainCamera = camera;
 }
+
+
+void CRenderer::SetDepthStencil(ID3D11DepthStencilState* pDSState)
+{
+	// Bind OMSetDepthStencilState ( Default Stencil Ref Value : 1 )
+	_graphics->GetDeviceContext()->OMSetDepthStencilState(pDSState, 1);
+}
+

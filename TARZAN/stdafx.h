@@ -96,5 +96,6 @@ enum EPrimitiveType
 {
 	CUBE,
 	SPHERE,
-	PLANE
+	PLANE,
+	TEXT
 };

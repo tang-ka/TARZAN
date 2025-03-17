@@ -6,6 +6,22 @@ UPrimitiveComponent::~UPrimitiveComponent() {}
 
 void UPrimitiveComponent::Render() {
     CGraphics* graphics = CRenderer::Instance()->GetGraphics();
+  
+    /* Depth Stencil DESC */
+    {
+        if (DepthStencilState == nullptr)
+        {
+            DepthStencilState = new CDepthStencilState(graphics->GetDevice());
+            DepthStencilState->SetDepthFlags(TRUE, D3D11_DEPTH_WRITE_MASK_ALL, D3D11_COMPARISON_LESS);
+            DepthStencilState->SetStencilFlags(TRUE, 0xFF, 0xFF);
+            DepthStencilState->SetFrontFaceFlags(D3D11_COMPARISON_ALWAYS, D3D11_STENCIL_OP_REPLACE, D3D11_STENCIL_OP_KEEP, D3D11_STENCIL_OP_KEEP);
+            DepthStencilState->Create();
+
+        }
+
+        CRenderer::Instance()->SetDepthStencil(DepthStencilState->Get());
+    }
+
     ID3D11Buffer* vertexBuffer = _vertexBuffer->Get();
     uint32 stride = _vertexBuffer->GetStride();
     uint32 offset = _vertexBuffer->GetOffset();
@@ -26,11 +42,11 @@ void UPrimitiveComponent::GenerateRayForPicking(const FVector& pickPosition, con
 	FMatrix xmf4x4WorldView = GetComponentTransform() * viewMatrix;
 	FMatrix xmf4x4Inverse = xmf4x4WorldView.Inverse();
 	FVector xmf3CameraOrigin(0.0f, 0.0f, 0.0f);
-	//Ä«¸Ş¶ó ÁÂÇ¥°èÀÇ ¿øÁ¡À» ¸ğµ¨ ÁÂÇ¥°è·Î º¯È¯ÇÑ´Ù. 
+	//ì¹´ë©”ë¼ ì¢Œí‘œê³„ì˜ ì›ì ì„ ëª¨ë¸ ì¢Œí‘œê³„ë¡œ ë³€í™˜í•œë‹¤. 
 	*pickRayOrigin = xmf4x4Inverse.TransformCoord(xmf3CameraOrigin);
-	//Ä«¸Ş¶ó ÁÂÇ¥°èÀÇ Á¡(¸¶¿ì½º ÁÂÇ¥¸¦ ¿ªº¯È¯ÇÏ¿© ±¸ÇÑ Á¡)À» ¸ğµ¨ ÁÂÇ¥°è·Î º¯È¯ÇÑ´Ù. 
+	//ì¹´ë©”ë¼ ì¢Œí‘œê³„ì˜ ì (ë§ˆìš°ìŠ¤ ì¢Œí‘œë¥¼ ì—­ë³€í™˜í•˜ì—¬ êµ¬í•œ ì )ì„ ëª¨ë¸ ì¢Œí‘œê³„ë¡œ ë³€í™˜í•œë‹¤. 
 	*rayDirection = xmf4x4Inverse.TransformCoord(pickPosition);
-	//±¤¼±ÀÇ ¹æÇâ º¤ÅÍ¸¦ ±¸ÇÑ´Ù. 
+	//ê´‘ì„ ì˜ ë°©í–¥ ë²¡í„°ë¥¼ êµ¬í•œë‹¤. 
 	*rayDirection = (*rayDirection - *pickRayOrigin).Normalized();
 }
 
@@ -65,7 +81,7 @@ bool UPrimitiveComponent::IntersectRayTriangle(const FVector& rayOrigin, const F
         float a = edge1.Dot(h);
 
         if (fabs(a) < epsilon)
-            return false; // Ray¿Í »ï°¢ÇüÀÌ ÆòÇàÇÑ °æ¿ì
+            return false; // Rayì™€ ì‚¼ê°í˜•ì´ í‰í–‰í•œ ê²½ìš°
 
         float f = 1.0f / a;
         FVector s = rayOrigin - v0;
@@ -79,7 +95,7 @@ bool UPrimitiveComponent::IntersectRayTriangle(const FVector& rayOrigin, const F
             return false;
 
         float t = f * edge2.Dot(q);
-        if (t > epsilon) // À¯È¿ÇÑ ±³Â÷ (rayÀÇ ½ÃÀÛÁ¡ ÀÌÈÄ)
+        if (t > epsilon) // ìœ íš¨í•œ êµì°¨ (rayì˜ ì‹œì‘ì  ì´í›„)
         {
             FVector localIntersection = rayOrigin + rayDirection * t;
             FVector worldIntersection = GetComponentTransform().TransformCoord(localIntersection);
@@ -118,7 +134,7 @@ int UPrimitiveComponent::CheckRayIntersection(FVector& rayOrigin, FVector& rayDi
             idx2 = indices[i * 3 + 2];
         }
 
-        // °¢ »ï°¢ÇüÀÇ ¹öÅØ½º À§Ä¡¸¦ FVector·Î ºÒ·¯¿É´Ï´Ù.
+        // ê° ì‚¼ê°í˜•ì˜ ë²„í…ìŠ¤ ìœ„ì¹˜ë¥¼ FVectorë¡œ ë¶ˆëŸ¬ì˜µë‹ˆë‹¤.
         uint32 stride = _vertexBuffer->GetStride();
         FVector v0 = *reinterpret_cast<FVector*>(pbPositions + idx0 * stride);
         FVector v1 = *reinterpret_cast<FVector*>(pbPositions + idx1 * stride);

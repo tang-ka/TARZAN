@@ -6,10 +6,12 @@
 
 class UPrimitiveComponent: public USceneComponent {
 public:
-	UPrimitiveComponent(): renderFlags(0) {}
+	UPrimitiveComponent(): renderFlags(0), StencilRefNum(1) {}
 	virtual ~UPrimitiveComponent();
 	TArray<FVertexSimple> vertices;
 	TArray<uint32> indices;
+
+	bool isBill;
 
 	virtual void Render();
 	virtual bool IntersectsRay(const FVector& rayOrigin, const FVector& rayDir, float& dist) { return false; }
@@ -23,4 +25,6 @@ public:
 protected:
 	std::unique_ptr<CVertexBuffer<FVertexSimple>> _vertexBuffer;
 	std::unique_ptr<CIndexBuffer> _indexBuffer;
+	CDepthStencilState* DepthStencilState = nullptr;
+	CBlendState* BlendState = nullptr;
 };

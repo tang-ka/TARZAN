@@ -64,8 +64,18 @@ void GuiController::NewFrame()
 			_selected = nullptr;
 		}
 		else {
-			if (nearestActorDistance < nearestGizmoDistance) {
-
+			// Gizmo가 활성화되어 있고, 교차가 있는 경우 무조건 Gizmo를 선택
+			if (UEngine::GetInstance().GetGizmo()->isGizmoActivated && neareastAxis != EPrimitiveColor::NONE)
+			{
+				UEngine::GetInstance().GetGizmo()->selectedAxis = neareastAxis;
+				UPrimitiveComponent* downcast = dynamic_cast<UPrimitiveComponent*>(_selected);
+				if (downcast)
+					downcast->renderFlags &= ~PRIMITIVE_FLAG_SELECTED;
+				_selected = nullptr; // Gizmo만 선택, 액터는 선택 해제
+			}
+			// Gizmo가 없거나 교차가 없는 경우, 액터를 선택
+			else if (neareastActorComp != nullptr)
+			{
 				UPrimitiveComponent* downcast = dynamic_cast<UPrimitiveComponent*>(_selected);
 				if (downcast)
 					downcast->renderFlags &= ~PRIMITIVE_FLAG_SELECTED;
@@ -77,9 +87,6 @@ void GuiController::NewFrame()
 
 				UEngine::GetInstance().GetGizmo()->AttachTo(dynamic_cast<UPrimitiveComponent*>(_selected));
 				UEngine::GetInstance().GetGizmo()->selectedAxis = EPrimitiveColor::NONE;
-			}
-			else  {
-				UEngine::GetInstance().GetGizmo()->selectedAxis = neareastAxis;
 			}
 		}
 	}
@@ -163,7 +170,7 @@ void GuiController::RenderEditor() {
 
 	ImGui::SetNextWindowSizeConstraints(ImVec2(300.0f, 0.0f), ImVec2(300.0f, FLT_MAX));
 
-	const char* primitiveItems[] = { "Cube", "Sphere", "Plane" };
+	const char* primitiveItems[] = { "Cube", "Sphere", "Plane","Text"};
 	const char* viewModes[] = { "Lit", "Unlit", "Wireframe" };
 
 	D3D11_FILL_MODE currentFillMode = CRenderer::Instance()->GetGraphics()->GetFillMode();
@@ -192,6 +199,9 @@ void GuiController::RenderEditor() {
 				break;
 			case 2:
 				SceneManager->SpawnActor(EPrimitiveType::PLANE);
+				break;
+			case 3:
+				SceneManager->SpawnActor(EPrimitiveType::TEXT);
 				break;
 			}
 		}

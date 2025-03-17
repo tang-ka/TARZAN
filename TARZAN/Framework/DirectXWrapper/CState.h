@@ -47,8 +47,31 @@ public:
 	void Create();
 	void SetSrcBlend(D3D11_BLEND srcBlend, D3D11_BLEND srcBlendAlpha);
 	void SetDescBlend(D3D11_BLEND destBlend, D3D11_BLEND destBlendAlpha);
-	void SetOp(D3D11_BLEND_OP op);
+	void SetOp(D3D11_BLEND_OP op, D3D11_BLEND_OP opAlpha);
 private:
 	ComPtr<ID3D11BlendState>* _blendState;
 	D3D11_BLEND_DESC _desc = {};
+};
+
+class CDepthStencilState : public CState
+{
+	using Super = CState;
+
+public:
+	CDepthStencilState(ID3D11Device* Device) : Super(Device), DSState(nullptr) {};
+	~CDepthStencilState()
+	{
+		SafeRelease(&DSState);
+	}
+
+	ID3D11DepthStencilState* Get() { return DSState; }
+
+	void Create();
+	void SetDepthFlags(BOOL InDepthEnable, D3D11_DEPTH_WRITE_MASK InDepthWriteMask, D3D11_COMPARISON_FUNC InDepthFunc);
+	void SetStencilFlags(BOOL InStencilEnable, UINT8 InStencilReadMask, UINT8 InStencilWriteMask);
+	void SetFrontFaceFlags(D3D11_COMPARISON_FUNC InStencilFunc, D3D11_STENCIL_OP InStencilPassOp, D3D11_STENCIL_OP InStencilFailOp, D3D11_STENCIL_OP InDepthFailOp);
+
+private:
+	ID3D11DepthStencilState* DSState;
+	D3D11_DEPTH_STENCIL_DESC Desc = {};
 };

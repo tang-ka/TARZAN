@@ -14,7 +14,7 @@ private:
     CRenderer();
     CRenderer(const CRenderer& ref) = delete;
     CRenderer& operator=(const CRenderer& ref) = delete;
-    // ¼Ò¸êÀÚ¿¡¼­´Â std::unique_ptr°¡ ÀÚµ¿À¸·Î Á¤¸®ÇÕ´Ï´Ù.
+    // ï¿½Ò¸ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ï¿½ï¿½ std::unique_ptrï¿½ï¿½ ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½.
     ~CRenderer() = default;
 
 public:
@@ -29,7 +29,7 @@ public:
     }
     void Init(HWND hWnd);
 
-    // ³»ºÎ COM °´Ã¼µéÀº CGraphics ³»ºÎ¿¡¼­ ComPtr·Î °ü¸®ÇÏ¹Ç·Î, GetGraphics()´Â raw pointer ¹ÝÈ¯
+    // ï¿½ï¿½ï¿½ï¿½ COM ï¿½ï¿½Ã¼ï¿½ï¿½ï¿½ï¿½ CGraphics ï¿½ï¿½ï¿½Î¿ï¿½ï¿½ï¿½ ComPtrï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¹Ç·ï¿½, GetGraphics()ï¿½ï¿½ raw pointer ï¿½ï¿½È¯
     CGraphics* GetGraphics() { return _graphics.get(); }
 
     void SetVertexShader(const FWString filename, FString funcname, FString version);
@@ -43,7 +43,7 @@ public:
     void SetMainCamera(UCameraComponent* camera);
 
 private:
-    // CRenderer°¡ ¼ÒÀ¯ÇÏ´Â °´Ã¼´Â std::unique_ptr·Î °ü¸®
+    // CRendererï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½Ã¼ï¿½ï¿½ std::unique_ptrï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     std::unique_ptr<CGraphics> _graphics;
     std::unique_ptr<CVertexShader> _vertexShader;   
     std::unique_ptr<CPixelShader> _pixelShader;
@@ -51,8 +51,8 @@ private:
     std::unique_ptr<CRasterzierState> _rasterizerState;
     std::unique_ptr<CConstantBuffer<FMatrix>> _matrixBuffer;
     std::unique_ptr<CConstantBuffer<FPrimitiveFlags>> _flagsBuffer;
-    UCameraComponent* _mainCamera = nullptr; // ¼ÒÀ¯±ÇÀº ´Ù¸¥ °÷¿¡¼­ °ü¸®ÇÏ´Â °ÍÀ¸·Î °¡Á¤
+    UCameraComponent* _mainCamera = nullptr; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
-    // CTextureManager´Â ½Ì±ÛÅÏÀ¸·Î °ü¸®µÇ¹Ç·Î raw pointer·Î À¯ÁöÇÕ´Ï´Ù.
+    // CTextureManagerï¿½ï¿½ ï¿½Ì±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç¹Ç·ï¿½ raw pointerï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½.
     CTextureManager* textureManager;
 };

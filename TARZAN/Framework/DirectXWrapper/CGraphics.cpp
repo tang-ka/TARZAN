@@ -17,7 +17,7 @@ CGraphics::~CGraphics() {
 }
 
 void CGraphics::RenderBegin() {
-    // ComPtr¸¦ »ç¿ëÇÒ °æ¿ì &(_renderTargetView) ´ë½Å _renderTargetView.GetAddressOf() »ç¿ë
+    // ComPtrë¥¼ ì‚¬ìš©í•  ê²½ìš° &(_renderTargetView) ëŒ€ì‹  _renderTargetView.GetAddressOf() ì‚¬ìš©
     _deviceContext->OMSetRenderTargets(1, _renderTargetView.GetAddressOf(), depthStencilView.Get());
     if (depthStencilView == nullptr)
         return;
@@ -39,7 +39,7 @@ void CGraphics::ResizeBuffers(int width, int height)
 {
     if (_device && _deviceContext)
     {
-        // ±âÁ¸ ÂüÁ¶ ¸ðµÎ ÇØÁ¦
+        // ê¸°ì¡´ ì°¸ì¡° ëª¨ë‘ í•´ì œ
         if (_renderTargetView)
         {
             _renderTargetView.Reset();
@@ -63,7 +63,7 @@ void CGraphics::ResizeBuffers(int width, int height)
             return;
         }
 
-        // »õ ¹é ¹öÆÛ ¾ò±â
+        // ìƒˆ ë°± ë²„í¼ ì–»ê¸°
         hr = _swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(_backBuffer.GetAddressOf()));
         if (FAILED(hr))
         {
@@ -71,7 +71,7 @@ void CGraphics::ResizeBuffers(int width, int height)
             return;
         }
 
-        // »õ ·»´õ Å¸°Ù ºä »ý¼º
+        // ìƒˆ ë Œë” íƒ€ê²Ÿ ë·° ìƒì„±
         hr = _device->CreateRenderTargetView(_backBuffer.Get(), nullptr, _renderTargetView.GetAddressOf());
         if (FAILED(hr))
         {
@@ -79,17 +79,17 @@ void CGraphics::ResizeBuffers(int width, int height)
             return;
         }
 
-        // »õ ÇØ»óµµ¿¡ ¸Â°Ô ±íÀÌ ½ºÅÙ½Ç ¹öÆÛ ¹× ºä Àç»ý¼º
+        // ìƒˆ í•´ìƒë„ì— ë§žê²Œ ê¹Šì´ ìŠ¤í…ì‹¤ ë²„í¼ ë° ë·° ìž¬ìƒì„±
         CreateDepthStencilBuffer();
 
-        // ºäÆ÷Æ® ¾÷µ¥ÀÌÆ®
+        // ë·°í¬íŠ¸ ì—…ë°ì´íŠ¸
         SetViewport(width, height);
         _deviceContext->RSSetViewports(1, &_viewPort);
 
-        // ·»´õ Å¸°Ù°ú ±íÀÌ ½ºÅÙ½Ç ºä ¼³Á¤
+        // ë Œë” íƒ€ê²Ÿê³¼ ê¹Šì´ ìŠ¤í…ì‹¤ ë·° ì„¤ì •
         _deviceContext->OMSetRenderTargets(1, _renderTargetView.GetAddressOf(), depthStencilView.Get());
 
-        // »õ ¹é¹öÆÛ¸¦ Å¬¸®¾îÇÏ¿© ÀÌÀü ³»¿ë Á¦°Å
+        // ìƒˆ ë°±ë²„í¼ë¥¼ í´ë¦¬ì–´í•˜ì—¬ ì´ì „ ë‚´ìš© ì œê±°
         _deviceContext->ClearRenderTargetView(_renderTargetView.Get(), _clearColor);
         if (depthStencilView)
             _deviceContext->ClearDepthStencilView(depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
@@ -102,6 +102,12 @@ D3D11_FILL_MODE CGraphics::GetFillMode() const {
 
 void CGraphics::SetFillMode(D3D11_FILL_MODE fillMode) {
     _fillMode = fillMode;
+}
+
+void CGraphics::ClearDepthStencilView()
+{
+	// Stencil Buffer to 0;
+	_deviceContext->ClearDepthStencilView(depthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 }
 
 void CGraphics::CreateDeviceAndSwapChain() {
