@@ -6,9 +6,9 @@
 
 struct FEditorConfig
 {
-    bool bIsOrthogonal = false;
+    //bool bIsOrthogonal = false;
     float WorldGridScale = 1.f;
-    float CameraSens = 1.f;
+    float CameraSpeed = 1.f;
 };
 
 class ConfigManager : public TSingleton<ConfigManager>

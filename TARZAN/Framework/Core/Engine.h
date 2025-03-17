@@ -73,13 +73,13 @@ private:
     HWND WindowHandle = nullptr;
     HINSTANCE WindowInstance = nullptr;
 
-    int InitializedScreenWidth = 0;
-    int InitializedScreenHeight = 0;
+    //int InitializedScreenWidth = 0;
+    //int InitializedScreenHeight = 0;
 
 /* Maybe should refactoring.. */
 private:
     UGizmoComponent* UGizmo = nullptr;
-    GuiController* Controller=nullptr;
+    GuiController* Controller = nullptr;
     UWorld* World = nullptr;
     UCoordArrowComponent* Arrow = nullptr;
     UWorldGridComponent* WorldGrid = nullptr;

@@ -6,53 +6,53 @@
 #include "Framework\DirectXWrapper\CBuffer.h"
 #include "./UCameraComponent.h"
 #include "CTextureManager.h"
+#include <memory>
 
 class CRenderer {
 private:
-	static CRenderer* _instance;
-	CRenderer();
-	CRenderer(const CRenderer& ref) = delete;
-	CRenderer& operator=(const CRenderer& ref) = delete;
-	~CRenderer() {
-		delete _vertexShader;
-		delete _pixelShader;
-		delete _graphics;
-	};
+    static CRenderer* _instance;
+    CRenderer();
+    CRenderer(const CRenderer& ref) = delete;
+    CRenderer& operator=(const CRenderer& ref) = delete;
+    // �Ҹ��ڿ����� std::unique_ptr�� �ڵ����� �����մϴ�.
+    ~CRenderer() = default;
 
 public:
-	static CRenderer* Instance() {
-		if (_instance == nullptr)
-			_instance = new CRenderer();
-		return _instance;
-	};
-	static void Release() {
-		delete _instance;
-	}
-	void Init(HWND hWnd);
-	
+    static CRenderer* Instance() {
+        if (_instance == nullptr)
+            _instance = new CRenderer();
+        return _instance;
+    }
+    static void Release() {
+        delete _instance;
+        _instance = nullptr;
+    }
+    void Init(HWND hWnd);
 
-	CGraphics* GetGraphics() { return _graphics; }
-	void SetVertexShader(const FWString filename, FString funcname, FString version);
-	void ResetVertexShader();
-	void SetPixelShader(const FWString filename, FString funcname, FString version);
-	void ResetPixelShader();
-	void SetRasterzierState(D3D11_FILL_MODE fillMode);
-	void SetTransformToConstantBuffer(FMatrix matrix, bool isBill=false);
-	void SetFlagsToConstantBuffer(FPrimitiveFlags flags);
-	UCameraComponent* GetMainCamera() const;
-	void SetMainCamera(UCameraComponent* camera);
+    // ���� COM ��ü���� CGraphics ���ο��� ComPtr�� �����ϹǷ�, GetGraphics()�� raw pointer ��ȯ
+    CGraphics* GetGraphics() { return _graphics.get(); }
 
-	void SetDepthStencil(ID3D11DepthStencilState* pDSState);
+    void SetVertexShader(const FWString filename, FString funcname, FString version);
+    void ResetVertexShader();
+    void SetPixelShader(const FWString filename, FString funcname, FString version);
+    void ResetPixelShader();
+    void SetRasterzierState(D3D11_FILL_MODE fillMode);
+    void SetTransformToConstantBuffer(FMatrix matrix);
+    void SetFlagsToConstantBuffer(FPrimitiveFlags flags);
+    UCameraComponent* GetMainCamera() const;
+    void SetMainCamera(UCameraComponent* camera);
 
 private:
-	CGraphics* _graphics = nullptr;
-	CVertexShader* _vertexShader = nullptr;
-	CPixelShader* _pixelShader = nullptr;
-	CInputLayout* _inputLayout = nullptr;
-	CRasterzierState* _rasterizerState = nullptr;
-	CConstantBuffer<FMatrix>* _matrixBuffer = nullptr;
-	CConstantBuffer<FPrimitiveFlags>* _flagsBuffer = nullptr;
-	UCameraComponent* _mainCamera = nullptr;
-	
-};
+    // CRenderer�� �����ϴ� ��ü�� std::unique_ptr�� ����
+    std::unique_ptr<CGraphics> _graphics;
+    std::unique_ptr<CVertexShader> _vertexShader;   
+    std::unique_ptr<CPixelShader> _pixelShader;
+    std::unique_ptr<CInputLayout> _inputLayout;
+    std::unique_ptr<CRasterzierState> _rasterizerState;
+    std::unique_ptr<CConstantBuffer<FMatrix>> _matrixBuffer;
+    std::unique_ptr<CConstantBuffer<FPrimitiveFlags>> _flagsBuffer;
+    UCameraComponent* _mainCamera = nullptr; // �������� �ٸ� ������ �����ϴ� ������ ����
 
+    // CTextureManager�� �̱������� �����ǹǷ� raw pointer�� �����մϴ�.
+    CTextureManager* textureManager;
+};

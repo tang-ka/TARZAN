@@ -36,10 +36,11 @@ UDiscComponent::UDiscComponent(EPrimitiveColor color)
     }
 
     CGraphics* graphics = CRenderer::Instance()->GetGraphics();
-    _vertexBuffer = new CVertexBuffer<FVertexSimple>(graphics->GetDevice());
+    _vertexBuffer = std::make_unique<CVertexBuffer<FVertexSimple>>(graphics->GetDevice());
     _vertexBuffer->Create(vertices);
-    _indexBuffer = new CIndexBuffer(graphics->GetDevice());
+    _indexBuffer = std::make_unique<CIndexBuffer>(graphics->GetDevice());
     _indexBuffer->Create(indices);
+
 }
 
 UDiscComponent::UDiscComponent()
@@ -65,12 +66,12 @@ UDiscComponent::UDiscComponent()
             indices.push_back(i);  // 다음 점 (마지막 점 예외 처리)
         }
     }
-
     CGraphics* graphics = CRenderer::Instance()->GetGraphics();
-    _vertexBuffer = new CVertexBuffer<FVertexSimple>(graphics->GetDevice());
+    _vertexBuffer = std::make_unique<CVertexBuffer<FVertexSimple>>(graphics->GetDevice());
     _vertexBuffer->Create(vertices);
-    _indexBuffer = new CIndexBuffer(graphics->GetDevice());
+    _indexBuffer = std::make_unique<CIndexBuffer>(graphics->GetDevice());
     _indexBuffer->Create(indices);
+
 }
 
 UDiscComponent::~UDiscComponent()

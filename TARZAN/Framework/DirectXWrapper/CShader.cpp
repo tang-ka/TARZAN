@@ -18,7 +18,7 @@ void CShader::LoadShaderFromFile(const FWString& path, const FString& name, cons
 		version.c_str(),
 		compileFlag,
 		0,
-		&_blob,
+		_blob.GetAddressOf(),
 		nullptr
 	);
 	if ( FAILED(hr) ) {
@@ -35,12 +35,12 @@ void CShader::LoadShaderFromFile(const FWString& path, const FString& name, cons
 
 void CVertexShader::Create(const FWString& path, const FString& name, const FString& version) {
 	LoadShaderFromFile(path, name, version);
-	HRESULT hr = _device->CreateVertexShader(_blob->GetBufferPointer(), _blob->GetBufferSize(), nullptr, &_vertexShader);
+	HRESULT hr = _device->CreateVertexShader(_blob->GetBufferPointer(), _blob->GetBufferSize(), nullptr, _vertexShader.GetAddressOf());
 	assert(SUCCEEDED(hr));
 }
 
 void CPixelShader::Create(const FWString& path, const FString& name, const FString& version) {
 	LoadShaderFromFile(path, name, version);
-	HRESULT hr = _device->CreatePixelShader(_blob->GetBufferPointer(), _blob->GetBufferSize(), nullptr, &_pixelShader);
+	HRESULT hr = _device->CreatePixelShader(_blob->GetBufferPointer(), _blob->GetBufferSize(), nullptr, _pixelShader.GetAddressOf());
 	assert(SUCCEEDED(hr));
 }

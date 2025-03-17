@@ -21,11 +21,10 @@ public:
 
 	virtual int CheckRayIntersection(FVector& rayOrigin, FVector& rayDirection, float* pfNearHitDistance);
 	uint32 renderFlags;
-	uint32 StencilRefNum;
-protected:
-	CVertexBuffer<FVertexSimple>* _vertexBuffer = nullptr;
-	CIndexBuffer* _indexBuffer = nullptr;
 
+protected:
+	std::unique_ptr<CVertexBuffer<FVertexSimple>> _vertexBuffer;
+	std::unique_ptr<CIndexBuffer> _indexBuffer;
 	CDepthStencilState* DepthStencilState = nullptr;
 	CBlendState* BlendState = nullptr;
 };

@@ -47,17 +47,14 @@ UCoordArrowComponent::UCoordArrowComponent()
 	indices = { 0,1,2,3,4,5 };
 
 	CGraphics* graphics = CRenderer::Instance()->GetGraphics();
-	_vertexBuffer = new CVertexBuffer<FVertexSimple>(graphics->GetDevice());
+	_vertexBuffer = std::make_unique<CVertexBuffer<FVertexSimple>>(graphics->GetDevice());
 	_vertexBuffer->Create(vertices);
-	_indexBuffer = new CIndexBuffer(graphics->GetDevice());
+	_indexBuffer = std::make_unique<CIndexBuffer>(graphics->GetDevice());
 	_indexBuffer->Create(indices);
+
 }
 
-UCoordArrowComponent::~UCoordArrowComponent()
-{
-	delete _vertexBuffer;
-	delete _indexBuffer;
-}
+UCoordArrowComponent::~UCoordArrowComponent(){}
 
 void UCoordArrowComponent::Update()
 {

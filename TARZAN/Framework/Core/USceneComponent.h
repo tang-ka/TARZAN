@@ -55,34 +55,29 @@ public:
 	//void SetWorldVelocity(const FVector NewWorldVelocity);
 
 public:
-	// ì£¼ì˜!! hierarchy??ë°”ë€Œì? ?ŠìŒ 
 	void SetValuesFromMatrix(const FMatrix mat);
 	//void UpdateComponentVelocity();
 
-// ï¿½ï¿½ï¿?ï¿½ï¿½ï¿½ï¿½
 private:
 	USceneComponent* AttachParent = nullptr;
 	TArray<USceneComponent*> AttachChildern;
 
 public:
-	const TArray<USceneComponent*>& GetAttachChildren() const; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ childrenï¿½ï¿½ ï¿½ï¿½È¯
-	void GetChildrenComponents(TArray<USceneComponent*>& Children) const; // ï¿½ï¿½Í·ï¿?ï¿½Æ·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿?children ï¿½ï¿½È¯
+	const TArray<USceneComponent*>& GetAttachChildren() const;
+	void GetChildrenComponents(TArray<USceneComponent*>& Children) const;
 	USceneComponent* GetAttachParent() const;
-	void GetParentComponents(TArray<USceneComponent*>& Parents) const; // ï¿½ï¿½Í·ï¿?rootï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯
+	void GetParentComponents(TArray<USceneComponent*>& Parents) const;
 
-	void SetupAttachment(TArray<USceneComponent*>& Children); // ï¿½Ú½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	void SetupAttachment(TArray<USceneComponent*>& Children);
 
-	// ï¿½Î¸ï¿½ï¿½Ú½ï¿½ ï¿½ï¿½ï¿½è¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ ï¿½Ô¼ï¿½ ï¿½ï¿½ï¿½ï¿½
-	bool AttachToComponent(USceneComponent* Parent); // ï¿½Î¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ false
+	bool AttachToComponent(USceneComponent* Parent);
 
-// ï¿½ï¿½ï¿½ï¿½ï¿?
 public:
 	void PrintLoc(std::wstring msg) const;
 
 
 public:
 	//FMatrix DEBUG_TRANSFORMATION_OVERRIDE = FMatrix::Identity;
-	// flag ?¤ì •??ê°•ì œë¡????íƒœë¡??Œë”
 	FVector OverrideLocation = FVector::Zero;
 	FVector OverrideRotation = FVector::Zero;
 	FVector OverrideScale3D = FVector::One;

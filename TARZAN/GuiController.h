@@ -32,24 +32,21 @@ public:
 	UActorComponent* _selected;
 	SceneManagerView* SceneView;
 
+	int _selectedMode;
 	int _selectedGridScale;
+	int _selectedCameraSpeed;
 
 private:
 	void CreateSceneManagerPanel();
-
-	int GetSelectedGridScale() const { return _selectedGridScale; }
-	// 이게 1값으로 디폴트가 들어가서 그런가
-	void SetSelectedGridScale(float scale);
 
 private:
 	ImGuiContext* _context;
 	ImGuiIO* _io;
 	HWND hWnd;
-	GuiConsole* _console;
-
+	// 이걸 유니크로 두는게 맞나
+	std::unique_ptr<GuiConsole> _console;
 
 	char _sceneNameBuffer[256] = "";
 	int _selectedPrimitive = 0, _spawnNumber = 1;
-	int _selectedMode = 0;
 };
 

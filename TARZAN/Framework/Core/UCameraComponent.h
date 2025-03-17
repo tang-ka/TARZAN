@@ -19,6 +19,8 @@ public:
 	void UpdateRatio(float aratio) { aspectRatio = aratio; }
 
 	bool allowKeyboardInput = true;
+
+	float CameraSpeed=1.f;
 private:
 	//FMatrix CalculateLookAtLHS(FVector front, FVector up, FVector pos);
 };

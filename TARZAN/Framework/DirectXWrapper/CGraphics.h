@@ -1,4 +1,5 @@
 #pragma once
+
 class CGraphics {
 public:
 	CGraphics(HWND hWnd);
@@ -8,8 +9,8 @@ public:
 	void RenderEnd();
 	void Release();
 	D3D11_VIEWPORT GetViewport() { return _viewPort; }
-	ID3D11Device* GetDevice() { return _device; }
-	ID3D11DeviceContext* GetDeviceContext() { return _deviceContext; }
+	ID3D11Device* GetDevice() { return _device.Get(); }
+	ID3D11DeviceContext* GetDeviceContext() { return _deviceContext.Get(); }
 	void ResizeBuffers(int width, int height);
 
 	D3D11_FILL_MODE GetFillMode() const;
@@ -22,16 +23,17 @@ private:
 	uint32 _width = SCR_WIDTH;
 	uint32 _height = SCR_HEIGHT;
 
-	ID3D11Device* _device = nullptr;
-	ID3D11DeviceContext* _deviceContext = nullptr;
-	IDXGISwapChain* _swapChain = nullptr;
+	ComPtr<ID3D11Device> _device;
+	ComPtr<ID3D11DeviceContext> _deviceContext;
+	ComPtr<IDXGISwapChain> _swapChain;
 
-	ID3D11Texture2D* _backBuffer = nullptr;
-	ID3D11RenderTargetView* _renderTargetView = nullptr;
+	ComPtr<ID3D11Texture2D> _backBuffer;
+	ComPtr<ID3D11RenderTargetView> _renderTargetView;
 
-	ID3D11Texture2D* depthStencilBuffer;
-	ID3D11DepthStencilView* depthStencilView;
-	ID3D11DepthStencilState* depthStencilState;
+	ComPtr<ID3D11Texture2D> depthStencilBuffer;
+	ComPtr<ID3D11DepthStencilView> depthStencilView;
+	ComPtr<ID3D11DepthStencilState> depthStencilState;
+
 
 	D3D11_VIEWPORT _viewPort = {};
 	D3D11_FILL_MODE _fillMode;
