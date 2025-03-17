@@ -34,6 +34,8 @@
 
 UCoordArrowComponent::UCoordArrowComponent()
 {
+
+
 	vertices =
 	{
 		{ 0.f, 0.f, 0.f, 5.f, 0.f, 0.f, 5.f},
@@ -85,6 +87,7 @@ FVector UCoordArrowComponent::GetDirection()
 
 void UCoordArrowComponent::Render()
 {
+
 	CGraphics* graphics = CRenderer::Instance()->GetGraphics();
 	graphics->GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
 	CTextureManager::GetInstance()->BindTextureToShader(EObjectType::Object);

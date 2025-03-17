@@ -11,6 +11,7 @@
 // 생성자: 멤버 초기화
 UWorldGridComponent::UWorldGridComponent()
 {
+    ObjType = EObjectType::Object;
     vertices = {};
     indices = {};
     CGraphics* graphics = CRenderer::Instance()->GetGraphics();
@@ -159,6 +160,7 @@ void UWorldGridComponent::UpdateGrid()
 
 void UWorldGridComponent::Render()
 {
+    CTextureManager::GetInstance()->BindTextureToShader(ObjType);
     CGraphics* graphics = CRenderer::Instance()->GetGraphics();
     ID3D11DeviceContext* context = graphics->GetDeviceContext();
     //CRenderer::Instance()->SetRasterzierState(D3D11_FILL_SOLID);
