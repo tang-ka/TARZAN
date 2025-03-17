@@ -44,15 +44,6 @@ void UCubeComponent::Update() {
 	//RelativeLocation.x = sin(Time::GetElapsedTime());
 }
 
-void UCubeComponent::CreateBoundingBox(EPrimitiveType type)
-{
-	boundingBox = new FBoundingBox();
-	boundingBox->SetBoundaryPointsForPrimitive(type);
-	boundingBox->GenerateVerticesByBasicBox();
-	boundingBox->GenerateIndices();
-	isShowBoundingBox = true;
-}
-
 bool UCubeComponent::IntersectsRay(const FVector& rayOrigin, const FVector& rayDir, float& Distance)
 {
 	// AABB �ּ�, �ִ� ��ǥ ����
@@ -111,4 +102,13 @@ bool UCubeComponent::IntersectsRay(const FVector& rayOrigin, const FVector& rayD
 	}
 
 	return false;
+}
+
+void UCubeComponent::CreateBoundingBox(EPrimitiveType type)
+{
+	boundingBox = new FBoundingBox();
+	boundingBox->SetBoundaryPointsForPrimitive(type);
+	boundingBox->GenerateVerticesByBasicBox();
+	boundingBox->GenerateIndices();
+	isShowBoundingBox = true;
 }

@@ -19,11 +19,12 @@ public:
 		GenerateVertices();
 		GenerateIndices();
 	}
-
+	 
 public:
 	void ExpandToInclude(const FVector& point);
 	void Merge(const FBoundingBox& other);
 	void SetBoundaryPointsForPrimitive(EPrimitiveType type);
+	void SetBoundaryPoints(TArray<FVector4> points) { boundaryPoints = points; }
 	void UpdateVerticesByBP(FMatrix mvpMatrix);
 
 	void GenerateVertices();
