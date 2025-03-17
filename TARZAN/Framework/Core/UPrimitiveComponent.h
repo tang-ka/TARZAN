@@ -19,7 +19,8 @@ public:
 
 	virtual int CheckRayIntersection(FVector& rayOrigin, FVector& rayDirection, float* pfNearHitDistance);
 	uint32 renderFlags;
+
 protected:
-	CVertexBuffer<FVertexSimple>* _vertexBuffer = nullptr;
-	CIndexBuffer* _indexBuffer = nullptr;
+	std::unique_ptr<CVertexBuffer<FVertexSimple>> _vertexBuffer;
+	std::unique_ptr<CIndexBuffer> _indexBuffer;
 };

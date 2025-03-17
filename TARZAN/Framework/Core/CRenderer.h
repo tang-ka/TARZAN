@@ -6,53 +6,53 @@
 #include "Framework\DirectXWrapper\CBuffer.h"
 #include "./UCameraComponent.h"
 #include "CTextureManager.h"
+#include <memory>
 
 class CRenderer {
 private:
-	static CRenderer* _instance;
-	CRenderer();
-	CRenderer(const CRenderer& ref) = delete;
-	CRenderer& operator=(const CRenderer& ref) = delete;
-	~CRenderer() {
-		delete _vertexShader;
-		delete _pixelShader;
-		delete _graphics;
-	};
+    static CRenderer* _instance;
+    CRenderer();
+    CRenderer(const CRenderer& ref) = delete;
+    CRenderer& operator=(const CRenderer& ref) = delete;
+    // 소멸자에서는 std::unique_ptr가 자동으로 정리합니다.
+    ~CRenderer() = default;
 
 public:
-	static CRenderer* Instance() {
-		if (_instance == nullptr)
-			_instance = new CRenderer();
-		return _instance;
-	};
-	static void Release() {
-		delete _instance;
-	}
-	void Init(HWND hWnd);
-	
+    static CRenderer* Instance() {
+        if (_instance == nullptr)
+            _instance = new CRenderer();
+        return _instance;
+    }
+    static void Release() {
+        delete _instance;
+        _instance = nullptr;
+    }
+    void Init(HWND hWnd);
 
-	CGraphics* GetGraphics() { return _graphics; }
-	void SetVertexShader(const FWString filename, FString funcname, FString version);
-	void ResetVertexShader();
-	void SetPixelShader(const FWString filename, FString funcname, FString version);
-	void ResetPixelShader();
-	void SetRasterzierState(D3D11_FILL_MODE fillMode);
-	void SetTransformToConstantBuffer(FMatrix matrix);
-	void SetFlagsToConstantBuffer(FPrimitiveFlags flags);
-	UCameraComponent* GetMainCamera() const;
-	void SetMainCamera(UCameraComponent* camera);
+    // 내부 COM 객체들은 CGraphics 내부에서 ComPtr로 관리하므로, GetGraphics()는 raw pointer 반환
+    CGraphics* GetGraphics() { return _graphics.get(); }
+
+    void SetVertexShader(const FWString filename, FString funcname, FString version);
+    void ResetVertexShader();
+    void SetPixelShader(const FWString filename, FString funcname, FString version);
+    void ResetPixelShader();
+    void SetRasterzierState(D3D11_FILL_MODE fillMode);
+    void SetTransformToConstantBuffer(FMatrix matrix);
+    void SetFlagsToConstantBuffer(FPrimitiveFlags flags);
+    UCameraComponent* GetMainCamera() const;
+    void SetMainCamera(UCameraComponent* camera);
 
 private:
-	CGraphics* _graphics = nullptr;
-	CVertexShader* _vertexShader = nullptr;
-	CPixelShader* _pixelShader = nullptr;
-	CInputLayout* _inputLayout = nullptr;
-	CRasterzierState* _rasterizerState = nullptr;
-	CConstantBuffer<FMatrix>* _matrixBuffer = nullptr;
-	CConstantBuffer<FPrimitiveFlags>* _flagsBuffer = nullptr;
-	UCameraComponent* _mainCamera = nullptr;
+    // CRenderer가 소유하는 객체는 std::unique_ptr로 관리
+    std::unique_ptr<CGraphics> _graphics;
+    std::unique_ptr<CVertexShader> _vertexShader;   
+    std::unique_ptr<CPixelShader> _pixelShader;
+    std::unique_ptr<CInputLayout> _inputLayout;
+    std::unique_ptr<CRasterzierState> _rasterizerState;
+    std::unique_ptr<CConstantBuffer<FMatrix>> _matrixBuffer;
+    std::unique_ptr<CConstantBuffer<FPrimitiveFlags>> _flagsBuffer;
+    UCameraComponent* _mainCamera = nullptr; // 소유권은 다른 곳에서 관리하는 것으로 가정
 
-	CTextureManager* textureManager;
-
+    // CTextureManager는 싱글턴으로 관리되므로 raw pointer로 유지합니다.
+    CTextureManager* textureManager;
 };
-

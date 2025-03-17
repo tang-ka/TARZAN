@@ -14,82 +14,15 @@ UWorldGridComponent::UWorldGridComponent()
     vertices = {};
     indices = {};
     CGraphics* graphics = CRenderer::Instance()->GetGraphics();
-    _vertexBuffer = new CVertexBuffer<FVertexSimple>(graphics->GetDevice());
-    _indexBuffer = new CIndexBuffer(graphics->GetDevice());
+    _vertexBuffer = std::make_unique<CVertexBuffer<FVertexSimple>>(graphics->GetDevice());
+    _indexBuffer = std::make_unique<CIndexBuffer>(graphics->GetDevice());
 
     lastPosX = std::floor(CRenderer::Instance()->GetMainCamera()->GetRelativeLocation().x);
     lastPosZ = std::floor(CRenderer::Instance()->GetMainCamera()->GetRelativeLocation().z);
 }
 
 // 소멸자: 할당한 리소스 해제
-UWorldGridComponent::~UWorldGridComponent()
-{
-    delete _vertexBuffer;
-    delete _indexBuffer;
-}
-
-// GenerateGrid: -gridCount부터 gridCount까지 1단위 간격의 grid 선 정점 및 인덱스 생성
-//void UWorldGridComponent::GenerateGrid(float posX, float posZ, int gridCount, float unitSize)
-//{
-//
-//    if (_vertexBuffer->Get()!=nullptr)
-//    {
-//        vertices.clear();
-//        _vertexBuffer->Get()->Release();
-//
-//    }
-//    if (_indexBuffer->Get()!=nullptr)
-//    {
-//        indices.clear();
-//        _indexBuffer->Get()->Release();
-//    }
-//
-//    // 색상값
-//    const FVector4 gridColor = { 0.f, 0.f, 0.f, 1.f };
-//    gridScale = unitSize;
-//
-//    // X축(수직선) 그리기: X 좌표가 일정하며 Z가 -gridCount ~ gridCount까지 변화
-//    for (int i = -gridCount; i <= gridCount; i++)
-//    {
-//        // camera의 position을 가져와서 
-//        float x = posX+i * unitSize;
-//
-//        FVertexSimple v1, v2;
-//
-//        // FSimpleVertex 구조를 변경할 필요가 있어보임
-//        v1.x = x; v1.y = 0.0f; v1.z = posZ -gridCount * unitSize;
-//        v2.x = x; v2.y = 0.0f; v2.z = posZ+gridCount * unitSize ;
-//
-//        v1.r = gridColor.x; v1.g = gridColor.y; v1.b = gridColor.z; v1.a = gridColor.w;
-//        v2.r = gridColor.x; v2.g = gridColor.y; v2.b = gridColor.z; v2.a = gridColor.w;
-//        vertices.push_back(v1);
-//        vertices.push_back(v2);
-//    }
-//
-//    // Z축(수평선) 그리기: Z 좌표가 일정하며 X가 -gridCount ~ gridCount까지 변화
-//    // 수정을 했는데 이렇게 하면 카메라 동적이동했을때 문제가 생길 것 같은데 아닌가? 상관 없을라나
-//    for (int i = -gridCount; i <= gridCount; i++)
-//    {
-//        float z = posZ+i * unitSize;
-//        FVertexSimple v1, v2;
-//        v1.x = posX -gridCount * unitSize; v1.y = 0.0f; v1.z = z;
-//        v2.x = posX+gridCount * unitSize;  v2.y = 0.0f; v2.z = z;
-//
-//        // 기본 색상 할당
-//        v1.r = gridColor.x; v1.g = gridColor.y; v1.b = gridColor.z; v1.a = gridColor.w;
-//        v2.r = gridColor.x; v2.g = gridColor.y; v2.b = gridColor.z; v2.a = gridColor.w;
-//        vertices.push_back(v1);
-//        vertices.push_back(v2);
-//    }
-//
-//    // 인덱스 생성: 각 선은 두 정점으로 구성되므로, 순차적으로 인덱스를 할당
-//    for (UINT32 i = 0; i < vertices.size(); i++)
-//    {
-//        indices.push_back(i);
-//    }
-//    _vertexBuffer->Create(vertices);
-//    _indexBuffer->Create(indices);
-//}
+UWorldGridComponent::~UWorldGridComponent() {}
 
 void UWorldGridComponent::GenerateGrid(float posX, float posZ, int gridCount, float unitSize)
 {
@@ -98,7 +31,7 @@ void UWorldGridComponent::GenerateGrid(float posX, float posZ, int gridCount, fl
     indices.clear();
 
     gridScale = unitSize;
-    const FVector4 gridColor = { 0.f, 0.f, 0.f, 1.f };
+    const FVector4 gridColor = { 1.f, 1.f, 1.f, 0.1f };
 
     // X축 선
     for (int i = -gridCount; i <= gridCount; i++)

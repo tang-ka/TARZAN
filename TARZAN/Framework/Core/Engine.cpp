@@ -222,6 +222,10 @@ void UEngine::InitEditor()
 {
 	// editor.ini 파일로부터 설정값을 로드
 	ConfigManager::GetInstance().LoadConfig();
+
+	// Camera Orthgonal/Perspective
+	//GuiController::GetInstance()._selectedMode = ConfigManager::GetInstance().GetEditorConfig().bIsOrthogonal ? 1 : 0;
+
 	if (ConfigManager::GetInstance().GetEditorConfig().WorldGridScale == 0.1f)
 		GuiController::GetInstance()._selectedGridScale = 0;
 	else if (ConfigManager::GetInstance().GetEditorConfig().WorldGridScale == 1.0f)
@@ -229,6 +233,11 @@ void UEngine::InitEditor()
 	else if (ConfigManager::GetInstance().GetEditorConfig().WorldGridScale == 10.0f)
 		GuiController::GetInstance()._selectedGridScale = 2;
 
+	// Camera Speed
+	if (ConfigManager::GetInstance().GetEditorConfig().CameraSpeed == 1.f) GuiController::GetInstance()._selectedCameraSpeed = 0;
+	else if (ConfigManager::GetInstance().GetEditorConfig().CameraSpeed == 2.f) GuiController::GetInstance()._selectedCameraSpeed = 1;
+	else if (ConfigManager::GetInstance().GetEditorConfig().CameraSpeed == 5.f) GuiController::GetInstance()._selectedCameraSpeed = 2;
+	else if (ConfigManager::GetInstance().GetEditorConfig().CameraSpeed == 10.f) GuiController::GetInstance()._selectedCameraSpeed = 3;
 
 	// ImGui에 반영될 grid scale 값을 업데이트
 	// 여기서 왜 값이 안박히지
@@ -243,6 +252,7 @@ void UEngine::InitEditor()
 	{
 		float camX = mainCam->GetRelativeLocation().x;
 		float camZ = mainCam->GetRelativeLocation().z;
+		mainCam->CameraSpeed = ConfigManager::GetInstance().GetEditorConfig().CameraSpeed;
 		int gridCount = 10; // 예시 값, 필요에 따라 조정
 		grid->GenerateGrid(0, 0, gridCount, ConfigManager::GetInstance().GetEditorConfig().WorldGridScale);
 	}

@@ -1,167 +1,146 @@
 #pragma once
+#include <vector>
+#include <d3d11.h>
+#include <wrl/client.h>
+
+using Microsoft::WRL::ComPtr;
 
 template <typename T>
 class CBuffer {
 public:
-	CBuffer(ID3D11Device* device) : _device(device) {};
-	virtual ~CBuffer() {
-		SafeRelease(&_buffer);
-	};
+    CBuffer(ID3D11Device* device) : _device(device) {}
+    virtual ~CBuffer() {}
 
-	ID3D11Buffer* Get() { return _buffer; }
-	UINT32 GetStride() { return _stride; }
-	UINT32 GetOffset() { return _offset; }
-	UINT32 GetCount() { return _count; }
+    // 내부 raw pointer 반환
+    ID3D11Buffer* Get() { return _buffer.Get(); }
+    UINT32 GetStride() { return _stride; }
+    UINT32 GetOffset() { return _offset; }
+    UINT32 GetCount() { return _count; }
 
-	virtual void Create(const std::vector<T>&) abstract;
+    virtual void Create(const std::vector<T>&) abstract;
 
 protected:
-	ID3D11Device* _device;
-	ID3D11Buffer* _buffer = nullptr;
 
-	UINT32 _stride = 0;
-	UINT32 _offset = 0;
-	UINT32 _count = 0;
+    ComPtr<ID3D11Device> _device;
+    ComPtr<ID3D11Buffer> _buffer;
+
+    UINT32 _stride = 0;
+    UINT32 _offset = 0;
+    UINT32 _count = 0;
 };
-
 
 template <typename T>
 class CVertexBuffer : public CBuffer<T> {
 public:
-	using Super = CBuffer<T>;
-	CVertexBuffer(ID3D11Device* device) : Super(device) {};
-	~CVertexBuffer() {};
+    using Super = CBuffer<T>;
+    CVertexBuffer(ID3D11Device* device) : Super(device) {}
+    ~CVertexBuffer() {}
 
-	void Create(const std::vector<T>& vertices) override;
+    void Create(const std::vector<T>& vertices) override;
 };
 
 template <typename T>
 inline void CVertexBuffer<T>::Create(const std::vector<T>& vertices) {
-	//this->_stride = sizeof(T);
-	//this->_count = static_cast<UINT32>(vertices.size());
+    this->_stride = sizeof(T);
+    this->_count = static_cast<UINT32>(vertices.size());
 
-	//D3D11_BUFFER_DESC desc = {};
-	////desc.Usage = D3D11_USAGE_IMMUTABLE;			// immutable: gpu가 읽기 전용으로 접근할 수 있다.
-	////desc.Usage = D3D11_USAGE_DYNAMIC;		// immutable: gpu가 읽기 전용으로 접근할 수 있다.
-	//desc.Usage = D3D11_USAGE_DEFAULT;
-	//desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;	// vertex buffer로 사용하겠다.
-	//desc.ByteWidth = (UINT32)(this->_stride * this->_count);	// buffer 크기 지정
+    D3D11_BUFFER_DESC desc = {};
+    desc.Usage = D3D11_USAGE_DYNAMIC;            // 동적 업데이트용
+    desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+    desc.ByteWidth = (UINT32)(this->_stride * this->_count);
+    desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
-	//D3D11_SUBRESOURCE_DATA data = {};
-	//data.pSysMem = vertices.data();
+    D3D11_SUBRESOURCE_DATA data = {};
+    data.pSysMem = vertices.data();
 
-	//HRESULT hr = this->_device->CreateBuffer(&desc, &data, &this->_buffer);
-	//assert(SUCCEEDED(hr));
-	this->_stride = sizeof(T);
-	this->_count = static_cast<UINT32>(vertices.size());
-
-	D3D11_BUFFER_DESC desc = {};
-	// 기존: desc.Usage = D3D11_USAGE_IMMUTABLE;
-	desc.Usage = D3D11_USAGE_DYNAMIC;            // 동적 버퍼로 변경
-	desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	desc.ByteWidth = (UINT32)(this->_stride * this->_count);
-	desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;  // 동적 업데이트를 위해 설정
-
-	D3D11_SUBRESOURCE_DATA data = {};
-	data.pSysMem = vertices.data();
-
-	HRESULT hr = this->_device->CreateBuffer(&desc, &data, &this->_buffer);
-	assert(SUCCEEDED(hr));
+    HRESULT hr = this->_device->CreateBuffer(&desc, &data, this->_buffer.GetAddressOf());
+    assert(SUCCEEDED(hr));
 }
-
 
 class CIndexBuffer : public CBuffer<UINT32> {
 public:
-	using Super = CBuffer<UINT32>;
-	CIndexBuffer(ID3D11Device* device) : Super(device) {};
-	~CIndexBuffer() {};
-	void Create(const std::vector<UINT32>& indices) override;
+    using Super = CBuffer<UINT32>;
+    CIndexBuffer(ID3D11Device* device) : Super(device) {}
+    ~CIndexBuffer() {}
+    void Create(const std::vector<UINT32>& indices) override;
 };
 
 inline void CIndexBuffer::Create(const std::vector<UINT32>& indices) {
-	//this->_stride = sizeof(UINT32);
-	//this->_offset = 0;
-	//this->_count = static_cast<UINT32>(indices.size());
 
-	//D3D11_BUFFER_DESC desc = {};						// buffer의 종류, 용도 등을 지정
-	////desc.Usage = D3D11_USAGE_IMMUTABLE;			// immutable: gpu가 읽기 전용으로 접근할 수 있다.
-	//desc.Usage = D3D11_USAGE_DEFAULT;			// immutable: gpu가 읽기 전용으로 접근할 수 있다.
-	//desc.BindFlags = D3D11_BIND_INDEX_BUFFER;	// index buffer로 사용하겠다.
-	//desc.ByteWidth = (UINT32)(sizeof(UINT32) * this->_count);	// buffer 크기 지정
+    // TO-DO: refactor
+    if (indices.size() == 0) return;
 
-	//D3D11_SUBRESOURCE_DATA data = {};
-	//data.pSysMem = indices.data();
+    this->_stride = sizeof(UINT32);
+    this->_offset = 0;
+    this->_count = static_cast<UINT32>(indices.size());
 
-	//HRESULT hr = this->_device->CreateBuffer(&desc, &data, &this->_buffer);
+    D3D11_BUFFER_DESC desc = {};
+    desc.Usage = D3D11_USAGE_DYNAMIC;         // 동적 업데이트용
+    desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+    desc.ByteWidth = static_cast<UINT>(sizeof(UINT32) * this->_count);
+    desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
-	this->_stride = sizeof(UINT32);
-	this->_offset = 0;
-	this->_count = static_cast<UINT32>(indices.size());
+    D3D11_SUBRESOURCE_DATA data = {};
+    data.pSysMem = indices.data();
 
-	D3D11_BUFFER_DESC desc = {};
-	desc.Usage = D3D11_USAGE_DYNAMIC;         // 동적 업데이트를 위해 변경
-	desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	desc.ByteWidth = static_cast<UINT>(sizeof(UINT32) * this->_count);
-	desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE; // 동적 업데이트 허용
-
-	D3D11_SUBRESOURCE_DATA data = {};
-	data.pSysMem = indices.data();
-
-	HRESULT hr = this->_device->CreateBuffer(&desc, &data, &this->_buffer);
-	assert(SUCCEEDED(hr));
+    HRESULT hr = this->_device->CreateBuffer(&desc, &data, this->_buffer.GetAddressOf());
+    assert(SUCCEEDED(hr));
 }
-
 
 template <typename T>
 class CConstantBuffer : public CBuffer<T> {
 public:
-	using Super = CBuffer<T>;
-	CConstantBuffer(ID3D11Device* device, ID3D11DeviceContext* deviceContext) : Super(device), _deviceContext(deviceContext) {};
-	~CConstantBuffer() {};
+    using Super = CBuffer<T>;
+    CConstantBuffer(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
+        : Super(device), _deviceContext(deviceContext) {
+    }
+    ~CConstantBuffer() {}
 
-	void Create(const std::vector<T>&);
-	void Create();
-	void CopyData(const T& data);
+    void Create(const std::vector<T>&);
+    void Create();
+    void CopyData(const T& data);
 
 protected:
-	ID3D11DeviceContext* _deviceContext;
+    ID3D11DeviceContext* _deviceContext;
 };
 
 template<typename T>
 inline void CConstantBuffer<T>::Create(const std::vector<T>&) {
-	this->_stride = sizeof(T);
-	this->_offset = 0;
-	this->_count = 0;
+    this->_stride = sizeof(T);
+    this->_offset = 0;
+    this->_count = 0;
 
-	D3D11_BUFFER_DESC desc = {};
-	desc.Usage = D3D11_USAGE_DYNAMIC;
-	desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	desc.ByteWidth = (this->_stride + 15) & ~15; // 16의 배수 보정
-	desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+    D3D11_BUFFER_DESC desc = {};
+    desc.Usage = D3D11_USAGE_DYNAMIC;
+    desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+    desc.ByteWidth = (this->_stride + 15) & ~15; // 16바이트 배수 보정
+    desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
-	HRESULT hr = this->_device->CreateBuffer(&desc, nullptr, &this->_buffer);
+    HRESULT hr = this->_device->CreateBuffer(&desc, nullptr, this->_buffer.GetAddressOf());
+    assert(SUCCEEDED(hr));
 }
 
 template<typename T>
 inline void CConstantBuffer<T>::Create() {
-	this->_stride = sizeof(T);
-	this->_offset = 0;
-	this->_count = 0;
+    this->_stride = sizeof(T);
+    this->_offset = 0;
+    this->_count = 0;
 
-	D3D11_BUFFER_DESC desc = {};
-	desc.Usage = D3D11_USAGE_DYNAMIC;
-	desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	desc.ByteWidth = (this->_stride + 15) & ~15; // 16의 배수 보정
-	desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+    D3D11_BUFFER_DESC desc = {};
+    desc.Usage = D3D11_USAGE_DYNAMIC;
+    desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+    desc.ByteWidth = (this->_stride + 15) & ~15; // 16바이트 배수 보정
+    desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
-	HRESULT hr = this->_device->CreateBuffer(&desc, nullptr, &this->_buffer);
+    HRESULT hr = this->_device->CreateBuffer(&desc, nullptr, this->_buffer.GetAddressOf());
+    assert(SUCCEEDED(hr));
 }
 
 template<typename T>
 inline void CConstantBuffer<T>::CopyData(const T& data) {
-	D3D11_MAPPED_SUBRESOURCE subResources = {};
-
-	this->_deviceContext->Map(this->_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &subResources);
-	memcpy(subResources.pData, &data, sizeof(data));
-	this->_deviceContext->Unmap(this->_buffer, 0);
+    D3D11_MAPPED_SUBRESOURCE subResource = {};
+    HRESULT hr = _deviceContext->Map(this->_buffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &subResource);
+    assert(SUCCEEDED(hr));
+    memcpy(subResource.pData, &data, sizeof(data));
+    _deviceContext->Unmap(this->_buffer.Get(), 0);
 }

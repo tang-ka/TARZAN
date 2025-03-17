@@ -22,7 +22,7 @@ void CSamplerState::Create() {
 	_desc.MinLOD = FLT_MIN;
 	_desc.MipLODBias = 0.f;
 
-	HRESULT hr = _device->CreateSamplerState(&_desc, &_samplerState);
+	HRESULT hr = _device->CreateSamplerState(&_desc, _samplerState.GetAddressOf());
 }
 
 
@@ -57,6 +57,6 @@ void CBlendState::Create() {
 	_desc.RenderTarget[0].BlendEnable = true;
 	_desc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
-	HRESULT hr = _device->CreateBlendState(&_desc, &_blendState);
+	HRESULT hr = _device->CreateBlendState(&_desc, _blendState->GetAddressOf());
 	assert(SUCCEEDED(hr));
 }

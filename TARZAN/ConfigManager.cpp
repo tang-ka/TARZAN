@@ -33,14 +33,14 @@ void ConfigManager::LoadConfig()
     }
 
     // 파일이 존재하는 경우, INI 파일에서 값을 읽어옴
-    std::wstring orthStr = GetValue(L"EditorConfig", L"bIsOrthgonal", L"false");
-    ConfigManager::GetInstance()._editorConfig.bIsOrthogonal = (orthStr == L"true");
+    //std::wstring orthStr = GetValue(L"EditorConfig", L"bIsOrthgonal", L"false");
+    //ConfigManager::GetInstance()._editorConfig.bIsOrthogonal = (orthStr == L"true");
 
     std::wstring scaleStr = GetValue(L"EditorConfig", L"WorldGridScale", L"1");
     ConfigManager::GetInstance()._editorConfig.WorldGridScale = static_cast<float>(_wtof(scaleStr.c_str()));
 
-    std::wstring sensStr = GetValue(L"EditorConfig", L"CameraSpeed", L"1");
-    ConfigManager::GetInstance()._editorConfig.CameraSpeed = static_cast<float>(_wtof(sensStr.c_str()));
+    std::wstring speedStr = GetValue(L"EditorConfig", L"CameraSpeed", L"1");
+    ConfigManager::GetInstance()._editorConfig.CameraSpeed = static_cast<float>(_wtof(speedStr.c_str()));
 }
 
 void ConfigManager::SaveConfig() const
@@ -48,7 +48,7 @@ void ConfigManager::SaveConfig() const
     // Config 폴더가 있는지 확인
     const_cast<ConfigManager*>(this)->IsConfigDirectoryExist();
 
-    SetValue(L"EditorConfig", L"bIsOrthgonal", ConfigManager::GetInstance()._editorConfig.bIsOrthogonal ? L"true" : L"false");
+    //SetValue(L"EditorConfig", L"bIsOrthgonal", ConfigManager::GetInstance()._editorConfig.bIsOrthogonal ? L"true" : L"false");
     SetValue(L"EditorConfig", L"WorldGridScale", std::to_wstring(ConfigManager::GetInstance()._editorConfig.WorldGridScale));
     SetValue(L"EditorConfig", L"CameraSpeed", std::to_wstring(ConfigManager::GetInstance()._editorConfig.CameraSpeed));
 }
@@ -60,7 +60,7 @@ void ConfigManager::Shutdown()
     UCameraComponent* camera= CRenderer::Instance()->GetMainCamera();
     if (grid && camera)
     {
-        // ConfigManager의 설정값을 현재 grid의 값으로 업데이트
+        //ConfigManager::GetInstance()._editorConfig.bIsOrthogonal = camera->orthogonal;
         ConfigManager::GetInstance()._editorConfig.WorldGridScale = grid->GetGridScale();
         ConfigManager::GetInstance()._editorConfig.CameraSpeed = camera->CameraSpeed;
     }

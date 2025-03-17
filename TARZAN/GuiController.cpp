@@ -24,7 +24,7 @@ void GuiController::Init(HWND hWnd, CGraphics* graphics)
 	_io = &ImGui::GetIO();
 	ImGui_ImplDX11_Init(graphics->GetDevice(), graphics->GetDeviceContext());
 	ImGui_ImplWin32_Init(hWnd);
-	_console = new GuiConsole(this);
+	_console = std::make_unique<GuiConsole>();
 }
 
 void GuiController::NewFrame()
@@ -346,7 +346,7 @@ void GuiController::Resize()
 
 GuiConsole* GuiController::GetConcolWindow()
 {
-	return _console;
+	return _console.get();
 }
 
 void GuiController::CreateSceneManagerPanel()
@@ -384,17 +384,4 @@ void GuiController::CreateSceneManagerPanel()
 	}
 
 	ImGui::End();
-}
-
-void GuiController::SetSelectedGridScale(float scale)
-{
-	// grid scale 값에 따라 콤보 박스의 선택 인덱스를 설정합니다.
-	if (scale == 0.1f)
-		_selectedGridScale = 0;
-	else if (scale == 1.0f)
-		_selectedGridScale = 1;
-	else if (scale == 10.0f)
-		_selectedGridScale = 2;
-	else
-		_selectedGridScale = 1; // 기본값
 }
