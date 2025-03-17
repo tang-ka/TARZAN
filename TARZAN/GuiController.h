@@ -22,11 +22,14 @@ public:
 	void NewFrame();
 	UActorComponent* GetNearestActorComponents(float& distance);
 	EPrimitiveColor GetNearestGizmo(float& distance);
+	void SelectActor(UActorComponent* neareastActorComp);
+	void DeselectActor();
 
 	void RenderFrame();
 	void RenderEditor();
 	void Resize();
 	
+public:
 	GuiConsole* GetConcolWindow();
 	
 	UActorComponent* _selected;

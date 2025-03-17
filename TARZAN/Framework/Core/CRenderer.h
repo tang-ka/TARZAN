@@ -44,6 +44,8 @@ public:
 
 	void SetDepthStencil(ID3D11DepthStencilState* pDSState);
 
+	void DrawLine(TArray<FVertexSimple> vertices, TArray<uint32> indices, FVector4 color) const;
+
 private:
 	CGraphics* _graphics = nullptr;
 	CVertexShader* _vertexShader = nullptr;

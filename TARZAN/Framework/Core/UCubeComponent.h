@@ -1,5 +1,6 @@
 #pragma once
 #include "./Framework/Core/UPrimitiveComponent.h"
+
 class UCubeComponent: public UPrimitiveComponent {
 public:
 	UCubeComponent();
@@ -7,4 +8,7 @@ public:
 
 	//bool Intersects(FVector rayOrigin, FVector rayDirection);
 	virtual bool IntersectsRay(const FVector& rayOrigin, const FVector& rayDir, float& dist);
+
+private:
+	void CreateBoundingBox(EPrimitiveType type) override;
 };

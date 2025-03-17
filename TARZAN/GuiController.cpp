@@ -56,12 +56,9 @@ void GuiController::NewFrame()
 		UActorComponent* neareastActorComp = GetNearestActorComponents(nearestActorDistance);
 		EPrimitiveColor neareastAxis = GetNearestGizmo(nearestGizmoDistance);
 
-		if (neareastActorComp == nullptr && neareastAxis == EPrimitiveColor::NONE) {
-			UEngine::GetInstance().GetGizmo()->Detach();
-			UPrimitiveComponent* downcast = dynamic_cast<UPrimitiveComponent*>(_selected);
-			if (downcast)
-				downcast->renderFlags &= ~PRIMITIVE_FLAG_SELECTED;
-			_selected = nullptr;
+		if (neareastActorComp == nullptr && neareastAxis == EPrimitiveColor::NONE)
+		{
+			DeselectActor();
 		}
 		else {
 			// Gizmo가 활성화되어 있고, 교차가 있는 경우 무조건 Gizmo를 선택
@@ -71,19 +68,25 @@ void GuiController::NewFrame()
 				UPrimitiveComponent* downcast = dynamic_cast<UPrimitiveComponent*>(_selected);
 				if (downcast)
 					downcast->renderFlags &= ~PRIMITIVE_FLAG_SELECTED;
-				_selected = nullptr; // Gizmo만 선택, 액터는 선택 해제
+				//_selected = nullptr; // Gizmo만 선택, 액터는 선택 해제
 			}
 			// Gizmo가 없거나 교차가 없는 경우, 액터를 선택
 			else if (neareastActorComp != nullptr)
 			{
 				UPrimitiveComponent* downcast = dynamic_cast<UPrimitiveComponent*>(_selected);
 				if (downcast)
+				{
 					downcast->renderFlags &= ~PRIMITIVE_FLAG_SELECTED;
+					downcast->HideBoundingBox();
+				}
 
 				_selected = neareastActorComp;
+
 				downcast = dynamic_cast<UPrimitiveComponent*>(_selected);
-				if (downcast)
+				if (downcast) {
 					downcast->renderFlags |= PRIMITIVE_FLAG_SELECTED;
+					downcast->ShowBoundingBox();
+				}
 
 				UEngine::GetInstance().GetGizmo()->AttachTo(dynamic_cast<UPrimitiveComponent*>(_selected));
 				UEngine::GetInstance().GetGizmo()->selectedAxis = EPrimitiveColor::NONE;
@@ -107,7 +110,6 @@ UActorComponent* GuiController::GetNearestActorComponents(float& distance) {
 
 EPrimitiveColor GuiController::GetNearestGizmo(float& distance)
 {
-	
 	if (!UEngine::GetInstance().GetGizmo()->isGizmoActivated)
 	{
 		distance = FLT_MAX;
@@ -146,6 +148,37 @@ EPrimitiveColor GuiController::GetNearestGizmo(float& distance)
 	distance = hitDistance[pickedAxis];
 	return pickedAxis;
 
+}
+
+void GuiController::SelectActor(UActorComponent* neareastActorComp)
+{
+	UPrimitiveComponent* downcast = dynamic_cast<UPrimitiveComponent*>(_selected);
+	if (downcast)
+		downcast->renderFlags &= ~PRIMITIVE_FLAG_SELECTED;
+
+	if (downcast != nullptr)
+		downcast->HideBoundingBox();
+	_selected = neareastActorComp;
+	dynamic_cast<UPrimitiveComponent*>(_selected)->ShowBoundingBox();
+
+	downcast = dynamic_cast<UPrimitiveComponent*>(_selected);
+	if (downcast)
+		downcast->renderFlags |= PRIMITIVE_FLAG_SELECTED;
+
+	UEngine::GetInstance().GetGizmo()->AttachTo(dynamic_cast<UPrimitiveComponent*>(_selected));
+	UEngine::GetInstance().GetGizmo()->selectedAxis = EPrimitiveColor::NONE;
+}
+
+void GuiController::DeselectActor()
+{
+	UEngine::GetInstance().GetGizmo()->Detach();
+	UPrimitiveComponent* downcast = dynamic_cast<UPrimitiveComponent*>(_selected);
+	if (downcast)
+	{
+		downcast->renderFlags &= ~PRIMITIVE_FLAG_SELECTED;
+		downcast->HideBoundingBox();
+	}
+	_selected = nullptr;
 }
 
 void GuiController::RenderFrame()
@@ -319,7 +352,7 @@ void GuiController::RenderEditor() {
 		ImGui::DragFloat3("scale", downcastScale, 0.1f);
 		downcast->SetRelativeScale3D(FVector(downcastScale[0], downcastScale[1], downcastScale[2]));
 
-		if ( ImGui::Button("Delete") ) {
+		if (ImGui::Button("Delete")) {
 			UEngine::GetInstance().GetGizmo()->Detach();
 			SceneManager->DeleteActorFromMap(_selected);
 			World->RemoveActor(_selected);
@@ -350,7 +383,7 @@ void GuiController::CreateSceneManagerPanel()
 	if (ImGui::TreeNode("Primitive"))
 	{
 		SceneView->Update();
-		
+
 		TMap<uint32, UObject*> Actors = SceneView->GetActors();
 
 		for (const TPair<uint32, UObject*>& Pair : Actors)

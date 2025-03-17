@@ -8,19 +8,15 @@ UCubeComponent::UCubeComponent() {
 
 
 	vertices = {
-		{1.f, 1.f, -1.f, 1.f, 0.f, 0.f, 1.f,0.5f,0.f},   // Vertex 0.
-		{ -1.f, 1.f, -1.f, 0.f, 1.f, 0.f, 1.f,0.f,0.f },  // Vertex 1.
-		{-1.f, 1.f, 1.f, 0.f, 0.f, 1.f, 1.f,0.f,0.5f },    // And so on.
-		{1.f, 1.f, 1.f, 1.f, 1.f, 0.f, 1.f,0.5f,0.5f},
-		{1.f, -1.f, -1.f,1.f, 0.f, 1.f, 1.f,0.5f,0.f},
-		{-1.f, -1.f, -1.f, 0.f, 1.f, 1.f, 1.f,0.f,0.f},
-		{-1.f, -1.f, 1.f, 0.f, 0.f, 0.f, 1.f,0.f,0.5f},
-		{1.f, -1.f, 1.f, 1.f, 1.f, 1.f, 1.f,0.5f,0.5f},
+		{1.f, 1.f, -1.f,	1.f, 0.f, 0.f, 1.f,		0.5f,0.f	},   // Vertex 0.
+		{-1.f, 1.f, -1.f,	0.f, 1.f, 0.f, 1.f,		0.f,0.f		},  // Vertex 1.
+		{-1.f, 1.f, 1.f,	0.f, 0.f, 1.f, 1.f,		0.f,0.5f	},    // And so on.
+		{1.f, 1.f, 1.f,		1.f, 1.f, 0.f, 1.f,		0.5f,0.5f	},
+		{1.f, -1.f, -1.f,	1.f, 0.f, 1.f, 1.f,		0.5f,0.f	},
+		{-1.f, -1.f, -1.f,	0.f, 1.f, 1.f, 1.f,		0.f,0.f		},
+		{-1.f, -1.f, 1.f,	0.f, 0.f, 0.f, 1.f,		0.f,0.5f	},
+		{1.f, -1.f, 1.f,	1.f, 1.f, 1.f, 1.f,		0.5f,0.5f	},
 	};
-
-
-
-
 
 	indices =
 	{
@@ -45,6 +41,8 @@ UCubeComponent::UCubeComponent() {
 	_vertexBuffer->Create(vertices);
 	_indexBuffer = new CIndexBuffer(graphics->GetDevice());
 	_indexBuffer->Create(indices);
+
+	CreateBoundingBox(EPrimitiveType::CUBE);
 }
 
 void UCubeComponent::Update() {
@@ -107,4 +105,13 @@ bool UCubeComponent::IntersectsRay(const FVector& rayOrigin, const FVector& rayD
 	}
 
 	return false;
+}
+
+void UCubeComponent::CreateBoundingBox(EPrimitiveType type)
+{
+	boundingBox = new FBoundingBox();
+	boundingBox->SetBoundaryPointsForPrimitive(type);
+	boundingBox->GenerateVerticesByBasicBox();
+	boundingBox->GenerateIndices();
+	//isShowBoundingBox = true;
 }
