@@ -138,11 +138,12 @@ void UEngine::Run()
 		UGizmo->Update();
 		UGizmo->Render();
 
-		/* 월드 Axis 렌더링*/
-		Arrow->Render();
 		// 동적으로 변경하려면 여기에 따로 WorldGrid->Update를 추가해야 할 것 같은데
 		WorldGrid->UpdateGrid();
 		WorldGrid->Render();
+
+		/* 월드 Axis 렌더링*/
+		Arrow->Render();
 		Controller->RenderFrame();
 
 		CRenderer::Instance()->GetGraphics()->RenderEnd();

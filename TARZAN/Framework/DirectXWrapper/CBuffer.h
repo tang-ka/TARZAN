@@ -37,15 +37,30 @@ public:
 
 template <typename T>
 inline void CVertexBuffer<T>::Create(const std::vector<T>& vertices) {
+	//this->_stride = sizeof(T);
+	//this->_count = static_cast<UINT32>(vertices.size());
+
+	//D3D11_BUFFER_DESC desc = {};
+	////desc.Usage = D3D11_USAGE_IMMUTABLE;			// immutable: gpu가 읽기 전용으로 접근할 수 있다.
+	////desc.Usage = D3D11_USAGE_DYNAMIC;		// immutable: gpu가 읽기 전용으로 접근할 수 있다.
+	//desc.Usage = D3D11_USAGE_DEFAULT;
+	//desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;	// vertex buffer로 사용하겠다.
+	//desc.ByteWidth = (UINT32)(this->_stride * this->_count);	// buffer 크기 지정
+
+	//D3D11_SUBRESOURCE_DATA data = {};
+	//data.pSysMem = vertices.data();
+
+	//HRESULT hr = this->_device->CreateBuffer(&desc, &data, &this->_buffer);
+	//assert(SUCCEEDED(hr));
 	this->_stride = sizeof(T);
 	this->_count = static_cast<UINT32>(vertices.size());
 
 	D3D11_BUFFER_DESC desc = {};
-	//desc.Usage = D3D11_USAGE_IMMUTABLE;			// immutable: gpu가 읽기 전용으로 접근할 수 있다.
-	//desc.Usage = D3D11_USAGE_DYNAMIC;		// immutable: gpu가 읽기 전용으로 접근할 수 있다.
-	desc.Usage = D3D11_USAGE_DEFAULT;
-	desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;	// vertex buffer로 사용하겠다.
-	desc.ByteWidth = (UINT32)(this->_stride * this->_count);	// buffer 크기 지정
+	// 기존: desc.Usage = D3D11_USAGE_IMMUTABLE;
+	desc.Usage = D3D11_USAGE_DYNAMIC;            // 동적 버퍼로 변경
+	desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	desc.ByteWidth = (UINT32)(this->_stride * this->_count);
+	desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;  // 동적 업데이트를 위해 설정
 
 	D3D11_SUBRESOURCE_DATA data = {};
 	data.pSysMem = vertices.data();
@@ -64,20 +79,36 @@ public:
 };
 
 inline void CIndexBuffer::Create(const std::vector<UINT32>& indices) {
+	//this->_stride = sizeof(UINT32);
+	//this->_offset = 0;
+	//this->_count = static_cast<UINT32>(indices.size());
+
+	//D3D11_BUFFER_DESC desc = {};						// buffer의 종류, 용도 등을 지정
+	////desc.Usage = D3D11_USAGE_IMMUTABLE;			// immutable: gpu가 읽기 전용으로 접근할 수 있다.
+	//desc.Usage = D3D11_USAGE_DEFAULT;			// immutable: gpu가 읽기 전용으로 접근할 수 있다.
+	//desc.BindFlags = D3D11_BIND_INDEX_BUFFER;	// index buffer로 사용하겠다.
+	//desc.ByteWidth = (UINT32)(sizeof(UINT32) * this->_count);	// buffer 크기 지정
+
+	//D3D11_SUBRESOURCE_DATA data = {};
+	//data.pSysMem = indices.data();
+
+	//HRESULT hr = this->_device->CreateBuffer(&desc, &data, &this->_buffer);
+
 	this->_stride = sizeof(UINT32);
 	this->_offset = 0;
 	this->_count = static_cast<UINT32>(indices.size());
 
-	D3D11_BUFFER_DESC desc = {};						// buffer의 종류, 용도 등을 지정
-	//desc.Usage = D3D11_USAGE_IMMUTABLE;			// immutable: gpu가 읽기 전용으로 접근할 수 있다.
-	desc.Usage = D3D11_USAGE_DEFAULT;			// immutable: gpu가 읽기 전용으로 접근할 수 있다.
-	desc.BindFlags = D3D11_BIND_INDEX_BUFFER;	// index buffer로 사용하겠다.
-	desc.ByteWidth = (UINT32)(sizeof(UINT32) * this->_count);	// buffer 크기 지정
+	D3D11_BUFFER_DESC desc = {};
+	desc.Usage = D3D11_USAGE_DYNAMIC;         // 동적 업데이트를 위해 변경
+	desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	desc.ByteWidth = static_cast<UINT>(sizeof(UINT32) * this->_count);
+	desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE; // 동적 업데이트 허용
 
 	D3D11_SUBRESOURCE_DATA data = {};
 	data.pSysMem = indices.data();
 
 	HRESULT hr = this->_device->CreateBuffer(&desc, &data, &this->_buffer);
+	assert(SUCCEEDED(hr));
 }
 
 
