@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "CState.h"
 
 void CSamplerState::SetAddress(D3D11_TEXTURE_ADDRESS_MODE u, D3D11_TEXTURE_ADDRESS_MODE v, D3D11_TEXTURE_ADDRESS_MODE w) {
@@ -22,7 +22,7 @@ void CSamplerState::Create() {
 	_desc.MinLOD = FLT_MIN;
 	_desc.MipLODBias = 0.f;
 
-	HRESULT hr = _device->CreateSamplerState(&_desc, &_samplerState);
+	HRESULT hr = _device->CreateSamplerState(&_desc, _samplerState.GetAddressOf());
 }
 
 
@@ -49,14 +49,46 @@ void CBlendState::SetDescBlend(D3D11_BLEND destBlend, D3D11_BLEND destBlendAlpha
 	_desc.RenderTarget[0].DestBlendAlpha = destBlendAlpha;
 }
 
-void CBlendState::SetOp(D3D11_BLEND_OP op) {
+void CBlendState::SetOp(D3D11_BLEND_OP op, D3D11_BLEND_OP opAlpha) {
 	_desc.RenderTarget[0].BlendOp = op;
+	_desc.RenderTarget[0].BlendOpAlpha = opAlpha;
 }
 
 void CBlendState::Create() {
+	_desc.AlphaToCoverageEnable = FALSE;
+	_desc.IndependentBlendEnable = FALSE;
 	_desc.RenderTarget[0].BlendEnable = true;
 	_desc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
-	HRESULT hr = _device->CreateBlendState(&_desc, &_blendState);
+	HRESULT hr = _device->CreateBlendState(&_desc, _blendState->GetAddressOf());
 	assert(SUCCEEDED(hr));
+}
+
+void CDepthStencilState::Create()
+{
+	Desc.BackFace = Desc.FrontFace; // 현재는 BackFace에 관해 설정할 것이 없어서 이렇게 둠
+
+	_device->CreateDepthStencilState(&Desc, &DSState);
+}
+
+void CDepthStencilState::SetDepthFlags(BOOL InDepthEnable, D3D11_DEPTH_WRITE_MASK InDepthWriteMask, D3D11_COMPARISON_FUNC InDepthFunc)
+{
+	Desc.DepthEnable = InDepthEnable;
+	Desc.DepthWriteMask = InDepthWriteMask;
+	Desc.DepthFunc = InDepthFunc;
+}
+
+void CDepthStencilState::SetStencilFlags(BOOL InStencilEnable, UINT8 InStencilReadMask, UINT8 InStencilWriteMask)
+{
+	Desc.StencilEnable = InStencilEnable;
+	Desc.StencilReadMask = InStencilReadMask;
+	Desc.StencilWriteMask = InStencilWriteMask;
+}
+
+void CDepthStencilState::SetFrontFaceFlags(D3D11_COMPARISON_FUNC InStencilFunc, D3D11_STENCIL_OP InStencilPassOp, D3D11_STENCIL_OP InStencilFailOp, D3D11_STENCIL_OP InDepthFailOp)
+{
+	Desc.FrontFace.StencilFunc = InStencilFunc;
+	Desc.FrontFace.StencilPassOp = InStencilPassOp;
+	Desc.FrontFace.StencilFailOp = InStencilFailOp;
+	Desc.FrontFace.StencilDepthFailOp = InDepthFailOp;
 }

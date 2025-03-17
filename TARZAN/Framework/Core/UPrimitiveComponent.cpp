@@ -3,12 +3,7 @@
 #include "Framework/Core/CRenderer.h"
 #include "FBoundingBox.h"
 
-UPrimitiveComponent::~UPrimitiveComponent() {
-	if (_vertexBuffer != nullptr)
-		delete _vertexBuffer;
-	if ( _indexBuffer != nullptr )
-		delete _indexBuffer;
-}
+UPrimitiveComponent::~UPrimitiveComponent() {}
 
 void UPrimitiveComponent::Render() {
 	CGraphics* graphics = CRenderer::Instance()->GetGraphics();
@@ -31,6 +26,35 @@ void UPrimitiveComponent::Render() {
 
     CreateBoundingBoxBuffer();
     RenderBoundingBox();
+    CGraphics* graphics = CRenderer::Instance()->GetGraphics();
+  
+    /* Depth Stencil DESC */
+    {
+        if (DepthStencilState == nullptr)
+        {
+            DepthStencilState = new CDepthStencilState(graphics->GetDevice());
+            DepthStencilState->SetDepthFlags(TRUE, D3D11_DEPTH_WRITE_MASK_ALL, D3D11_COMPARISON_LESS);
+            DepthStencilState->SetStencilFlags(TRUE, 0xFF, 0xFF);
+            DepthStencilState->SetFrontFaceFlags(D3D11_COMPARISON_ALWAYS, D3D11_STENCIL_OP_REPLACE, D3D11_STENCIL_OP_KEEP, D3D11_STENCIL_OP_KEEP);
+            DepthStencilState->Create();
+
+        }
+
+        CRenderer::Instance()->SetDepthStencil(DepthStencilState->Get());
+    }
+
+    ID3D11Buffer* vertexBuffer = _vertexBuffer->Get();
+    uint32 stride = _vertexBuffer->GetStride();
+    uint32 offset = _vertexBuffer->GetOffset();
+    graphics->GetDeviceContext()->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
+    graphics->GetDeviceContext()->IASetIndexBuffer(_indexBuffer->Get(), DXGI_FORMAT_R32_UINT, 0);
+    FMatrix m = GetComponentTransform();
+    CRenderer::Instance()->SetTransformToConstantBuffer(m);
+    CRenderer::Instance()->SetFlagsToConstantBuffer({ renderFlags });
+    if (indices.size() > 0)
+        graphics->GetDeviceContext()->DrawIndexed(indices.size(), 0, 0);
+    else
+        graphics->GetDeviceContext()->Draw(vertices.size(), 0);
 }
 
 
@@ -39,11 +63,11 @@ void UPrimitiveComponent::GenerateRayForPicking(const FVector& pickPosition, con
 	FMatrix xmf4x4WorldView = GetComponentTransform() * viewMatrix;
 	FMatrix xmf4x4Inverse = xmf4x4WorldView.Inverse();
 	FVector xmf3CameraOrigin(0.0f, 0.0f, 0.0f);
-	//Ä«¸Ş¶ó ÁÂÇ¥°èÀÇ ¿øÁ¡À» ¸ğµ¨ ÁÂÇ¥°è·Î º¯È¯ÇÑ´Ù. 
+	//ì¹´ë©”??ì¢Œí‘œê³„ì˜ ?ì ??ëª¨ë¸ ì¢Œí‘œê³„ë¡œ ë³€?˜í•œ?? 
 	*pickRayOrigin = xmf4x4Inverse.TransformCoord(xmf3CameraOrigin);
-	//Ä«¸Ş¶ó ÁÂÇ¥°èÀÇ Á¡(¸¶¿ì½º ÁÂÇ¥¸¦ ¿ªº¯È¯ÇÏ¿© ±¸ÇÑ Á¡)À» ¸ğµ¨ ÁÂÇ¥°è·Î º¯È¯ÇÑ´Ù. 
+	//ì¹´ë©”??ì¢Œí‘œê³„ì˜ ??ë§ˆìš°??ì¢Œí‘œë¥?????˜í•˜??êµ¬í•œ ????ëª¨ë¸ ì¢Œí‘œê³„ë¡œ ë³€?˜í•œ?? 
 	*rayDirection = xmf4x4Inverse.TransformCoord(pickPosition);
-	//±¤¼±ÀÇ ¹æÇâ º¤ÅÍ¸¦ ±¸ÇÑ´Ù. 
+	//ê´‘ì„ ??ë°©í–¥ ë²¡í„°ë¥?êµ¬í•œ?? 
 	*rayDirection = (*rayDirection - *pickRayOrigin).Normalized();
 }
 
@@ -77,7 +101,7 @@ bool UPrimitiveComponent::IntersectRayTriangle(const FVector& rayOrigin, const F
         float a = edge1.Dot(h);
 
         if (fabs(a) < epsilon)
-            return false; // Ray¿Í »ï°¢ÇüÀÌ ÆòÇàÇÑ °æ¿ì
+            return false; // Ray?€ ?¼ê°?•ì´ ?‰í–‰??ê²½ìš°
 
         float f = 1.0f / a;
         FVector s = rayOrigin - v0;
@@ -91,7 +115,7 @@ bool UPrimitiveComponent::IntersectRayTriangle(const FVector& rayOrigin, const F
             return false;
 
         float t = f * edge2.Dot(q);
-        if (t > epsilon) // À¯È¿ÇÑ ±³Â÷ (rayÀÇ ½ÃÀÛÁ¡ ÀÌÈÄ)
+        if (t > epsilon) // ? íš¨??êµì°¨ (ray???œì‘???´í›„)
         {
             FVector localIntersection = rayOrigin + rayDirection * t;
             FVector worldIntersection = GetComponentTransform().TransformCoord(localIntersection);
@@ -129,7 +153,7 @@ int UPrimitiveComponent::CheckRayIntersection(FVector& rayOrigin, FVector& rayDi
             idx2 = indices[i * 3 + 2];
         }
 
-        // °¢ »ï°¢ÇüÀÇ ¹öÅØ½º À§Ä¡¸¦ FVector·Î ºÒ·¯¿É´Ï´Ù.
+        // ê°??¼ê°?•ì˜ ë²„í…???„ì¹˜ë¥?FVectorë¡?ë¶ˆëŸ¬?µë‹ˆ??
         uint32 stride = _vertexBuffer->GetStride();
         FVector v0 = *reinterpret_cast<FVector*>(pbPositions + idx0 * stride);
         FVector v1 = *reinterpret_cast<FVector*>(pbPositions + idx1 * stride);

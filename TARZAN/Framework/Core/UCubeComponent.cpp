@@ -3,6 +3,10 @@
 
 UCubeComponent::UCubeComponent() {
 
+	ObjType = EObjectType::Object;
+	isBill = false;
+
+
 	vertices = {
 		{1.f, 1.f, -1.f,	1.f, 0.f, 0.f, 1.f,		0.5f,0.f	},   // Vertex 0.
 		{-1.f, 1.f, -1.f,	0.f, 1.f, 0.f, 1.f,		0.f,0.f		},  // Vertex 1.
@@ -31,9 +35,9 @@ UCubeComponent::UCubeComponent() {
 	};
 
 	CGraphics* graphics = CRenderer::Instance()->GetGraphics();
-	_vertexBuffer = new CVertexBuffer<FVertexSimple>(graphics->GetDevice());
+	_vertexBuffer = std::make_unique<CVertexBuffer<FVertexSimple>>(graphics->GetDevice());
 	_vertexBuffer->Create(vertices);
-	_indexBuffer = new CIndexBuffer(graphics->GetDevice());
+	_indexBuffer = std::make_unique<CIndexBuffer>(graphics->GetDevice());
 	_indexBuffer->Create(indices);
 
 	CreateBoundingBox(EPrimitiveType::CUBE);

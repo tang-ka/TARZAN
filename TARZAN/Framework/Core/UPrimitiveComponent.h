@@ -9,7 +9,7 @@ class FBoundingBox;
 
 class UPrimitiveComponent: public USceneComponent {
 public:
-	UPrimitiveComponent(): renderFlags(0) {}
+	UPrimitiveComponent(): renderFlags(0), StencilRefNum(1) {}
 	virtual ~UPrimitiveComponent();
 
 public:
@@ -18,6 +18,8 @@ public:
 	TArray<uint32> indices = {};
 
 public:
+	bool isBill;
+
 	virtual void Render();
 	virtual bool IntersectsRay(const FVector& rayOrigin, const FVector& rayDir, float& dist) { return false; }
 	virtual void GenerateRayForPicking(const FVector& pickPosition, const FMatrix& viewMatrix, FVector* pickRayOrigin, FVector* rayDirection) override;
@@ -46,4 +48,12 @@ protected:
 	FBoundingBox* boundingBox;
 	CVertexBuffer<FVertexSimple>* _vertexBuffer = nullptr;
 	CIndexBuffer* _indexBuffer = nullptr;
+
+	uint32 renderFlags;
+
+protected:
+	std::unique_ptr<CVertexBuffer<FVertexSimple>> _vertexBuffer;
+	std::unique_ptr<CIndexBuffer> _indexBuffer;
+	CDepthStencilState* DepthStencilState = nullptr;
+	CBlendState* BlendState = nullptr;
 };

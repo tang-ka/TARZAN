@@ -48,7 +48,9 @@ TArray<FString> GuiConsole::StrSplit(FString s) {
     return res;
 }
 
-GuiConsole::GuiConsole(GuiController* g): _controller(g) {}
+GuiConsole::GuiConsole() :_inputBuffer(), onFocus(false)
+{
+}
 
 void GuiConsole::Render() {
 	const float footer_height_to_reserve = ImGui::GetStyle().ItemSpacing.y + ImGui::GetFrameHeightWithSpacing();

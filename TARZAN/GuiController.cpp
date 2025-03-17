@@ -11,21 +11,20 @@
 #include "ConfigManager.h"
 #include "Framework/Core/UWorldGridComponent.h"
 
+GuiController::~GuiController() {
+	ImGui_ImplDX11_Shutdown();
+	ImGui_ImplWin32_Shutdown();
+	ImGui::DestroyContext();
+}
 
-GuiController::GuiController(HWND hWnd, CGraphics* graphics) : hWnd(hWnd) {
+void GuiController::Init(HWND hWnd, CGraphics* graphics)
+{
 	IMGUI_CHECKVERSION();
 	_context = ImGui::CreateContext();
 	_io = &ImGui::GetIO();
 	ImGui_ImplDX11_Init(graphics->GetDevice(), graphics->GetDeviceContext());
 	ImGui_ImplWin32_Init(hWnd);
-	_console = new GuiConsole(this);
-
-}
-
-GuiController::~GuiController() {
-	ImGui_ImplDX11_Shutdown();
-	ImGui_ImplWin32_Shutdown();
-	ImGui::DestroyContext();
+	_console = std::make_unique<GuiConsole>();
 }
 
 void GuiController::NewFrame()
@@ -61,14 +60,31 @@ void GuiController::NewFrame()
 		{
 			DeselectActor();
 		}
-		else {
-			if (nearestActorDistance < nearestGizmoDistance)
-			{
-				SelectActor(neareastActorComp);
-			}
-			else
+		else 
+		{
+			// Gizmo가 활성화되어 있고, 교차가 있는 경우 무조건 Gizmo를 선택
+			if (UEngine::GetInstance().GetGizmo()->isGizmoActivated && neareastAxis != EPrimitiveColor::NONE)
 			{
 				UEngine::GetInstance().GetGizmo()->selectedAxis = neareastAxis;
+				UPrimitiveComponent* downcast = dynamic_cast<UPrimitiveComponent*>(_selected);
+				if (downcast)
+					downcast->renderFlags &= ~PRIMITIVE_FLAG_SELECTED;
+				_selected = nullptr; // Gizmo만 선택, 액터는 선택 해제
+			}
+			// Gizmo가 없거나 교차가 없는 경우, 액터를 선택
+			else if (neareastActorComp != nullptr)
+			{
+				UPrimitiveComponent* downcast = dynamic_cast<UPrimitiveComponent*>(_selected);
+				if (downcast)
+					downcast->renderFlags &= ~PRIMITIVE_FLAG_SELECTED;
+
+				_selected = neareastActorComp;
+				downcast = dynamic_cast<UPrimitiveComponent*>(_selected);
+				if (downcast)
+					downcast->renderFlags |= PRIMITIVE_FLAG_SELECTED;
+
+				UEngine::GetInstance().GetGizmo()->AttachTo(dynamic_cast<UPrimitiveComponent*>(_selected));
+				UEngine::GetInstance().GetGizmo()->selectedAxis = EPrimitiveColor::NONE;
 			}
 		}
 	}
@@ -183,7 +199,7 @@ void GuiController::RenderEditor() {
 
 	ImGui::SetNextWindowSizeConstraints(ImVec2(300.0f, 0.0f), ImVec2(300.0f, FLT_MAX));
 
-	const char* primitiveItems[] = { "Cube", "Sphere", "Plane" };
+	const char* primitiveItems[] = { "Cube", "Sphere", "Plane","Text"};
 	const char* viewModes[] = { "Lit", "Unlit", "Wireframe" };
 
 	D3D11_FILL_MODE currentFillMode = CRenderer::Instance()->GetGraphics()->GetFillMode();
@@ -212,6 +228,9 @@ void GuiController::RenderEditor() {
 				break;
 			case 2:
 				SceneManager->SpawnActor(EPrimitiveType::PLANE);
+				break;
+			case 3:
+				SceneManager->SpawnActor(EPrimitiveType::TEXT);
 				break;
 			}
 		}
@@ -253,10 +272,10 @@ void GuiController::RenderEditor() {
 	ImGui::Separator();
 	/***********************************/
 
-	ImGui::Text("ViewMode");
+	ImGui::Text("View Mode");
 	ImGui::SameLine();
 
-	if (ImGui::Combo("##", &_selectedMode, viewModes, IM_ARRAYSIZE(viewModes)))
+	if (ImGui::Combo("##ViewMode", &_selectedMode, viewModes, IM_ARRAYSIZE(viewModes)))
 	{
 		D3D11_FILL_MODE newMode = D3D11_FILL_SOLID;
 		switch (_selectedMode)
@@ -275,7 +294,7 @@ void GuiController::RenderEditor() {
 	const float gridScaleValues[3] = { 0.1f,1.0f, 10.0f };
 	ImGui::Text("Grid Scale");
 	ImGui::SameLine();
-	if (ImGui::Combo("###", &_selectedGridScale, gridScaleItems, IM_ARRAYSIZE(gridScaleItems)))
+	if (ImGui::Combo("##GridScale", &_selectedGridScale, gridScaleItems, IM_ARRAYSIZE(gridScaleItems)))
 	{
 		// 선택된 값에 따라 Grid Scale 업데이트
 		float newScale = gridScaleValues[_selectedGridScale];
@@ -296,6 +315,24 @@ void GuiController::RenderEditor() {
 			}
 		}
 	}
+	ImGui::Separator();
+	/***********************************/
+	const char* cameraSpeedItems[] = { "1","2", "5", "10"};
+	const float cameraSpeedValues[4] = { 1.f,2.f, 5.f, 10.f };
+	ImGui::Text("Camera Speed");
+	ImGui::SameLine();
+	if (ImGui::Combo("##CameraSpeed", &_selectedCameraSpeed, cameraSpeedItems, IM_ARRAYSIZE(cameraSpeedItems)))
+	{
+		UWorld* World = UEngine::GetInstance().GetWorld();
+		if (World) {
+			UCameraComponent* cam = CRenderer::Instance()->GetMainCamera();
+			if (cam)
+			{
+				float newSpeed = cameraSpeedValues[_selectedCameraSpeed];
+				cam->CameraSpeed = newSpeed;
+			}
+		}
+	}
 	ImGui::End();
 #pragma endregion
 
@@ -312,7 +349,6 @@ void GuiController::RenderEditor() {
 		downcast = dynamic_cast<USceneComponent*>(_selected);
 	if (downcast != nullptr) {
 		ImGui::Text("UUID: %d", _selected->GetUUID());
-
 
 		FVector vec = downcast->GetRelativeLocation();
 		float downcastLocation[3] = { vec.x, vec.y, vec.z };
@@ -349,7 +385,7 @@ void GuiController::Resize()
 
 GuiConsole* GuiController::GetConcolWindow()
 {
-	return _console;
+	return _console.get();
 }
 
 void GuiController::CreateSceneManagerPanel()
@@ -387,17 +423,4 @@ void GuiController::CreateSceneManagerPanel()
 	}
 
 	ImGui::End();
-}
-
-void GuiController::SetSelectedGridScale(float scale)
-{
-	// grid scale 값에 따라 콤보 박스의 선택 인덱스를 설정합니다.
-	if (scale == 0.1f)
-		_selectedGridScale = 0;
-	else if (scale == 1.0f)
-		_selectedGridScale = 1;
-	else if (scale == 10.0f)
-		_selectedGridScale = 2;
-	else
-		_selectedGridScale = 1; // 기본값
 }

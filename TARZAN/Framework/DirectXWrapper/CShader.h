@@ -2,13 +2,11 @@
 class CShader {
 public:
 	CShader(ID3D11Device* device) : _device(device), _blob(nullptr) {};
-	virtual ~CShader() {
-		SafeRelease(&_blob);
-	};
+	virtual ~CShader() {};
 	void Release();
 
 	virtual void Create(const FWString& path, const FString& name, const FString& version) abstract;
-	ID3DBlob* GetBlob() { return _blob; }
+	ID3DBlob* GetBlob() { return _blob.Get(); }
 
 protected:
 	void LoadShaderFromFile(const FWString& path, const FString& name, const FString& version);
@@ -16,36 +14,32 @@ protected:
 protected:
 	FWString _path;
 	FString _name;
-	ID3D11Device* _device;
-	ID3DBlob* _blob;
+	ComPtr<ID3D11Device> _device;
+	ComPtr<ID3DBlob> _blob;
 };
 
 class CVertexShader : public CShader {
 	using Super = CShader;
 public:
 	CVertexShader(ID3D11Device* device) : Super(device), _vertexShader(nullptr) {};
-	~CVertexShader() {
-		SafeRelease(&_vertexShader);
-	};
+	~CVertexShader() {};
 
 	void Create(const FWString& path, const FString& name, const FString& version) override;
-	ID3D11VertexShader* Get() { return _vertexShader; }
+	ID3D11VertexShader* Get() { return _vertexShader.Get(); }
 
 private:
-	ID3D11VertexShader* _vertexShader;
+	ComPtr<ID3D11VertexShader> _vertexShader;
 };
 
 class CPixelShader : public CShader {
 	using Super = CShader;
 public:
 	CPixelShader(ID3D11Device* device) : Super(device), _pixelShader(nullptr) {};
-	~CPixelShader() {
-		SafeRelease(&_pixelShader);
-	};
+	~CPixelShader() {};
 
 	void Create(const FWString& path, const FString& name, const FString& version) override;
-	ID3D11PixelShader* Get() { return _pixelShader; }
+	ID3D11PixelShader* Get() { return _pixelShader.Get(); }
 
 private:
-	ID3D11PixelShader* _pixelShader;
+	ComPtr<ID3D11PixelShader> _pixelShader;
 };

@@ -19,9 +19,9 @@ UPlaneComponent::UPlaneComponent() {
 	};
 
 	CGraphics* graphics = CRenderer::Instance()->GetGraphics();
-	_vertexBuffer = new CVertexBuffer<FVertexSimple>(graphics->GetDevice());
+	_vertexBuffer = std::make_unique<CVertexBuffer<FVertexSimple>>(graphics->GetDevice());
 	_vertexBuffer->Create(vertices);
-	_indexBuffer = new CIndexBuffer(graphics->GetDevice());
+	_indexBuffer = std::make_unique<CIndexBuffer>(graphics->GetDevice());
 	_indexBuffer->Create(indices);
 
 	CreateBoundingBox(EPrimitiveType::PLANE);

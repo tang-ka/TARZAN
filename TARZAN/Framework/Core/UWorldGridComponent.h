@@ -2,7 +2,6 @@
 #pragma once
 #include "UPrimitiveComponent.h"
 // 이거 디렉토리 구조 솔루션으로 바꿔야함
-#include <vector>
 #include "./Math/FVector.h"
 
 class UWorldGridComponent : public UPrimitiveComponent
@@ -22,7 +21,7 @@ public:
     virtual void Render() override;
 
 private:
-    int lastPosX;
-    int lastPosZ;
+    int lastPosX = 0;
+    int lastPosZ = 0;
     float gridScale;
 };

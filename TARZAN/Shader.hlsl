@@ -60,8 +60,17 @@ VS_OUTPUT VS(VS_INPUT input)
 
 float4 PS(VS_OUTPUT input) : SV_TARGET
 {
+ 
+    
      // 텍스처에서 샘플링하여 색상을 반환
     float4 textureColor = tex.Sample(samplerState, input.TexCoord); // 텍스처 샘플링
+    
+    
+     // 검은색 (R, G, B가 모두 0인 경우) 날리기
+    if (textureColor.r == 0.0f && textureColor.g == 0.0f && textureColor.b == 0.0f)
+    {
+        discard; // 검은색은 날림
+    }
     
     // 텍스처 샘플링된 색상과 전달된 색상 혼합
     return textureColor * input.Color; // 텍스처 색상에 기존 색상을 곱함

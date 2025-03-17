@@ -14,78 +14,91 @@ UWorldGridComponent::UWorldGridComponent()
     vertices = {};
     indices = {};
     CGraphics* graphics = CRenderer::Instance()->GetGraphics();
-    _vertexBuffer = new CVertexBuffer<FVertexSimple>(graphics->GetDevice());
-    _indexBuffer = new CIndexBuffer(graphics->GetDevice());
+    _vertexBuffer = std::make_unique<CVertexBuffer<FVertexSimple>>(graphics->GetDevice());
+    _indexBuffer = std::make_unique<CIndexBuffer>(graphics->GetDevice());
 
     lastPosX = std::floor(CRenderer::Instance()->GetMainCamera()->GetRelativeLocation().x);
     lastPosZ = std::floor(CRenderer::Instance()->GetMainCamera()->GetRelativeLocation().z);
 }
 
 // 소멸자: 할당한 리소스 해제
-UWorldGridComponent::~UWorldGridComponent()
-{
-    delete _vertexBuffer;
-    delete _indexBuffer;
-}
+UWorldGridComponent::~UWorldGridComponent() {}
 
-// GenerateGrid: -gridCount부터 gridCount까지 1단위 간격의 grid 선 정점 및 인덱스 생성
 void UWorldGridComponent::GenerateGrid(float posX, float posZ, int gridCount, float unitSize)
 {
-    // 여기에서 하는게 맞을까
+    // 초기화
     vertices.clear();
     indices.clear();
 
-    if (_vertexBuffer->Get())
-        _vertexBuffer->Get()->Release();
-    if (_indexBuffer->Get())
-        _indexBuffer->Get()->Release();
-
-    // 색상값
-    const FVector4 gridColor = { 0.f, 0.f, 0.f, 1.f };
     gridScale = unitSize;
+    const FVector4 gridColor = { 1.f, 1.f, 1.f, 0.1f };
 
-    // X축(수직선) 그리기: X 좌표가 일정하며 Z가 -gridCount ~ gridCount까지 변화
+    // X축 선
     for (int i = -gridCount; i <= gridCount; i++)
     {
-        // camera의 position을 가져와서 
-        float x = posX+i * unitSize;
-
+        float x = posX + i * unitSize;
         FVertexSimple v1, v2;
-
-        // FSimpleVertex 구조를 변경할 필요가 있어보임
-        v1.x = x; v1.y = 0.0f; v1.z = posZ -gridCount * unitSize;
-        v2.x = x; v2.y = 0.0f; v2.z = posZ+gridCount * unitSize ;
-
+        v1.x = x; v1.y = 0.f; v1.z = posZ - gridCount * unitSize;
+        v2.x = x; v2.y = 0.f; v2.z = posZ + gridCount * unitSize;
         v1.r = gridColor.x; v1.g = gridColor.y; v1.b = gridColor.z; v1.a = gridColor.w;
         v2.r = gridColor.x; v2.g = gridColor.y; v2.b = gridColor.z; v2.a = gridColor.w;
         vertices.push_back(v1);
         vertices.push_back(v2);
     }
 
-    // Z축(수평선) 그리기: Z 좌표가 일정하며 X가 -gridCount ~ gridCount까지 변화
-    // 수정을 했는데 이렇게 하면 카메라 동적이동했을때 문제가 생길 것 같은데 아닌가? 상관 없을라나
+    // Z축 선
     for (int i = -gridCount; i <= gridCount; i++)
     {
-        float z = posZ+i * unitSize;
+        float z = posZ + i * unitSize;
         FVertexSimple v1, v2;
-        v1.x = posX -gridCount * unitSize; v1.y = 0.0f; v1.z = z;
-        v2.x = posX+gridCount * unitSize;  v2.y = 0.0f; v2.z = z;
-
-        // 기본 색상 할당
+        v1.x = posX - gridCount * unitSize; v1.y = 0.f; v1.z = z;
+        v2.x = posX + gridCount * unitSize; v2.y = 0.f; v2.z = z;
         v1.r = gridColor.x; v1.g = gridColor.y; v1.b = gridColor.z; v1.a = gridColor.w;
         v2.r = gridColor.x; v2.g = gridColor.y; v2.b = gridColor.z; v2.a = gridColor.w;
         vertices.push_back(v1);
         vertices.push_back(v2);
     }
 
-    // 인덱스 생성: 각 선은 두 정점으로 구성되므로, 순차적으로 인덱스를 할당
     for (UINT32 i = 0; i < vertices.size(); i++)
     {
         indices.push_back(i);
     }
-    _vertexBuffer->Create(vertices);
-    _indexBuffer->Create(indices);
+
+    // 동적 버퍼를 사용하므로, 이미 버퍼가 생성되어 있다면 Map/Unmap으로 내용을 업데이트
+    CGraphics* graphics = CRenderer::Instance()->GetGraphics();
+    ID3D11DeviceContext* context = graphics->GetDeviceContext();
+
+    if (_vertexBuffer->Get() != nullptr)
+    {
+        D3D11_MAPPED_SUBRESOURCE mappedResource = {};
+        HRESULT hr = context->Map(_vertexBuffer->Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+        if (SUCCEEDED(hr))
+        {
+            memcpy(mappedResource.pData, vertices.data(), vertices.size() * sizeof(FVertexSimple));
+            context->Unmap(_vertexBuffer->Get(), 0);
+        }
+    }
+    else
+    {
+        _vertexBuffer->Create(vertices);
+    }
+
+    if (_indexBuffer->Get() != nullptr)
+    {
+        D3D11_MAPPED_SUBRESOURCE mappedResource = {};
+        HRESULT hr = context->Map(_indexBuffer->Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+        if (SUCCEEDED(hr))
+        {
+            memcpy(mappedResource.pData, indices.data(), indices.size() * sizeof(uint32));
+            context->Unmap(_indexBuffer->Get(), 0);
+        }
+    }
+    else
+    {
+        _indexBuffer->Create(indices);
+    }
 }
+
 
 void UWorldGridComponent::UpdateGrid()
 {
@@ -100,16 +113,6 @@ void UWorldGridComponent::UpdateGrid()
     // 만약 새 원점이 기존 원점과 다르다면, 그리드를 재생성합니다.
     if (newOriginX != lastPosX || newOriginZ != lastPosZ)
     {
-        //// 기존 grid 데이터 초기화
-        //vertices.clear();
-        //indices.clear();
-
-        //// 기존 GPU 버퍼 해제
-        //if (_vertexBuffer->Get())
-        //    _vertexBuffer->Get()->Release();
-        //if (_indexBuffer->Get())
-        //    _indexBuffer->Get()->Release();
-
         // 새 원점 업데이트
         lastPosX = newOriginX;
         lastPosZ = newOriginZ;
