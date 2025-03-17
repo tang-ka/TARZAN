@@ -59,6 +59,7 @@ public:
 public:
 	static const FMatrix Identity;
 	FVector GetScaledAxis(EAxis axis) const;
+	FVector GetOrigin() const;
 	static FMatrix Scale(float sx, float sy, float sz);
 	static FMatrix Scale(FVector xyz);
 	static FMatrix RotateX(float rx);

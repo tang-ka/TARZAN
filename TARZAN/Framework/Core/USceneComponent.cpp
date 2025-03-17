@@ -93,15 +93,28 @@ FMatrix USceneComponent::GetComponentTransform() const
 	}
 	if (IsOverrideLocation || IsOverrideRotation || IsOverrideScale3D)
 	{
-		return GetRelativeTransform() * AttachParent->GetComponentTransform();
-		//FMatrix origin = FMatrix::Identity;
+		/* Scale 고정 */
+		{
+			FMatrix ParentMatrix =  AttachParent->GetComponentTransform();
+		
+			// 부모의 행렬의 각 축을 정규화하여 Scale 정보 제거
+			FVector X = ParentMatrix.GetScaledAxis(EAxis::X).Normalized();
+			FVector Y = ParentMatrix.GetScaledAxis(EAxis::Y).Normalized();
+			FVector Z = ParentMatrix.GetScaledAxis(EAxis::Z).Normalized();
+			FVector T = ParentMatrix.GetOrigin();
 
-		//FMatrix scale = FMatrix::Scale(OverrideScale3D);
-		//FMatrix rot = FMatrix::RotateX(OverrideRotation.x) * FMatrix::RotateY(OverrideRotation.y) * FMatrix::RotateZ(OverrideRotation.z);
-		//FMatrix trans = FMatrix::Translate(OverrideLocation);
-		//return origin * scale * rot * trans;
+			// 정규화된 기저 벡터와 동일한 평행 이동으로 새로운 행렬 구성
+			FMatrix ParentNoScale = {
+				X.x, X.y, X.z, 0,
+				Y.x, Y.y, Y.z, 0,
+				Z.x, Z.y, Z.z, 0,
+				T.x, T.y, T.z, 1
+			};
+
+			return GetRelativeTransform() * ParentNoScale;
+		}
 	}
-	if (AttachParent != nullptr)
+	if (AttachParent != nullptr) 
 	{
 		return GetRelativeTransform() * AttachParent->GetComponentTransform();
 	}
@@ -310,7 +323,7 @@ void USceneComponent::GetParentComponents(TArray<USceneComponent*>& Parents) con
 	}
 }
 
-// children ?ㅼ젙
+// children
 void USceneComponent::SetupAttachment(TArray<USceneComponent*>& Children)
 {
 	AttachChildern.clear();
