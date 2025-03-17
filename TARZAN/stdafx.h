@@ -11,6 +11,7 @@
 #include <fstream>
 #include <assert.h>
 #include <Windows.h>
+#include <iostream>
 
 #include <vector>
 #include <list>
@@ -96,5 +97,6 @@ enum EPrimitiveType
 {
 	CUBE,
 	SPHERE,
-	PLANE
+	PLANE,
+	TEXT
 };

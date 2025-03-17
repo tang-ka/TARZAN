@@ -10,5 +10,8 @@ public:
 
     //debug
     virtual bool IntersectsRay(const FVector& rayOrigin, const FVector& rayDir, float& dist);
+
+private:
+    void CreateBoundingBox(EPrimitiveType type) override;
 };
 

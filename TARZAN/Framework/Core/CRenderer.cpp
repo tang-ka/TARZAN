@@ -4,7 +4,6 @@
 CRenderer* CRenderer::_instance = nullptr;
 
 CRenderer::CRenderer() {
-    // ÃÊ±âÈ­´Â Init()¿¡¼­ ÁøÇàÇÕ´Ï´Ù.
 }
 
 void CRenderer::Init(HWND hWnd) {
@@ -15,18 +14,16 @@ void CRenderer::Init(HWND hWnd) {
     _flagsBuffer = std::make_unique<CConstantBuffer<FPrimitiveFlags>>(_graphics->GetDevice(), _graphics->GetDeviceContext());
     _flagsBuffer->Create();
 
-    std::wstring texturePath1 = L"TestTexure.dds";
-    textureManager = CTextureManager::GetInstance(_graphics->GetDevice(), _graphics->GetDeviceContext());
-    textureManager->LoadTexture(texturePath1);
+	
+	CTextureManager::GetInstance()->CreateSamplerState();
+	CTextureManager::GetInstance()->LoadSetTexture();
 
-    SetVertexShader(L"Shader.hlsl", "VS", "vs_5_0");
-    SetPixelShader(L"Shader.hlsl", "PS", "ps_5_0");
-    SetRasterzierState(_graphics->GetFillMode());
-    _graphics->GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	SetRasterzierState(_graphics->GetFillMode());
+	_graphics->GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-    // ÅØ½ºÃ³ ¹ÙÀÎµù
-    ID3D11ShaderResourceView* textureView = textureManager->GetTextureView(texturePath1);
-    textureManager->BindTextureToShader(_graphics->GetDeviceContext(), textureView, 0);
+
+	SetVertexShader(L"Shader.hlsl", "VS", "vs_5_0");
+	SetPixelShader(L"Shader.hlsl", "PS", "ps_5_0");
 }
 
 void CRenderer::SetVertexShader(const FWString filename, FString funcname, FString version) {
@@ -73,13 +70,27 @@ void CRenderer::SetRasterzierState(D3D11_FILL_MODE fillMode) {
     _graphics->GetDeviceContext()->RSSetState(_rasterizerState->Get());
 }
 
-void CRenderer::SetTransformToConstantBuffer(FMatrix matrix) {
-    FMatrix view = _mainCamera->View();
-    FMatrix projection = _mainCamera->Projection();
-    matrix = matrix * view * projection;
-    _matrixBuffer->CopyData(matrix);
-    ID3D11Buffer* constantBuffer = _matrixBuffer->Get();
-    _graphics->GetDeviceContext()->VSSetConstantBuffers(0, 1, &constantBuffer);
+void CRenderer::SetTransformToConstantBuffer(FMatrix matrix,bool isBill) {
+	//FMatrix view = matrix * _mainCamera->GetRelativeTransform().Inverse();
+	FMatrix view = _mainCamera->View();
+
+	FMatrix viewNoRotation = FMatrix::Identity;
+	if (isBill)
+	{
+		// View í–‰ë ¬ì—ì„œ ìœ„ì¹˜ ì •ë³´ë§Œ ì¶”ì¶œí•˜ì—¬ viewNoRotationì— ì ìš©
+		viewNoRotation.m[0][3] = -view.m[0][3];  // X ìœ„ì¹˜
+		viewNoRotation.m[1][3] = -view.m[1][3];  // Y ìœ„ì¹˜
+		viewNoRotation.m[2][3] = -view.m[2][3];  // Z ìœ„ì¹˜
+	}
+
+	FMatrix RealView = isBill ? viewNoRotation : view;
+
+	FMatrix projection = _mainCamera->Projection();
+	matrix = matrix * RealView;
+	matrix = matrix * projection;
+	_matrixBuffer->CopyData(matrix);
+	ID3D11Buffer* constantBuffer = _matrixBuffer->Get();
+	_graphics->GetDeviceContext()->VSSetConstantBuffers(0, 1, &constantBuffer);
 }
 
 void CRenderer::SetFlagsToConstantBuffer(FPrimitiveFlags flags) {
@@ -95,3 +106,11 @@ UCameraComponent* CRenderer::GetMainCamera() const {
 void CRenderer::SetMainCamera(UCameraComponent* camera) {
     _mainCamera = camera;
 }
+
+
+void CRenderer::SetDepthStencil(ID3D11DepthStencilState* pDSState)
+{
+	// Bind OMSetDepthStencilState ( Default Stencil Ref Value : 1 )
+	_graphics->GetDeviceContext()->OMSetDepthStencilState(pDSState, 1);
+}
+

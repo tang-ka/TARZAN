@@ -3,6 +3,7 @@
 class USceneComponent :public UActorComponent {
 public:
 	USceneComponent() {}
+	virtual ~USceneComponent() = default;
 	virtual void Update();
 	//virtual void Render();
 private:

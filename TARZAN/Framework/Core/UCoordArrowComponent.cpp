@@ -87,7 +87,7 @@ void UCoordArrowComponent::Render()
 {
 	CGraphics* graphics = CRenderer::Instance()->GetGraphics();
 	graphics->GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
-
+	CTextureManager::GetInstance()->BindTextureToShader(EObjectType::Object);
 	UPrimitiveComponent::Render();
 	//CRenderer::Instance()->SetRasterzierState();
 	//ID3D11Buffer* vertexBuffer = _vertexBuffer->Get();

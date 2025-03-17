@@ -31,16 +31,19 @@ public:
 
     // 내부 COM 객체들은 CGraphics 내부에서 ComPtr로 관리하므로, GetGraphics()는 raw pointer 반환
     CGraphics* GetGraphics() { return _graphics.get(); }
+	void SetVertexShader(const FWString filename, FString funcname, FString version);
+	void ResetVertexShader();
+	void SetPixelShader(const FWString filename, FString funcname, FString version);
+	void ResetPixelShader();
+	void SetRasterzierState(D3D11_FILL_MODE fillMode);
+	void SetTransformToConstantBuffer(FMatrix matrix, bool isBill=false);
+	void SetFlagsToConstantBuffer(FPrimitiveFlags flags);
+	UCameraComponent* GetMainCamera() const;
+	void SetMainCamera(UCameraComponent* camera);
 
-    void SetVertexShader(const FWString filename, FString funcname, FString version);
-    void ResetVertexShader();
-    void SetPixelShader(const FWString filename, FString funcname, FString version);
-    void ResetPixelShader();
-    void SetRasterzierState(D3D11_FILL_MODE fillMode);
-    void SetTransformToConstantBuffer(FMatrix matrix);
-    void SetFlagsToConstantBuffer(FPrimitiveFlags flags);
-    UCameraComponent* GetMainCamera() const;
-    void SetMainCamera(UCameraComponent* camera);
+	void SetDepthStencil(ID3D11DepthStencilState* pDSState);
+
+	void DrawLine(TArray<FVertexSimple> vertices, TArray<uint32> indices, FVector4 color) const;
 
 private:
     // CRenderer가 소유하는 객체는 std::unique_ptr로 관리
@@ -53,6 +56,4 @@ private:
     std::unique_ptr<CConstantBuffer<FPrimitiveFlags>> _flagsBuffer;
     UCameraComponent* _mainCamera = nullptr; // 소유권은 다른 곳에서 관리하는 것으로 가정
 
-    // CTextureManager는 싱글턴으로 관리되므로 raw pointer로 유지합니다.
-    CTextureManager* textureManager;
 };

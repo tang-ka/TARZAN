@@ -16,6 +16,8 @@ public:
 	D3D11_FILL_MODE GetFillMode() const;
 	void SetFillMode(D3D11_FILL_MODE fillMode);
 
+	void ClearDepthStencilView();
+
 private:
 	HWND _hWnd;
 	uint32 _width = SCR_WIDTH;

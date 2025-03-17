@@ -17,9 +17,9 @@ UGizmoComponent::UGizmoComponent()
 	ArrowX->IsOverrideScale3D = true;
 	ArrowY->IsOverrideScale3D = true;
 	ArrowZ->IsOverrideScale3D = true;
-	ArrowX->OverrideScale3D = { 2,2,2 };
-	ArrowY->OverrideScale3D = { 2,2,2 };
-	ArrowZ->OverrideScale3D = { 2,2,2 };
+	ArrowX->OverrideScale3D = { 1, 1, 1 };
+	ArrowY->OverrideScale3D = { 1, 1, 1 };
+	ArrowZ->OverrideScale3D = { 1, 1, 1 };
 
 	ArrowX->SetRelativeRotation({ 0,-M_PI / 2,0 });
 	ArrowY->SetRelativeRotation({ M_PI / 2 ,0,0 });
@@ -49,7 +49,6 @@ void UGizmoComponent::Update()
 	//ArrowY->IsOverrideScale3D = true;
 	//ArrowZ->IsOverrideScale3D = true;
 
-	// ï¿½ï¿½ï¿½ï¿½ï¿?ï¿½Æ¹ï¿½ï¿½Íµï¿½ ï¿½ÈºÙ¾ï¿½ï¿½ï¿½ï¿½ï¿½
  	if (GetAttachParent() == nullptr)
 		return;
 
@@ -77,8 +76,6 @@ void UGizmoComponent::Update()
 		temp->renderFlags |= PRIMITIVE_FLAG_SELECTED;
 	}
 
-
-	// ï¿½ï¿½ï¿½ì½º ï¿½ï¿½Å¸
 	int dxInt, dyInt;
 	Input::Instance()->GetMouseDelta(dxInt, dyInt);
 	float dx = dxInt / (float)SCR_WIDTH;
@@ -92,27 +89,24 @@ void UGizmoComponent::Update()
 
 	auto cam = CRenderer::Instance()->GetMainCamera();
 	FVector arrowDirOnScreen = (FVector4(selectedArrow->Front(), 0) * cam->View() * cam->PerspectiveProjection()).xyz();
-	// normalize?
 
 	float effectiveMovement = mouseDirOnScreen.Dot(arrowDirOnScreen);
 	effectiveMovement *= GIZMO_SELECT_MOUSE_SPEED;
 
-	// @@@@@@@@@@@@@@@@@@@@@@@@
-	//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-	// ?¬ì????¤ë²„?¼ì´?œí•´??RELATIVEê¸°ì??¼ë¡œ ?ˆì?ì§ì´ê²?
  	auto newPos = selectedArrow->Front() * effectiveMovement + GetAttachParent()->GetRelativeLocation();
 	GetAttachParent()->SetRelativeLocation(newPos);
 	ImGui::Begin("Gizmo Attached");
 	auto l =GetAttachParent()->GetRelativeLocation();
 	ImGui::Text("Gizmo Attached Rel Pos: %f %f %f", l.x, l.y, l.z);
 	ImGui::End();
-
-
 }
 
 void UGizmoComponent::Render()
 {
 	if (isGizmoActivated) {
+	
+		CTextureManager::GetInstance()->BindTextureToShader(EObjectType::Object);
+
 		ArrowX->Render();
 		ArrowY->Render();
 		ArrowZ->Render();

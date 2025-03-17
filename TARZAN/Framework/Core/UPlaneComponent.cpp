@@ -24,4 +24,14 @@ UPlaneComponent::UPlaneComponent() {
 	_indexBuffer = std::make_unique<CIndexBuffer>(graphics->GetDevice());
 	_indexBuffer->Create(indices);
 
+	CreateBoundingBox(EPrimitiveType::PLANE);
+}
+
+void UPlaneComponent::CreateBoundingBox(EPrimitiveType type)
+{
+	boundingBox = new FBoundingBox();
+	boundingBox->SetBoundaryPointsForPrimitive(type);
+	boundingBox->GenerateVertices();
+	boundingBox->GenerateIndices();
+	//isShowBoundingBox = true;
 }

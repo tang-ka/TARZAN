@@ -104,6 +104,14 @@ void CGraphics::SetFillMode(D3D11_FILL_MODE fillMode) {
     _fillMode = fillMode;
 }
 
+void CGraphics::ClearDepthStencilView()
+{
+	// Stencil Buffer to 0;
+	_deviceContext->ClearDepthStencilView(depthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+}
+
+
+
 void CGraphics::CreateDeviceAndSwapChain() {
     D3D_FEATURE_LEVEL featureLevels[] = { D3D_FEATURE_LEVEL_11_0 };
 

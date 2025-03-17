@@ -1,8 +1,11 @@
 #pragma once
 #include "Framework/Core/UObject.h"
+#include <EObjectType.h>
 
 class UActorComponent :public UObject {	
 public:
+	EObjectType ObjType;
+
 	UActorComponent() {}
 	virtual ~UActorComponent() {}
 

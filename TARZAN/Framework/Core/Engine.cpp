@@ -115,6 +115,9 @@ void UEngine::Run()
 			}
 		}
 
+	
+
+
 		Input::Instance()->Frame();
 
 		Controller->NewFrame(); // GUI 새 프레임 생성

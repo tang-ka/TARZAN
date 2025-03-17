@@ -1,24 +1,50 @@
 #include "stdafx.h"
 #include "UPrimitiveComponent.h"
-#include "./Framework/Core/CRenderer.h"
+#include "Framework/Core/CRenderer.h"
+#include "FBoundingBox.h"
 
 UPrimitiveComponent::~UPrimitiveComponent() {}
 
 void UPrimitiveComponent::Render() {
-    CGraphics* graphics = CRenderer::Instance()->GetGraphics();
-    ID3D11Buffer* vertexBuffer = _vertexBuffer->Get();
-    uint32 stride = _vertexBuffer->GetStride();
-    uint32 offset = _vertexBuffer->GetOffset();
-    graphics->GetDeviceContext()->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
-    graphics->GetDeviceContext()->IASetIndexBuffer(_indexBuffer->Get(), DXGI_FORMAT_R32_UINT, 0);
-    FMatrix m = GetComponentTransform();
-    CRenderer::Instance()->SetTransformToConstantBuffer(m);
-    CRenderer::Instance()->SetFlagsToConstantBuffer({ renderFlags });
-    if (indices.size() > 0)
-        graphics->GetDeviceContext()->DrawIndexed(indices.size(), 0, 0);
-    else
-        graphics->GetDeviceContext()->Draw(vertices.size(), 0);
+	CGraphics* graphics = CRenderer::Instance()->GetGraphics();
+
+    /* Depth Stencil DESC */
+    {
+        if (DepthStencilState == nullptr)
+        {
+            DepthStencilState = new CDepthStencilState(graphics->GetDevice());
+            DepthStencilState->SetDepthFlags(TRUE, D3D11_DEPTH_WRITE_MASK_ALL, D3D11_COMPARISON_LESS);
+            DepthStencilState->SetStencilFlags(TRUE, 0xFF, 0xFF);
+            DepthStencilState->SetFrontFaceFlags(D3D11_COMPARISON_ALWAYS, D3D11_STENCIL_OP_REPLACE, D3D11_STENCIL_OP_KEEP, D3D11_STENCIL_OP_KEEP);
+            DepthStencilState->Create();
+
+        }
+
+        CRenderer::Instance()->SetDepthStencil(DepthStencilState->Get());
+    }
+
+
+	ID3D11Buffer* vertexBuffer = _vertexBuffer->Get();
+	uint32 stride = _vertexBuffer->GetStride();
+	uint32 offset = _vertexBuffer->GetOffset();
+	graphics->GetDeviceContext()->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
+	graphics->GetDeviceContext()->IASetIndexBuffer(_indexBuffer->Get(), DXGI_FORMAT_R32_UINT, 0);
+
+	FMatrix m = GetComponentTransform();
+	CRenderer::Instance()->SetTransformToConstantBuffer(m,isBill);
+	CRenderer::Instance()->SetFlagsToConstantBuffer({ renderFlags });
+
+	if (indices.size() > 0)
+		graphics->GetDeviceContext()->DrawIndexed(indices.size(), 0, 0);
+	else
+		graphics->GetDeviceContext()->Draw(vertices.size(), 0);
+
+    if (!isShowBoundingBox) return;
+
+    CreateBoundingBoxBuffer();
+    RenderBoundingBox();
 }
+
 
 
 void UPrimitiveComponent::GenerateRayForPicking(const FVector& pickPosition, const FMatrix& viewMatrix, FVector* pickRayOrigin, FVector* rayDirection)
@@ -56,7 +82,6 @@ int UPrimitiveComponent::PickObjectByRayIntersection(const FVector& pickPosition
 
 bool UPrimitiveComponent::IntersectRayTriangle(const FVector& rayOrigin, const FVector& rayDirection, const FVector& v0, const FVector& v1, const FVector& v2, float& hitDistance)
 {
-    
         const float epsilon = 1e-6f;
         FVector edge1 = v1 - v0;
         const FVector edge2 = v2 - v0;
@@ -88,7 +113,6 @@ bool UPrimitiveComponent::IntersectRayTriangle(const FVector& rayOrigin, const F
         }
 
         return false;
-    
 }
 
 int UPrimitiveComponent::CheckRayIntersection(FVector& rayOrigin, FVector& rayDirection, float* pfNearHitDistance)
@@ -134,4 +158,69 @@ int UPrimitiveComponent::CheckRayIntersection(FVector& rayOrigin, FVector& rayDi
 
     *pfNearHitDistance = fNearHitDistance;
     return nIntersections;
+}
+
+//void UPrimitiveComponent::UpdateBoundingBox()
+//{
+//    if (vertices.empty()) return;
+//
+//    boundingBox;
+//
+//    for (const auto& vertex : vertices)
+//    {
+//        boundingBox->ExpandToInclude({ vertex.x, vertex.y, vertex.z });
+//    }
+//
+//    CreateBoundingBoxBuffer();
+//}
+
+void UPrimitiveComponent::CreateBoundingBoxBuffer()
+{
+    ID3D11Device* device = CRenderer::Instance()->GetGraphics()->GetDevice();
+
+    // Bounding Box의 Vertex 및 Index 생성
+    //boundingBox->GenerateVertices();
+
+    boundingBox->UpdateVerticesByBP(GetComponentTransform());
+
+    // Vertex Buffer 생성
+    if (!_boundingBoxVertexBuffer)
+        _boundingBoxVertexBuffer = new CVertexBuffer<FVertexSimple>(device);
+
+    _boundingBoxVertexBuffer->Create(boundingBox->GetVertices());
+
+    // Index Buffer 생성
+    if (!_boundingBoxIndexBuffer)
+        _boundingBoxIndexBuffer = new CIndexBuffer(device);
+
+    _boundingBoxIndexBuffer->Create(boundingBox->GetIndices());
+    //_boundingBoxIndexBuffer->)
+}
+
+void UPrimitiveComponent::RenderBoundingBox()
+{
+    if (!_boundingBoxVertexBuffer || !_boundingBoxIndexBuffer) return;
+
+    ID3D11DeviceContext* context = CRenderer::Instance()->GetGraphics()->GetDeviceContext();
+
+    // 입력 버퍼 설정
+    ID3D11Buffer* vertexBuffer = _boundingBoxVertexBuffer->Get();
+    uint32 stride = _boundingBoxVertexBuffer->GetStride();
+    uint32 offset = _boundingBoxVertexBuffer->GetOffset();
+    context->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
+    context->IASetIndexBuffer(_boundingBoxIndexBuffer->Get(), DXGI_FORMAT_R32_UINT, 0);
+
+    CRenderer::Instance()->SetTransformToConstantBuffer(FMatrix::Identity);
+    CRenderer::Instance()->SetFlagsToConstantBuffer({ 0 });
+
+    // 선(라인)으로 렌더링
+    context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+
+    // Transform 설정 (Bounding Box는 모델 좌표계 그대로)
+    //CRenderer::Instance()->SetTransformToConstantBuffer(GetComponentTransform());
+
+    // Bounding Box 그리기
+    context->DrawIndexed(24, 0, 0); // 12개의 선, 24개 인덱스
+
+    context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
