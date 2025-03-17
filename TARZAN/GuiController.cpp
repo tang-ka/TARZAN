@@ -11,6 +11,7 @@
 #include "ConfigManager.h"
 #include "Framework/Core/UWorldGridComponent.h"
 
+
 GuiController::~GuiController() {
 	ImGui_ImplDX11_Shutdown();
 	ImGui_ImplWin32_Shutdown();
@@ -179,6 +180,8 @@ void GuiController::DeselectActor()
 		downcast->HideBoundingBox();
 	}
 	_selected = nullptr;
+}
+
 UPrimitiveComponent* GuiController::GetSelectedObject()
 {
 	return dynamic_cast<UPrimitiveComponent*>(_selected);

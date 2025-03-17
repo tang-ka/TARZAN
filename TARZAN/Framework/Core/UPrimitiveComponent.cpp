@@ -32,34 +32,7 @@ void UPrimitiveComponent::Render() {
 	
 
     FMatrix m = FMatrix::Identity;
-    //m = GetComponentTransform();
-    //if(!isBill)
-    //     m = GetComponentTransform();
-    //else
-    //{
-    //    UPrimitiveComponent* Selected = GuiController::GetInstance().GetSelectedObject();
-    //   
-    //    FMatrix origin = FMatrix::Identity;
-    //    FMatrix scale = FMatrix::Scale(RelativeScale3D);
-    //    FMatrix rot = FMatrix::RotateX(RelativeRotation.x) * FMatrix::RotateY(RelativeRotation.y) * FMatrix::RotateZ(RelativeRotation.z);
-    //    FMatrix trans = FMatrix::Translate
-    //    (Selected->GetRelativeLocation().x ,
-    //        Selected->GetRelativeLocation().y+3.f,
-    //        Selected->GetRelativeLocation().z);
 
-
-    //    if (IsOverrideLocation) {
-    //        trans = FMatrix::Translate(OverrideLocation);
-    //    }
-    //    if (IsOverrideRotation) {
-    //        rot = FMatrix::RotateX(OverrideRotation.x) * FMatrix::RotateY(OverrideRotation.y) * FMatrix::RotateZ(OverrideRotation.z);
-    //    }
-    //    if (IsOverrideScale3D) {
-    //        scale = FMatrix::Scale(OverrideScale3D);
-    //    }
-
-    //     m = origin * scale * rot * trans;
-    //}
      
 
     if (isBill)
@@ -121,8 +94,11 @@ void UPrimitiveComponent::Render() {
 
     if (!isShowBoundingBox) return;
 
-    CreateBoundingBoxBuffer();
-    RenderBoundingBox();
+    if (!isBill)
+    {
+        CreateBoundingBoxBuffer();
+        RenderBoundingBox();
+    }
 }
 
 
