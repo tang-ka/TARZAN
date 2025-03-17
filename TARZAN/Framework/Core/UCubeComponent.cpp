@@ -54,11 +54,9 @@ void UCubeComponent::Update() {
 
 bool UCubeComponent::IntersectsRay(const FVector& rayOrigin, const FVector& rayDir, float& Distance)
 {
-	// AABB �ּ�, �ִ� ��ǥ ����
 	FVector min = { -1.f, -1.f, -1.f };
 	FVector max = { 1.f,  1.f,  1.f };
 
-	// t ���� ������ �ʱ�ȭ
 	double tMin = -FLT_MAX;
 	double tMax = FLT_MAX;
 	const double epsilon = FLT_EPSILON;
@@ -76,7 +74,6 @@ bool UCubeComponent::IntersectsRay(const FVector& rayOrigin, const FVector& rayD
 		tMax = (tMax < t2) ? tMax : t2;
 	}
 
-	// y�࿡ ���� ���� �׽�Ʈ
 	if (fabs(rayDir.y) < epsilon) {
 		if (rayOrigin.y < min.y || rayOrigin.y > max.y)
 			return false;
