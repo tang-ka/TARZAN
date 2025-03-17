@@ -8,10 +8,10 @@ UTextComponent::UTextComponent()
 {   
     ObjType = EObjectType::Text; // 텍스트 UI 타입 설정
     
-    SetRelativeLocationZ(10.0f);
-    SetRelativeLocationX(-2.f);
+    //SetRelativeLocationZ(10.0f);
+    //SetRelativeLocationX(-2.f);
 
-    Text = L"Jungle";
+    Text = L"AGG";
 
     isBill = true;
 

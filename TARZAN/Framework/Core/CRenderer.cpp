@@ -73,20 +73,11 @@ void CRenderer::SetRasterzierState(D3D11_FILL_MODE fillMode = D3D11_FILL_SOLID) 
 void CRenderer::SetTransformToConstantBuffer(FMatrix matrix,bool isBill) {
 	//FMatrix view = matrix * _mainCamera->GetRelativeTransform().Inverse();
 	FMatrix view = _mainCamera->View();
-
-	FMatrix viewNoRotation = FMatrix::Identity;
-	if (isBill)
-	{
-		// View 행렬에서 위치 정보만 추출하여 viewNoRotation에 적용
-		viewNoRotation.m[0][3] = -view.m[0][3];  // X 위치
-		viewNoRotation.m[1][3] = -view.m[1][3];  // Y 위치
-		viewNoRotation.m[2][3] = -view.m[2][3];  // Z 위치
-	}
-
-	FMatrix RealView = isBill ? viewNoRotation : view;
-
 	FMatrix projection = _mainCamera->Projection();
-	matrix = matrix * RealView;
+
+
+
+	matrix = matrix * view;
 	matrix = matrix * projection;
 	_matrixBuffer->CopyData(matrix);
 	ID3D11Buffer* constantBuffer = _matrixBuffer->Get();
