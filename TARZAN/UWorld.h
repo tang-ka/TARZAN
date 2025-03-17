@@ -9,6 +9,7 @@
 #include "Framework/Core/UCoordArrowComponent.h"
 #include "Framework/Core/UDiscComponent.h"
 #include "Framework/Core/UDiscHollowComponent.h"
+#include <UTextComponent.h>
 
 class UActorComponent;
 class UCubeComponent;
@@ -45,11 +46,13 @@ public:
     void SetAxisPicked(UArrowComponent* axisX, UArrowComponent* axisY, UArrowComponent* axisZ, EPrimitiveColor pickedAxis);
 
     UCameraComponent* SpawnCamera();
+    UTextComponent* SpawnTextActor();
     UCubeComponent* SpawnCubeActor();
     USphereComponent* SpawnSphereActor();
     UPlaneComponent* SpawnPlaneActor();
     UCoordArrowComponent* SpawnCoordArrowActor();
-    
+    CTextureManager* TextureManager;
+
     void SaveWorld(const FString& fileName);
     void LoadWorld(const FString& fileName);
     UDiscComponent* SpawnDiscActor();

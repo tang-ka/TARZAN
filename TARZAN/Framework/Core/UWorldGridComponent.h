@@ -22,7 +22,7 @@ public:
     virtual void Render() override;
 
 private:
-    int lastPosX;
-    int lastPosZ;
+    int lastPosX = 0;
+    int lastPosZ = 0;
     float gridScale;
 };

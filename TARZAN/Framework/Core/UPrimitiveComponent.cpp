@@ -12,6 +12,23 @@ UPrimitiveComponent::~UPrimitiveComponent() {
 
 void UPrimitiveComponent::Render() {
 	CGraphics* graphics = CRenderer::Instance()->GetGraphics();
+
+    /* Depth Stencil DESC */
+    {
+        if (DepthStencilState == nullptr)
+        {
+            DepthStencilState = new CDepthStencilState(graphics->GetDevice());
+            DepthStencilState->SetDepthFlags(TRUE, D3D11_DEPTH_WRITE_MASK_ALL, D3D11_COMPARISON_LESS);
+            DepthStencilState->SetStencilFlags(TRUE, 0xFF, 0xFF);
+            DepthStencilState->SetFrontFaceFlags(D3D11_COMPARISON_ALWAYS, D3D11_STENCIL_OP_REPLACE, D3D11_STENCIL_OP_KEEP, D3D11_STENCIL_OP_KEEP);
+            DepthStencilState->Create();
+
+        }
+
+        CRenderer::Instance()->SetDepthStencil(DepthStencilState->Get());
+    }
+
+
 	ID3D11Buffer* vertexBuffer = _vertexBuffer->Get();
 	uint32 stride = _vertexBuffer->GetStride();
 	uint32 offset = _vertexBuffer->GetOffset();
@@ -19,7 +36,7 @@ void UPrimitiveComponent::Render() {
 	graphics->GetDeviceContext()->IASetIndexBuffer(_indexBuffer->Get(), DXGI_FORMAT_R32_UINT, 0);
 
 	FMatrix m = GetComponentTransform();
-	CRenderer::Instance()->SetTransformToConstantBuffer(m);
+	CRenderer::Instance()->SetTransformToConstantBuffer(m,isBill);
 	CRenderer::Instance()->SetFlagsToConstantBuffer({ renderFlags });
 
 	if (indices.size() > 0)

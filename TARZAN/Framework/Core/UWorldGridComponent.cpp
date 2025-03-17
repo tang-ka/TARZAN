@@ -31,14 +31,18 @@ UWorldGridComponent::~UWorldGridComponent()
 // GenerateGrid: -gridCount부터 gridCount까지 1단위 간격의 grid 선 정점 및 인덱스 생성
 void UWorldGridComponent::GenerateGrid(float posX, float posZ, int gridCount, float unitSize)
 {
-    // 여기에서 하는게 맞을까
-    vertices.clear();
-    indices.clear();
 
-    if (_vertexBuffer->Get())
+    if (_vertexBuffer->Get()!=nullptr)
+    {
+        vertices.clear();
         _vertexBuffer->Get()->Release();
-    if (_indexBuffer->Get())
+
+    }
+    if (_indexBuffer->Get()!=nullptr)
+    {
+        indices.clear();
         _indexBuffer->Get()->Release();
+    }
 
     // 색상값
     const FVector4 gridColor = { 0.f, 0.f, 0.f, 1.f };

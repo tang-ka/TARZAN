@@ -3,6 +3,10 @@
 
 UCubeComponent::UCubeComponent() {
 
+	ObjType = EObjectType::Object;
+	isBill = false;
+
+
 	vertices = {
 		{1.f, 1.f, -1.f,	1.f, 0.f, 0.f, 1.f,		0.5f,0.f	},   // Vertex 0.
 		{-1.f, 1.f, -1.f,	0.f, 1.f, 0.f, 1.f,		0.f,0.f		},  // Vertex 1.
@@ -29,6 +33,8 @@ UCubeComponent::UCubeComponent() {
 	4,7,6,
 	4,6,5,
 	};
+
+
 
 	CGraphics* graphics = CRenderer::Instance()->GetGraphics();
 	_vertexBuffer = new CVertexBuffer<FVertexSimple>(graphics->GetDevice());

@@ -9,8 +9,10 @@ class FBoundingBox;
 
 class UPrimitiveComponent: public USceneComponent {
 public:
-	UPrimitiveComponent(): renderFlags(0) {}
+	UPrimitiveComponent(): renderFlags(0), StencilRefNum(1) {}
 	virtual ~UPrimitiveComponent();
+
+	bool isBill;
 
 public:
 	uint32 renderFlags;
@@ -41,9 +43,14 @@ private:
 	CVertexBuffer<FVertexSimple>* _boundingBoxVertexBuffer = nullptr;
 	CIndexBuffer* _boundingBoxIndexBuffer = nullptr;
 
+	uint32 renderFlags;
+	uint32 StencilRefNum;
 protected:
 	bool isShowBoundingBox = false;
 	FBoundingBox* boundingBox;
 	CVertexBuffer<FVertexSimple>* _vertexBuffer = nullptr;
 	CIndexBuffer* _indexBuffer = nullptr;
+
+	CDepthStencilState* DepthStencilState = nullptr;
+	CBlendState* BlendState = nullptr;
 };
