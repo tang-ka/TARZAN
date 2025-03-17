@@ -8,19 +8,15 @@ UCubeComponent::UCubeComponent() {
 
 
 	vertices = {
-		{1.f, 1.f, -1.f, 1.f, 0.f, 0.f, 1.f,0.5f,0.f},   // Vertex 0.
-		{ -1.f, 1.f, -1.f, 0.f, 1.f, 0.f, 1.f,0.f,0.f },  // Vertex 1.
-		{-1.f, 1.f, 1.f, 0.f, 0.f, 1.f, 1.f,0.f,0.5f },    // And so on.
-		{1.f, 1.f, 1.f, 1.f, 1.f, 0.f, 1.f,0.5f,0.5f},
-		{1.f, -1.f, -1.f,1.f, 0.f, 1.f, 1.f,0.5f,0.f},
-		{-1.f, -1.f, -1.f, 0.f, 1.f, 1.f, 1.f,0.f,0.f},
-		{-1.f, -1.f, 1.f, 0.f, 0.f, 0.f, 1.f,0.f,0.5f},
-		{1.f, -1.f, 1.f, 1.f, 1.f, 1.f, 1.f,0.5f,0.5f},
+		{1.f, 1.f, -1.f,	1.f, 0.f, 0.f, 1.f,		0.5f,0.f	},   // Vertex 0.
+		{-1.f, 1.f, -1.f,	0.f, 1.f, 0.f, 1.f,		0.f,0.f		},  // Vertex 1.
+		{-1.f, 1.f, 1.f,	0.f, 0.f, 1.f, 1.f,		0.f,0.5f	},    // And so on.
+		{1.f, 1.f, 1.f,		1.f, 1.f, 0.f, 1.f,		0.5f,0.5f	},
+		{1.f, -1.f, -1.f,	1.f, 0.f, 1.f, 1.f,		0.5f,0.f	},
+		{-1.f, -1.f, -1.f,	0.f, 1.f, 1.f, 1.f,		0.f,0.f		},
+		{-1.f, -1.f, 1.f,	0.f, 0.f, 0.f, 1.f,		0.f,0.5f	},
+		{1.f, -1.f, 1.f,	1.f, 1.f, 1.f, 1.f,		0.5f,0.5f	},
 	};
-
-
-
-
 
 	indices =
 	{
@@ -41,10 +37,12 @@ UCubeComponent::UCubeComponent() {
 
 
 	CGraphics* graphics = CRenderer::Instance()->GetGraphics();
-	_vertexBuffer = new CVertexBuffer<FVertexSimple>(graphics->GetDevice());
+	_vertexBuffer = std::make_unique<CVertexBuffer<FVertexSimple>>(graphics->GetDevice());
 	_vertexBuffer->Create(vertices);
-	_indexBuffer = new CIndexBuffer(graphics->GetDevice());
+	_indexBuffer = std::make_unique<CIndexBuffer>(graphics->GetDevice());
 	_indexBuffer->Create(indices);
+
+	CreateBoundingBox(EPrimitiveType::CUBE);
 }
 
 void UCubeComponent::Update() {
@@ -54,11 +52,9 @@ void UCubeComponent::Update() {
 
 bool UCubeComponent::IntersectsRay(const FVector& rayOrigin, const FVector& rayDir, float& Distance)
 {
-	// AABB �ּ�, �ִ� ��ǥ ����
 	FVector min = { -1.f, -1.f, -1.f };
 	FVector max = { 1.f,  1.f,  1.f };
 
-	// t ���� ������ �ʱ�ȭ
 	double tMin = -FLT_MAX;
 	double tMax = FLT_MAX;
 	const double epsilon = FLT_EPSILON;
@@ -76,7 +72,6 @@ bool UCubeComponent::IntersectsRay(const FVector& rayOrigin, const FVector& rayD
 		tMax = (tMax < t2) ? tMax : t2;
 	}
 
-	// y�࿡ ���� ���� �׽�Ʈ
 	if (fabs(rayDir.y) < epsilon) {
 		if (rayOrigin.y < min.y || rayOrigin.y > max.y)
 			return false;
@@ -110,4 +105,13 @@ bool UCubeComponent::IntersectsRay(const FVector& rayOrigin, const FVector& rayD
 	}
 
 	return false;
+}
+
+void UCubeComponent::CreateBoundingBox(EPrimitiveType type)
+{
+	boundingBox = new FBoundingBox();
+	boundingBox->SetBoundaryPointsForPrimitive(type);
+	boundingBox->GenerateVerticesByBasicBox();
+	boundingBox->GenerateIndices();
+	//isShowBoundingBox = true;
 }

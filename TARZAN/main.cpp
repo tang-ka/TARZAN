@@ -4,34 +4,44 @@
 
 
 void RedirectIOToConsole() {
-    // ÄÜ¼Ö Ã¢ »ý¼º
+    // ï¿½Ü¼ï¿½ Ã¢ ï¿½ï¿½ï¿½ï¿½
     AllocConsole();
 
-    // Ç¥ÁØ ÀÔÃâ·Â ½ºÆ®¸²À» ÄÜ¼Ö¿¡ ¿¬°á
+    // Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½Ü¼Ö¿ï¿½ ï¿½ï¿½ï¿½ï¿½
     FILE* fp;
-    freopen_s(&fp, "CONOUT$", "w", stdout);  // ÄÜ¼Ö Ãâ·Â
-    freopen_s(&fp, "CONOUT$", "w", stderr); // ÄÜ¼Ö ¿¡·¯ Ãâ·Â
-    freopen_s(&fp, "CONIN$", "r", stdin);   // ÄÜ¼Ö ÀÔ·Â
+    freopen_s(&fp, "CONOUT$", "w", stdout);  // ï¿½Ü¼ï¿½ ï¿½ï¿½ï¿½
+    freopen_s(&fp, "CONOUT$", "w", stderr); // ï¿½Ü¼ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+    freopen_s(&fp, "CONIN$", "r", stdin);   // ï¿½Ü¼ï¿½ ï¿½Ô·ï¿½
 
-    std::cout << "Debug Console Initialized!" << std::endl; // µð¹ö±ë ÄÜ¼Ö ¸Þ½ÃÁö Ãâ·Â
+    std::cout << "Debug Console Initialized!" << std::endl; // ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ü¼ï¿½ ï¿½Þ½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 }
 
-int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) 
+
+void RedirectIOToConsole()
 {
 #ifdef _DEBUG
-    RedirectIOToConsole(); // µð¹ö±ë ¸ðµå¿¡¼­¸¸ ÄÜ¼ÖÀ» ¶ç¿ìµµ·Ï ¼³Á¤
+    RedirectIOToConsole(); // ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½å¿¡ï¿½ï¿½ï¿½ï¿½ ï¿½Ü¼ï¿½ï¿½ï¿½ ï¿½ï¿½ìµµï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 #endif
 
 	UEngine& Engine = UEngine::GetInstance();
 
-	Engine.Initialize(hInstance, L"TARZAN ENGINE", L"TARZAN", 1200, 800);
+    // Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½Ü¼Ö¿ï¿½ ï¿½ï¿½ï¿½ï¿½
+    FILE* fp;
+    freopen_s(&fp, "CONOUT$", "w", stdout);  // ï¿½Ü¼ï¿½ ï¿½ï¿½ï¿½
+    freopen_s(&fp, "CONOUT$", "w", stderr); // ï¿½Ü¼ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+    freopen_s(&fp, "CONIN$", "r", stdin);   // ï¿½Ü¼ï¿½ ï¿½Ô·ï¿½
 
-	Engine.Run();
+    std::cout << "Debug Console Initialized!" << std::endl; // ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ü¼ï¿½ ï¿½Þ½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+}
 
-	Engine.Shutdown();
+int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+{
+#ifdef _DEBUG
+    RedirectIOToConsole(); // ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½å¿¡ï¿½ï¿½ï¿½ï¿½ ï¿½Ü¼ï¿½ï¿½ï¿½ ï¿½ï¿½ìµµï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+#endif
 
 #ifdef _DEBUG
-    FreeConsole();  // ÄÜ¼Ö Ã¢ ´Ý±â
+    FreeConsole();  // ï¿½Ü¼ï¿½ Ã¢ ï¿½Ý±ï¿½
 #endif
 
 

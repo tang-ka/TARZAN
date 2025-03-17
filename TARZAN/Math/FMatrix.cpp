@@ -195,6 +195,11 @@ FVector FMatrix::GetScaledAxis(EAxis axis) const
 	}
 }
 
+FVector FMatrix::GetOrigin() const
+{
+	return FVector( m[3][0], m[3][1], m[3][2] );
+}
+
 std::string FMatrix::to_string() const
 {
 	std::string str;

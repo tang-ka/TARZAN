@@ -3,7 +3,6 @@
 
 void UCameraComponent::Update() {
 	aspectRatio = SCR_WIDTH / (float)SCR_HEIGHT;
-	const float speed = 2.0f;
 	auto loc = GetRelativeLocation();
 	FVector movement = FVector::Zero;
 	if (allowKeyboardInput)
@@ -27,7 +26,7 @@ void UCameraComponent::Update() {
 			movement -= Up();
 		}
 	}
-	SetRelativeLocation(loc + movement * Time::GetDeltaTime() * speed);
+	SetRelativeLocation(loc + movement * Time::GetDeltaTime() * CameraSpeed);
 	if ( Input::Instance()->IsMouseButtonDown(1) ) {
 		int dx, dy;
 		Input::Instance()->GetMouseDelta(dx, dy);

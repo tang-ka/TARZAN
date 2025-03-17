@@ -4,7 +4,7 @@
 #include <unordered_map>
 
 class UObject {
-private:
+protected:
 	uint32 _uuid;
 	uint32 _internalIndex;		// ???
 	FName Name;

@@ -11,6 +11,7 @@
 #include <fstream>
 #include <assert.h>
 #include <Windows.h>
+#include <iostream>
 
 #include <vector>
 #include <list>
@@ -19,6 +20,10 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <algorithm>
+
+// 임시로 여기에 옮겨놨음.
+#include <wrl/client.h>
+using Microsoft::WRL::ComPtr;
 
 template <typename T> using TArray = std::vector<T>;
 template <typename T> using TLinkedList = std::list<T>;

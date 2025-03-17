@@ -24,7 +24,7 @@ void GuiController::Init(HWND hWnd, CGraphics* graphics)
 	_io = &ImGui::GetIO();
 	ImGui_ImplDX11_Init(graphics->GetDevice(), graphics->GetDeviceContext());
 	ImGui_ImplWin32_Init(hWnd);
-	_console = new GuiConsole(this);
+	_console = std::make_unique<GuiConsole>();
 }
 
 void GuiController::NewFrame()
@@ -56,34 +56,37 @@ void GuiController::NewFrame()
 		UActorComponent* neareastActorComp = GetNearestActorComponents(nearestActorDistance);
 		EPrimitiveColor neareastAxis = GetNearestGizmo(nearestGizmoDistance);
 
-		if (neareastActorComp == nullptr && neareastAxis == EPrimitiveColor::NONE) {
-			UEngine::GetInstance().GetGizmo()->Detach();
-			UPrimitiveComponent* downcast = dynamic_cast<UPrimitiveComponent*>(_selected);
-			if (downcast)
-				downcast->renderFlags &= ~PRIMITIVE_FLAG_SELECTED;
-			_selected = nullptr;
+		if (neareastActorComp == nullptr && neareastAxis == EPrimitiveColor::NONE)
+		{
+			DeselectActor();
 		}
 		else {
-			// Gizmo°¡ È°¼ºÈ­µÇ¾î ÀÖ°í, ±³Â÷°¡ ÀÖ´Â °æ¿ì ¹«Á¶°Ç Gizmo¸¦ ¼±ÅÃ
+			// Gizmoï¿½ï¿½ È°ï¿½ï¿½È­ï¿½Ç¾ï¿½ ï¿½Ö°ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Gizmoï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 			if (UEngine::GetInstance().GetGizmo()->isGizmoActivated && neareastAxis != EPrimitiveColor::NONE)
 			{
 				UEngine::GetInstance().GetGizmo()->selectedAxis = neareastAxis;
 				UPrimitiveComponent* downcast = dynamic_cast<UPrimitiveComponent*>(_selected);
 				if (downcast)
 					downcast->renderFlags &= ~PRIMITIVE_FLAG_SELECTED;
-				_selected = nullptr; // Gizmo¸¸ ¼±ÅÃ, ¾×ÅÍ´Â ¼±ÅÃ ÇØÁ¦
+				//_selected = nullptr; // Gizmoï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½Í´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 			}
-			// Gizmo°¡ ¾ø°Å³ª ±³Â÷°¡ ¾ø´Â °æ¿ì, ¾×ÅÍ¸¦ ¼±ÅÃ
+			// Gizmoï¿½ï¿½ ï¿½ï¿½ï¿½Å³ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½ï¿½ï¿½ï¿½
 			else if (neareastActorComp != nullptr)
 			{
 				UPrimitiveComponent* downcast = dynamic_cast<UPrimitiveComponent*>(_selected);
 				if (downcast)
+				{
 					downcast->renderFlags &= ~PRIMITIVE_FLAG_SELECTED;
+					downcast->HideBoundingBox();
+				}
 
 				_selected = neareastActorComp;
+
 				downcast = dynamic_cast<UPrimitiveComponent*>(_selected);
-				if (downcast)
+				if (downcast) {
 					downcast->renderFlags |= PRIMITIVE_FLAG_SELECTED;
+					downcast->ShowBoundingBox();
+				}
 
 				UEngine::GetInstance().GetGizmo()->AttachTo(dynamic_cast<UPrimitiveComponent*>(_selected));
 				UEngine::GetInstance().GetGizmo()->selectedAxis = EPrimitiveColor::NONE;
@@ -107,7 +110,6 @@ UActorComponent* GuiController::GetNearestActorComponents(float& distance) {
 
 EPrimitiveColor GuiController::GetNearestGizmo(float& distance)
 {
-	
 	if (!UEngine::GetInstance().GetGizmo()->isGizmoActivated)
 	{
 		distance = FLT_MAX;
@@ -148,6 +150,35 @@ EPrimitiveColor GuiController::GetNearestGizmo(float& distance)
 
 }
 
+void GuiController::SelectActor(UActorComponent* neareastActorComp)
+{
+	UPrimitiveComponent* downcast = dynamic_cast<UPrimitiveComponent*>(_selected);
+	if (downcast)
+		downcast->renderFlags &= ~PRIMITIVE_FLAG_SELECTED;
+
+	if (downcast != nullptr)
+		downcast->HideBoundingBox();
+	_selected = neareastActorComp;
+	dynamic_cast<UPrimitiveComponent*>(_selected)->ShowBoundingBox();
+
+	downcast = dynamic_cast<UPrimitiveComponent*>(_selected);
+	if (downcast)
+		downcast->renderFlags |= PRIMITIVE_FLAG_SELECTED;
+
+	UEngine::GetInstance().GetGizmo()->AttachTo(dynamic_cast<UPrimitiveComponent*>(_selected));
+	UEngine::GetInstance().GetGizmo()->selectedAxis = EPrimitiveColor::NONE;
+}
+
+void GuiController::DeselectActor()
+{
+	UEngine::GetInstance().GetGizmo()->Detach();
+	UPrimitiveComponent* downcast = dynamic_cast<UPrimitiveComponent*>(_selected);
+	if (downcast)
+	{
+		downcast->renderFlags &= ~PRIMITIVE_FLAG_SELECTED;
+		downcast->HideBoundingBox();
+	}
+	_selected = nullptr;
 UPrimitiveComponent* GuiController::GetSelectedObject()
 {
 	return dynamic_cast<UPrimitiveComponent*>(_selected);
@@ -248,10 +279,10 @@ void GuiController::RenderEditor() {
 	ImGui::Separator();
 	/***********************************/
 
-	ImGui::Text("ViewMode");
+	ImGui::Text("View Mode");
 	ImGui::SameLine();
 
-	if (ImGui::Combo("##", &_selectedMode, viewModes, IM_ARRAYSIZE(viewModes)))
+	if (ImGui::Combo("##ViewMode", &_selectedMode, viewModes, IM_ARRAYSIZE(viewModes)))
 	{
 		D3D11_FILL_MODE newMode = D3D11_FILL_SOLID;
 		switch (_selectedMode)
@@ -270,11 +301,11 @@ void GuiController::RenderEditor() {
 	const float gridScaleValues[3] = { 0.1f,1.0f, 10.0f };
 	ImGui::Text("Grid Scale");
 	ImGui::SameLine();
-	if (ImGui::Combo("###", &_selectedGridScale, gridScaleItems, IM_ARRAYSIZE(gridScaleItems)))
+	if (ImGui::Combo("##GridScale", &_selectedGridScale, gridScaleItems, IM_ARRAYSIZE(gridScaleItems)))
 	{
-		// ¼±ÅÃµÈ °ª¿¡ µû¶ó Grid Scale ¾÷µ¥ÀÌÆ®
+		// ï¿½ï¿½ï¿½Ãµï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Grid Scale ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
 		float newScale = gridScaleValues[_selectedGridScale];
-		// ConfigManagerÀÇ ¼³Á¤°ª ¾÷µ¥ÀÌÆ®
+		// ConfigManagerï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
 
 		UWorld* World = UEngine::GetInstance().GetWorld();
 		if (World) {
@@ -282,12 +313,30 @@ void GuiController::RenderEditor() {
 			if (cam) {
 				float camX = cam->GetRelativeLocation().x;
 				float camZ = cam->GetRelativeLocation().z;
-				// ¿¹½Ã·Î gridCount¸¦ 10À¸·Î ¼³Á¤
+				// ï¿½ï¿½ï¿½Ã·ï¿½ gridCountï¿½ï¿½ 10ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 				int gridCount = 10;
 
-				// grid¸¦ Àç»ý¼ºÇÏ¸é¼­ »õ·Î¿î grid scaleÀ» ¹Ý¿µ
+				// gridï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸é¼­ ï¿½ï¿½ï¿½Î¿ï¿½ grid scaleï¿½ï¿½ ï¿½Ý¿ï¿½
 				//UEngine::GetInstance().GetWorldGridComponent()->GenerateGrid(std::floor(camX), std::floor(camZ), gridCount, newScale);
 				UEngine::GetInstance().GetWorldGridComponent()->GenerateGrid(camX, camZ, gridCount, newScale);
+			}
+		}
+	}
+	ImGui::Separator();
+	/***********************************/
+	const char* cameraSpeedItems[] = { "1","2", "5", "10"};
+	const float cameraSpeedValues[4] = { 1.f,2.f, 5.f, 10.f };
+	ImGui::Text("Camera Speed");
+	ImGui::SameLine();
+	if (ImGui::Combo("##CameraSpeed", &_selectedCameraSpeed, cameraSpeedItems, IM_ARRAYSIZE(cameraSpeedItems)))
+	{
+		UWorld* World = UEngine::GetInstance().GetWorld();
+		if (World) {
+			UCameraComponent* cam = CRenderer::Instance()->GetMainCamera();
+			if (cam)
+			{
+				float newSpeed = cameraSpeedValues[_selectedCameraSpeed];
+				cam->CameraSpeed = newSpeed;
 			}
 		}
 	}
@@ -308,7 +357,6 @@ void GuiController::RenderEditor() {
 	if (downcast != nullptr) {
 		ImGui::Text("UUID: %d", _selected->GetUUID());
 
-
 		FVector vec = downcast->GetRelativeLocation();
 		float downcastLocation[3] = { vec.x, vec.y, vec.z };
 		ImGui::DragFloat3("position", downcastLocation, 0.1f);
@@ -324,7 +372,7 @@ void GuiController::RenderEditor() {
 		ImGui::DragFloat3("scale", downcastScale, 0.1f);
 		downcast->SetRelativeScale3D(FVector(downcastScale[0], downcastScale[1], downcastScale[2]));
 
-		if ( ImGui::Button("Delete") ) {
+		if (ImGui::Button("Delete")) {
 			UEngine::GetInstance().GetGizmo()->Detach();
 			SceneManager->DeleteActorFromMap(_selected);
 			World->RemoveActor(_selected);
@@ -344,7 +392,7 @@ void GuiController::Resize()
 
 GuiConsole* GuiController::GetConcolWindow()
 {
-	return _console;
+	return _console.get();
 }
 
 void GuiController::CreateSceneManagerPanel()
@@ -355,7 +403,7 @@ void GuiController::CreateSceneManagerPanel()
 	if (ImGui::TreeNode("Primitive"))
 	{
 		SceneView->Update();
-		
+
 		TMap<uint32, UObject*> Actors = SceneView->GetActors();
 
 		for (const TPair<uint32, UObject*>& Pair : Actors)
@@ -364,7 +412,7 @@ void GuiController::CreateSceneManagerPanel()
 
 			if (ImGui::Selectable(ActorName.c_str()))
 			{
-				// ¼±ÅÃ ½Ã ÇÒ °Í
+				// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½
 
 				if (_selected)
 				{
@@ -382,17 +430,4 @@ void GuiController::CreateSceneManagerPanel()
 	}
 
 	ImGui::End();
-}
-
-void GuiController::SetSelectedGridScale(float scale)
-{
-	// grid scale °ª¿¡ µû¶ó ÄÞº¸ ¹Ú½ºÀÇ ¼±ÅÃ ÀÎµ¦½º¸¦ ¼³Á¤ÇÕ´Ï´Ù.
-	if (scale == 0.1f)
-		_selectedGridScale = 0;
-	else if (scale == 1.0f)
-		_selectedGridScale = 1;
-	else if (scale == 10.0f)
-		_selectedGridScale = 2;
-	else
-		_selectedGridScale = 1; // ±âº»°ª
 }

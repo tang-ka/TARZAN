@@ -59,6 +59,7 @@ void USceneManager::SpawnActor(EPrimitiveType PrimitiveType)
 	{
 		SetNewName(SpawnActor, PrimitiveType);
 		InsertSpawnActorMap(SpawnActor);
+		//GuiController::GetInstance().SelectActor(SpawnActor);
 	}
 }
 

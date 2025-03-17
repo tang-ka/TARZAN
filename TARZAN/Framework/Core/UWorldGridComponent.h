@@ -2,7 +2,6 @@
 #pragma once
 #include "UPrimitiveComponent.h"
 // 이거 디렉토리 구조 솔루션으로 바꿔야함
-#include <vector>
 #include "./Math/FVector.h"
 
 class UWorldGridComponent : public UPrimitiveComponent

@@ -150,6 +150,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="FBoundingBox.cpp" />
     <ClCompile Include="CTextureManager.cpp" />
     <ClCompile Include="DataManager.cpp" />
     <ClCompile Include="ConfigManager.cpp" />
@@ -223,6 +224,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="FBoundingBox.h" />
     <ClInclude Include="CTextureManager.h" />
     <ClInclude Include="DataManager.h" />
 
