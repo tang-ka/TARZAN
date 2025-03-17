@@ -14,7 +14,7 @@ private:
     CRenderer();
     CRenderer(const CRenderer& ref) = delete;
     CRenderer& operator=(const CRenderer& ref) = delete;
-    // ¼Ò¸êÀÚ¿¡¼­´Â std::unique_ptr°¡ ÀÚµ¿À¸·Î Á¤¸®ÇÕ´Ï´Ù.
+    // ì†Œë©¸ìì—ì„œëŠ” std::unique_ptrê°€ ìë™ìœ¼ë¡œ ì •ë¦¬í•©ë‹ˆë‹¤.
     ~CRenderer() = default;
 
 public:
@@ -29,7 +29,7 @@ public:
     }
     void Init(HWND hWnd);
 
-    // ³»ºÎ COM °´Ã¼µéÀº CGraphics ³»ºÎ¿¡¼­ ComPtr·Î °ü¸®ÇÏ¹Ç·Î, GetGraphics()´Â raw pointer ¹İÈ¯
+    // ë‚´ë¶€ COM ê°ì²´ë“¤ì€ CGraphics ë‚´ë¶€ì—ì„œ ComPtrë¡œ ê´€ë¦¬í•˜ë¯€ë¡œ, GetGraphics()ëŠ” raw pointer ë°˜í™˜
     CGraphics* GetGraphics() { return _graphics.get(); }
 	void SetVertexShader(const FWString filename, FString funcname, FString version);
 	void ResetVertexShader();
@@ -46,7 +46,7 @@ public:
 	void DrawLine(TArray<FVertexSimple> vertices, TArray<uint32> indices, FVector4 color) const;
 
 private:
-    // CRenderer°¡ ¼ÒÀ¯ÇÏ´Â °´Ã¼´Â std::unique_ptr·Î °ü¸®
+    // CRendererê°€ ì†Œìœ í•˜ëŠ” ê°ì²´ëŠ” std::unique_ptrë¡œ ê´€ë¦¬
     std::unique_ptr<CGraphics> _graphics;
     std::unique_ptr<CVertexShader> _vertexShader;   
     std::unique_ptr<CPixelShader> _pixelShader;
@@ -54,6 +54,6 @@ private:
     std::unique_ptr<CRasterzierState> _rasterizerState;
     std::unique_ptr<CConstantBuffer<FMatrix>> _matrixBuffer;
     std::unique_ptr<CConstantBuffer<FPrimitiveFlags>> _flagsBuffer;
-    UCameraComponent* _mainCamera = nullptr; // ¼ÒÀ¯±ÇÀº ´Ù¸¥ °÷¿¡¼­ °ü¸®ÇÏ´Â °ÍÀ¸·Î °¡Á¤
+    UCameraComponent* _mainCamera = nullptr; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
 };

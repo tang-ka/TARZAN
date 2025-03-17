@@ -36,6 +36,9 @@ UCubeComponent::UCubeComponent() {
 
 
 
+
+=========
+>>>>>>>>> Temporary merge branch 2
 	CGraphics* graphics = CRenderer::Instance()->GetGraphics();
 	_vertexBuffer = std::make_unique<CVertexBuffer<FVertexSimple>>(graphics->GetDevice());
 	_vertexBuffer->Create(vertices);
