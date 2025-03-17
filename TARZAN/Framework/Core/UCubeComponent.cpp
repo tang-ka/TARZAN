@@ -116,5 +116,5 @@ void UCubeComponent::CreateBoundingBox(EPrimitiveType type)
 	boundingBox->SetBoundaryPointsForPrimitive(type);
 	boundingBox->GenerateVerticesByBasicBox();
 	boundingBox->GenerateIndices();
-	isShowBoundingBox = true;
+	//isShowBoundingBox = true;
 }

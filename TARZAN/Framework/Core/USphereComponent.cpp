@@ -537,7 +537,7 @@ USphereComponent::USphereComponent()
 	boundingBox->SetBoundaryPoints(boundaryPoint);
 	boundingBox->UpdateVerticesByBP(GetComponentTransform());
 	boundingBox->GenerateIndices();
-	isShowBoundingBox = true;
+	//isShowBoundingBox = true;
 }
 
 void USphereComponent::Update()
@@ -583,5 +583,5 @@ void USphereComponent::CreateBoundingBox(EPrimitiveType type)
 	boundingBox->SetBoundaryPointsForPrimitive(type);
 	boundingBox->UpdateVerticesByBP(GetComponentTransform());
 	boundingBox->GenerateIndices();
-	isShowBoundingBox = true;
+	//isShowBoundingBox = true;
 }

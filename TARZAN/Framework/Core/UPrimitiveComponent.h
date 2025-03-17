@@ -43,7 +43,6 @@ private:
 	CVertexBuffer<FVertexSimple>* _boundingBoxVertexBuffer = nullptr;
 	CIndexBuffer* _boundingBoxIndexBuffer = nullptr;
 
-	uint32 renderFlags;
 	uint32 StencilRefNum;
 protected:
 	bool isShowBoundingBox = false;

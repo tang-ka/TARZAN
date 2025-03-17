@@ -68,19 +68,25 @@ void GuiController::NewFrame()
 				UPrimitiveComponent* downcast = dynamic_cast<UPrimitiveComponent*>(_selected);
 				if (downcast)
 					downcast->renderFlags &= ~PRIMITIVE_FLAG_SELECTED;
-				_selected = nullptr; // Gizmo만 선택, 액터는 선택 해제
+				//_selected = nullptr; // Gizmo만 선택, 액터는 선택 해제
 			}
 			// Gizmo가 없거나 교차가 없는 경우, 액터를 선택
 			else if (neareastActorComp != nullptr)
 			{
 				UPrimitiveComponent* downcast = dynamic_cast<UPrimitiveComponent*>(_selected);
 				if (downcast)
+				{
 					downcast->renderFlags &= ~PRIMITIVE_FLAG_SELECTED;
+					downcast->HideBoundingBox();
+				}
 
 				_selected = neareastActorComp;
+
 				downcast = dynamic_cast<UPrimitiveComponent*>(_selected);
-				if (downcast)
+				if (downcast) {
 					downcast->renderFlags |= PRIMITIVE_FLAG_SELECTED;
+					downcast->ShowBoundingBox();
+				}
 
 				UEngine::GetInstance().GetGizmo()->AttachTo(dynamic_cast<UPrimitiveComponent*>(_selected));
 				UEngine::GetInstance().GetGizmo()->selectedAxis = EPrimitiveColor::NONE;
@@ -104,7 +110,6 @@ UActorComponent* GuiController::GetNearestActorComponents(float& distance) {
 
 EPrimitiveColor GuiController::GetNearestGizmo(float& distance)
 {
-
 	if (!UEngine::GetInstance().GetGizmo()->isGizmoActivated)
 	{
 		distance = FLT_MAX;

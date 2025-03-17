@@ -33,5 +33,5 @@ void UPlaneComponent::CreateBoundingBox(EPrimitiveType type)
 	boundingBox->SetBoundaryPointsForPrimitive(type);
 	boundingBox->GenerateVertices();
 	boundingBox->GenerateIndices();
-	isShowBoundingBox = true;
+	//isShowBoundingBox = true;
 }
