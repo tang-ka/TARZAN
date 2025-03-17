@@ -34,6 +34,7 @@ void UPrimitiveComponent::Render() {
 }
 
 
+
 void UPrimitiveComponent::GenerateRayForPicking(const FVector& pickPosition, const FMatrix& viewMatrix, FVector* pickRayOrigin, FVector* rayDirection)
 {
 	FMatrix xmf4x4WorldView = GetComponentTransform() * viewMatrix;
