@@ -25,7 +25,7 @@ public:
 	void Merge(const FBoundingBox& other);
 	void SetBoundaryPointsForPrimitive(EPrimitiveType type);
 	void SetBoundaryPoints(TArray<FVector4> points) { boundaryPoints = points; }
-	void UpdateVerticesByBP(FMatrix mvpMatrix);
+	void UpdateVerticesByBP(FMatrix mvpMatrix = FMatrix::Identity);
 
 	void GenerateVertices();
 	void GenerateVertices(FVector min, FVector max, FVector4 color = { 1.f, 1.f, 1.f, 1.f });

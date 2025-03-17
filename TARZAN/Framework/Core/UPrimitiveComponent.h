@@ -16,7 +16,6 @@ public:
 	uint32 renderFlags;
 	TArray<FVertexSimple> vertices = {};
 	TArray<uint32> indices = {};
-	bool isShowBoundingBox = false;
 
 public:
 	virtual void Render();
@@ -26,6 +25,9 @@ public:
 	bool IntersectRayTriangle(const FVector& rayOrigin, const FVector& rayDirection, const FVector& v0, const FVector& v1, const FVector& v2, float& hitDistance);
 
 	virtual int CheckRayIntersection(FVector& rayOrigin, FVector& rayDirection, float* pfNearHitDistance);
+
+	void ShowBoundingBox() { isShowBoundingBox = true; }
+	void HideBoundingBox() { isShowBoundingBox = false; }
 
 protected:
 	virtual void CreateBoundingBox(EPrimitiveType type) {}
@@ -40,6 +42,7 @@ private:
 	CIndexBuffer* _boundingBoxIndexBuffer = nullptr;
 
 protected:
+	bool isShowBoundingBox = false;
 	FBoundingBox* boundingBox;
 	CVertexBuffer<FVertexSimple>* _vertexBuffer = nullptr;
 	CIndexBuffer* _indexBuffer = nullptr;

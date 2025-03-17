@@ -30,7 +30,7 @@ void FBoundingBox::SetBoundaryPointsForPrimitive(EPrimitiveType type)
 		};
 		break;
 	case SPHERE:
-		boundaryPoints =
+		/*boundaryPoints =
 		{
 			{ 0.f, 0.f, -1.f, 1.f},
 			{ 0.f, 0.f, 1.f, 1.f},
@@ -38,23 +38,32 @@ void FBoundingBox::SetBoundaryPointsForPrimitive(EPrimitiveType type)
 			{ 0.f, 1.f, 0.f, 1.f},
 			{ -1.f, 0.f, 0.f, 1.f},
 			{ 1.f, 0.f, 0.f, 1.f},
-		};
+		};*/
 		break;
 	case PLANE:
+		boundaryPoints =
+		{
+			{-1.0f, 0.0f, -1.0f, 1.f},
+			{ 1.0f, 0.0f, -1.0f, 1.f},
+			{ 1.0f, 0.0f,  1.0f, 1.f},
+			{-1.0f, 0.0f,  1.0f, 1.f}
+		};
 		break;
 	default:
 		boundaryPoints = {};
 		break;
 	}
+
+	UpdateVerticesByBP();
 }
 
-void FBoundingBox::UpdateVerticesByBP(FMatrix mvpMatrix)
+void FBoundingBox::UpdateVerticesByBP(FMatrix modelToWorldTransformMatrix)
 {
 	TArray<FVector4> updatePoint = {};
 
 	for (size_t i = 0; i < boundaryPoints.size(); i++)
 	{
-		updatePoint.push_back(boundaryPoints[i] * mvpMatrix);
+		updatePoint.push_back(boundaryPoints[i] * modelToWorldTransformMatrix);
 	}
 
 	minPoint = { FLT_MAX, FLT_MAX, FLT_MAX };
