@@ -54,6 +54,6 @@ private:
     std::unique_ptr<CRasterzierState> _rasterizerState;
     std::unique_ptr<CConstantBuffer<FMatrix>> _matrixBuffer;
     std::unique_ptr<CConstantBuffer<FPrimitiveFlags>> _flagsBuffer;
-    UCameraComponent* _mainCamera = nullptr; // �������� �ٸ� ������ �����ϴ� ������ ����
+    UCameraComponent* _mainCamera = nullptr; 
 
 };
