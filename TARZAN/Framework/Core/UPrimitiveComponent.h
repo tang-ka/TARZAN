@@ -5,6 +5,8 @@
 #include "./Framework/Core/CRenderer.h"
 #include "FBoundingBox.h"
 
+class FBoundingBox;
+
 class UPrimitiveComponent: public USceneComponent {
 public:
 	UPrimitiveComponent(): renderFlags(0) {}
@@ -12,14 +14,9 @@ public:
 
 public:
 	uint32 renderFlags;
-	TArray<FVertexSimple> vertices;
-	TArray<uint32> indices;
-	bool isShowBoundingBox;
-
-private:
-	FBoundingBox boundingBox;
-	CVertexBuffer<FVertexSimple>* _boundingBoxVertexBuffer = nullptr;
-	CIndexBuffer* _boundingBoxIndexBuffer = nullptr;
+	TArray<FVertexSimple> vertices = {};
+	TArray<uint32> indices = {};
+	bool isShowBoundingBox = false;
 
 public:
 	virtual void Render();
@@ -30,12 +27,20 @@ public:
 
 	virtual int CheckRayIntersection(FVector& rayOrigin, FVector& rayDirection, float* pfNearHitDistance);
 
+protected:
+	virtual void CreateBoundingBox(EPrimitiveType type) {}
+
 private :
-	void UpdateBoundingBox();
-	void RenderBoundingBox();
+	//void UpdateBoundingBox();
 	void CreateBoundingBoxBuffer();
+	void RenderBoundingBox();
+
+private:
+	CVertexBuffer<FVertexSimple>* _boundingBoxVertexBuffer = nullptr;
+	CIndexBuffer* _boundingBoxIndexBuffer = nullptr;
 
 protected:
+	FBoundingBox* boundingBox;
 	CVertexBuffer<FVertexSimple>* _vertexBuffer = nullptr;
 	CIndexBuffer* _indexBuffer = nullptr;
 };

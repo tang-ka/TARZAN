@@ -2406,7 +2406,24 @@ USphereComponent::USphereComponent()
 		{0.156434f, -0.987688f, 0.0f, 0.578217f, 0.006156f, 0.5f, 1.0},
 		{ -0.0f, -1.0f, -0.0f, 0.5f, 0.0f, 0.5f, 1.0f }
 	};
+	//std::vector<FVertexSimple> uniqueVertices;
 	indices = {};
+
+	//std::unordered_map<FVertexSimple, unsigned int> vertexMap;
+
+	//for (const auto& vertex : vertices) {
+	//	// 만약 이미 존재하는 버텍스라면 기존 인덱스를 사용
+	//	if (vertexMap.find(vertex) != vertexMap.end()) {
+	//		indices.push_back(vertexMap[vertex]);
+	//	}
+	//	// 새로운 버텍스라면 추가하고 인덱스 저장
+	//	else {
+	//		unsigned int newIndex = static_cast<unsigned int>(uniqueVertices.size());
+	//		uniqueVertices.push_back(vertex);
+	//		vertexMap[vertex] = newIndex;
+	//		indices.push_back(newIndex);
+	//	}
+	//}
 
 	CGraphics* graphics = CRenderer::Instance()->GetGraphics();
 	_vertexBuffer = new CVertexBuffer<FVertexSimple>(graphics->GetDevice());

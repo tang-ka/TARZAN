@@ -30,17 +30,27 @@ UCubeComponent::UCubeComponent() {
 	4,6,5,
 	};
 
-
 	CGraphics* graphics = CRenderer::Instance()->GetGraphics();
 	_vertexBuffer = new CVertexBuffer<FVertexSimple>(graphics->GetDevice());
 	_vertexBuffer->Create(vertices);
 	_indexBuffer = new CIndexBuffer(graphics->GetDevice());
 	_indexBuffer->Create(indices);
+
+	CreateBoundingBox(EPrimitiveType::CUBE);
 }
 
 void UCubeComponent::Update() {
 	//RelativeRotation += FVector(1.f, 1.f, 1.f) * Time::GetDeltaTime();
 	//RelativeLocation.x = sin(Time::GetElapsedTime());
+}
+
+void UCubeComponent::CreateBoundingBox(EPrimitiveType type)
+{
+	boundingBox = new FBoundingBox();
+	boundingBox->SetBoundaryPointsForPrimitive(type);
+	boundingBox->GenerateVerticesByBasicBox();
+	boundingBox->GenerateIndices();
+	isShowBoundingBox = true;
 }
 
 bool UCubeComponent::IntersectsRay(const FVector& rayOrigin, const FVector& rayDir, float& Distance)
