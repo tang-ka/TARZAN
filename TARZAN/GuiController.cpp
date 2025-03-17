@@ -148,6 +148,11 @@ EPrimitiveColor GuiController::GetNearestGizmo(float& distance)
 
 }
 
+UPrimitiveComponent* GuiController::GetSelectedObject()
+{
+	return dynamic_cast<UPrimitiveComponent*>(_selected);
+}
+
 void GuiController::RenderFrame()
 {
 	ImGui::Render();

@@ -67,7 +67,7 @@ float4 PS(VS_OUTPUT input) : SV_TARGET
     
     
      // 검은색 (R, G, B가 모두 0인 경우) 날리기
-    if (textureColor.r == 0.0f && textureColor.g == 0.0f && textureColor.b == 0.0f)
+    if (textureColor.r <= 0.1f && textureColor.g <= 0.1f && textureColor.b <= 0.1f)
     {
         discard; // 검은색은 날림
     }

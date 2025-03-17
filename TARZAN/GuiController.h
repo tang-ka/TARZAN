@@ -10,6 +10,7 @@ class UActorComponent;
 class SceneManagerView;
 class UWorld;
 class UWorldGridComponent;
+class UPrimitiveComponent;
 
 class GuiController : public TSingleton<GuiController>
 {
@@ -22,6 +23,7 @@ public:
 	void NewFrame();
 	UActorComponent* GetNearestActorComponents(float& distance);
 	EPrimitiveColor GetNearestGizmo(float& distance);
+	UPrimitiveComponent* GetSelectedObject();
 
 	void RenderFrame();
 	void RenderEditor();

@@ -20,7 +20,7 @@ UTextComponent::UTextComponent()
     vertices.clear();  // 기존 vertices 초기화
     indices.clear();   // 기존 indices 초기화
 
-    float xOffset = 0.0f; // 텍스트의 x축 위치를 조정하기 위한 오프셋
+    float xOffset = Text.size() * gap; // 텍스트의 x축 위치를 조정하기 위한 오프셋
     float yOffset = 0.0f; // 텍스트의 y축 위치를 고정
 
     for (size_t i = 0; i < Text.size(); ++i) {

@@ -1,14 +1,16 @@
 #pragma once
 #include "Framework/Core/UActorComponent.h"
+
 class USceneComponent :public UActorComponent {
 public:
 	USceneComponent() {}
 	virtual void Update();
 	//virtual void Render();
-private:
 	FVector RelativeLocation = FVector::Zero;
 	FVector RelativeRotation = FVector::Zero;
 	FVector RelativeScale3D = FVector::One;
+private:
+	
 
 public:
 	FVector Right();

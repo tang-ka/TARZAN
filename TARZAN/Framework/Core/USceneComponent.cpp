@@ -1,6 +1,9 @@
 #include "stdafx.h"
 #include "USceneComponent.h"
+#include "CRenderer.h"
+
 const FVector USceneComponent::PseudoUp = { 0,1,0 };
+
 
 void USceneComponent::Update()
 {
@@ -49,6 +52,8 @@ FVector USceneComponent::GetRelativeScale3D() const
 FMatrix USceneComponent::GetRelativeTransform() const
 {
 	if (IsOverrideTransform) return OverrideTransform;
+
+
 
 	FMatrix origin = FMatrix::Identity;
 	FMatrix scale = FMatrix::Scale(RelativeScale3D);
