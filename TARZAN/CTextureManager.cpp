@@ -47,7 +47,6 @@ void CTextureManager::LoadSetTexture() {
         if (FAILED(hr)) {
             continue;
         }
-
         m_textureMap[path] = textureView;
     }
 }

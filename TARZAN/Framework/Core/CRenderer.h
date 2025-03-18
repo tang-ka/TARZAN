@@ -38,6 +38,7 @@ public:
 	void SetRasterzierState(D3D11_FILL_MODE fillMode);
 	void SetTransformToConstantBuffer(FMatrix matrix, bool isBill=false);
 	void SetFlagsToConstantBuffer(FPrimitiveFlags flags);
+    void SetIsTextToConstantBuffer(EObjectType objType);
 	UCameraComponent* GetMainCamera() const;
 	void SetMainCamera(UCameraComponent* camera);
 
@@ -54,6 +55,7 @@ private:
     std::unique_ptr<CRasterzierState> _rasterizerState;
     std::unique_ptr<CConstantBuffer<FMatrix>> _matrixBuffer;
     std::unique_ptr<CConstantBuffer<FPrimitiveFlags>> _flagsBuffer;
+    std::unique_ptr<CConstantBuffer<FTextCheck>> _textCheckBuffer;
     UCameraComponent* _mainCamera = nullptr; 
 
 };

@@ -6,6 +6,10 @@ cbuffer PrimitiveBuffer : register(b1)
 {
     uint Flags;
 };
+cbuffer IsTextureBuffer : register(b2)
+{
+    uint isText; // if  1 > text
+};
 
 // 텍스처 및 샘플러 상태 추가
 Texture2D tex : register(t0); // 텍스처를 t0 슬롯에 바인딩
@@ -60,14 +64,14 @@ VS_OUTPUT VS(VS_INPUT input)
 
 float4 PS(VS_OUTPUT input) : SV_TARGET
 {
- 
     
      // 텍스처에서 샘플링하여 색상을 반환
-    float4 textureColor = tex.Sample(samplerState, input.TexCoord); // 텍스처 샘플링
+    
+    float4 textureColor= tex.Sample(samplerState, input.TexCoord); // 텍스처 샘플링
     
     
      // 검은색 (R, G, B가 모두 0인 경우) 날리기
-    if (textureColor.r <= 0.1f && textureColor.g <= 0.1f && textureColor.b <= 0.1f)
+    if ( isText=1 && textureColor.r <= 0.1f && textureColor.g <= 0.1f && textureColor.b <= 0.1f)
     {
         discard; // 검은색은 날림
     }

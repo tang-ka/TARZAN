@@ -83,7 +83,6 @@ void UPrimitiveComponent::Render() {
         m = GetComponentTransform();
   
 
-
 	CRenderer::Instance()->SetTransformToConstantBuffer(m,isBill);
 	CRenderer::Instance()->SetFlagsToConstantBuffer({ renderFlags });
 
