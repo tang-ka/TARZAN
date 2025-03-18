@@ -69,7 +69,6 @@ void UPrimitiveComponent::Render() {
         {
             std::wstring wss = L"Welcome to Jungle";
             text->UpdateText(wss);
-
             myPos = RelativeLocation;
             trans = FMatrix::Translate
             (RelativeLocation);

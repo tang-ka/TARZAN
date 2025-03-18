@@ -9,6 +9,7 @@
 class UTextComponent : public UPrimitiveComponent
 {
 public:
+
     std::wstring Text;
     UTextComponent();
     void CreateBufferForText(std::wstring text);

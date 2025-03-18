@@ -41,6 +41,7 @@ public:
 	int _selectedGridScale;
 	int _selectedCameraSpeed;
 
+
 private:
 	void CreateSceneManagerPanel();
 
@@ -50,6 +51,8 @@ private:
 	HWND hWnd;
 	// �̰� ����ũ�� �δ°� �³�
 	std::unique_ptr<GuiConsole> _console;
+
+	bool showFlag= true;
 
 	char _sceneNameBuffer[256] = "";
 	int _selectedPrimitive = 0, _spawnNumber = 1;

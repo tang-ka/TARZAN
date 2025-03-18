@@ -106,6 +106,7 @@ UActorComponent* GuiController::GetNearestActorComponents(float& distance) {
 
 	Input::Instance()->GetMouseLocation(x, y);
 	UActorComponent* nearestActor = World->PickingByRay(x, y, distance);
+	
 	return nearestActor;
 }
 
@@ -209,7 +210,7 @@ void GuiController::RenderEditor() {
 
 	ImGui::SetNextWindowSizeConstraints(ImVec2(300.0f, 0.0f), ImVec2(300.0f, FLT_MAX));
 
-	const char* primitiveItems[] = { "Cube", "Sphere", "Plane","Text"};
+	const char* primitiveItems[] = { "Cube", "Sphere", "Plane"};
 	const char* viewModes[] = { "Lit", "Unlit", "Wireframe" };
 
 	D3D11_FILL_MODE currentFillMode = CRenderer::Instance()->GetGraphics()->GetFillMode();
@@ -271,6 +272,11 @@ void GuiController::RenderEditor() {
 		if (downcast)
 			downcast->renderFlags &= ~PRIMITIVE_FLAG_SELECTED;
 	}
+
+	if(ImGui::Checkbox("Show Flag", &showFlag)) {
+		World->SetShowFlag(showFlag);
+	}
+
 	ImGui::Separator();
 	/*********************************/
 

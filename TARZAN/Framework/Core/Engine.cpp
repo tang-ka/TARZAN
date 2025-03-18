@@ -265,7 +265,7 @@ void UEngine::InitWorld()
 {
 	SceneManager = new USceneManager();
 	SceneManager->Initialize();
-
+	SceneManager->SpawnActor(EPrimitiveType::TEXT);
 	//Controller = new GuiController(WindowHandle, CRenderer::Instance()->GetGraphics());
 	// UEngine::InitWorld() 내 수정 예시
 	Controller = &GuiController::GetInstance();
