@@ -50,6 +50,6 @@ protected:
 	bool isShowBoundingBox = false;
 	FBoundingBox* boundingBox;
 
-	CDepthStencilState* DepthStencilState = nullptr;
-	CBlendState* BlendState = nullptr;
+	std::unique_ptr<CDepthStencilState> DepthStencilState;;
+	std::unique_ptr<CBlendState> BlendState;
 };

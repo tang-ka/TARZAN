@@ -22,6 +22,6 @@ private:
 	bool picked = false;
 	EPrimitiveColor color;
 	
-	CBlendState* ArrowBlendState;
+	std::unique_ptr<CBlendState> ArrowBlendState;
 };
 

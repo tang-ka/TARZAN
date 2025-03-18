@@ -15,5 +15,7 @@ public:
 private:
     FVector OriginWhenSpawned = { 0,0,0 };
     FVector DirectionWhenSpawned = { 0,0,0 };
+
+    std::unique_ptr<CBlendState> CoordBlendState;
 };
 
