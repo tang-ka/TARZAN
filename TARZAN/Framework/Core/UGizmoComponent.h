@@ -19,9 +19,10 @@ public:
     EPrimitiveColor selectedAxis = EPrimitiveColor::NONE;
     bool isGizmoActivated = false;
     
-    UArrowComponent* ArrowX;
-    UArrowComponent* ArrowY;
-    UArrowComponent* ArrowZ;
+    std::unique_ptr<UArrowComponent> ArrowX;
+    std::unique_ptr<UArrowComponent> ArrowY;
+    std::unique_ptr<UArrowComponent> ArrowZ;
+
     UArrowComponent* temp;
 };
 

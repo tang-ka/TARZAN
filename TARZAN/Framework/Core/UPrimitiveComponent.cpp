@@ -240,7 +240,9 @@ void UPrimitiveComponent::CreateBoundingBoxBuffer()
 
     // Vertex Buffer 생성
     if (!_boundingBoxVertexBuffer)
+    {
         _boundingBoxVertexBuffer = new CVertexBuffer<FVertexSimple>(device);
+    }
 
     _boundingBoxVertexBuffer->Create(boundingBox->GetVertices());
 

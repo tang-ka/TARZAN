@@ -9,6 +9,7 @@
 #include "ConfigManager.h"
 #include "GuiController.h"
 
+
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 LRESULT UEngine::WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -157,15 +158,14 @@ void UEngine::Run()
 void UEngine::Shutdown()
 {
 	Input::Instance()->Shutdown();
-
+	//SceneManager->Shutdown();
 	ConfigManager::GetInstance().Shutdown();
-
 	CRenderer::Release();
 }
 
 GuiController* UEngine::GetGUI()
 {
-	return Controller;
+	return Controller.get();
 }
 
 UWorld* UEngine::GetWorld()
@@ -175,12 +175,12 @@ UWorld* UEngine::GetWorld()
 
 UGizmoComponent* UEngine::GetGizmo()
 {
-	return UGizmo;
+	return UGizmo.get();
 }
 
 USceneManager* UEngine::GetSceneManager()
 {
-	return SceneManager;
+	return SceneManager.get();
 }
 
 bool UEngine::InitWindow(int32 InScreenWidth, int32 InScreenHeight)
@@ -263,23 +263,28 @@ void UEngine::InitEditor()
 }
 void UEngine::InitWorld()
 {
-	SceneManager = new USceneManager();
+	//SceneManager = new USceneManager();
+	SceneManager = std::make_shared<USceneManager>();
 	SceneManager->Initialize();
 
 	//Controller = new GuiController(WindowHandle, CRenderer::Instance()->GetGraphics());
 	// UEngine::InitWorld() 내 수정 예시
-	Controller = &GuiController::GetInstance();
+	//Controller = &GuiController::GetInstance();
+	Controller = std::make_shared<GuiController>();
 	Controller->Init(WindowHandle, CRenderer::Instance()->GetGraphics());
 
+	//SceneManagerView* SceneView = new SceneManagerView(SceneManager);
+	std::shared_ptr<SceneManagerView> SceneView = std::make_shared<SceneManagerView>(SceneManager);
 
-	SceneManagerView* SceneView = new SceneManagerView(SceneManager);
-	Controller->SceneView = SceneView;
+	Controller->SceneView = SceneView.get();
 
-	UGizmo = new UGizmoComponent();
+	//UGizmo = new UGizmoComponent();
+	UGizmo = std::make_shared<UGizmoComponent>();
 
-	Arrow = new UCoordArrowComponent();
+	//Arrow = new UCoordArrowComponent();
+	Arrow = std::make_shared<UCoordArrowComponent>();
 	Arrow->SetRelativeScale3D({ 50000,50000,50000 });
 
-	// 근데 이렇게 하는게 맞나 싶음. 이거 동적으로 어차피 사용해야 하는데, WireFrame 설정하는 곳에서 추가로 Grid사이즈 정할까
-	WorldGrid = new UWorldGridComponent();
+	//WorldGrid = new UWorldGridComponent();
+	WorldGrid = std::make_shared<UWorldGridComponent>();
 }

@@ -52,7 +52,7 @@ public:
 
     USceneManager* GetSceneManager();
 
-    UWorldGridComponent* GetWorldGridComponent() const { return WorldGrid; }
+    UWorldGridComponent* GetWorldGridComponent() const { return WorldGrid.get(); }
 
 private:
     bool InitWindow(int32 InScreenWidth, int32 InScreenHeight);
@@ -73,16 +73,20 @@ private:
     HWND WindowHandle = nullptr;
     HINSTANCE WindowInstance = nullptr;
 
-    //int InitializedScreenWidth = 0;
-    //int InitializedScreenHeight = 0;
-
 /* Maybe should refactoring.. */
 private:
-    UGizmoComponent* UGizmo = nullptr;
-    GuiController* Controller = nullptr;
-    UWorld* World = nullptr;
-    UCoordArrowComponent* Arrow = nullptr;
-    UWorldGridComponent* WorldGrid = nullptr;
-    USceneManager* SceneManager = nullptr;
+    //UGizmoComponent* UGizmo = nullptr;
+    //GuiController* Controller = nullptr;
+    //UWorld* World = nullptr;
+    //UCoordArrowComponent* Arrow = nullptr;
+    //UWorldGridComponent* WorldGrid = nullptr;
+    //USceneManager* SceneManager = nullptr;
+
+    std::shared_ptr<UGizmoComponent> UGizmo;
+    std::shared_ptr<GuiController> Controller;
+    std::shared_ptr<UWorld> World;
+    std::shared_ptr<UCoordArrowComponent> Arrow;
+    std::shared_ptr<UWorldGridComponent> WorldGrid;
+    std::shared_ptr<USceneManager> SceneManager;
 };
 

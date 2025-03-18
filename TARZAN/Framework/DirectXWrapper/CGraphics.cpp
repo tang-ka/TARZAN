@@ -4,6 +4,8 @@
 #include <d3d11.h>
 #include <dxgi.h>
 
+//static ID3D11Debug* pDebug = nullptr;
+
 CGraphics::CGraphics(HWND hWnd) : _hWnd(hWnd) {
     CreateDeviceAndSwapChain();
     CreateRenderTargetView();
@@ -31,17 +33,6 @@ void CGraphics::RenderEnd() {
 
 void CGraphics::Release() {
     ReleaseRenderTargetView();
-
-//#ifdef _DEBUG
-//    // 모든 리소스 Release() 후, 디바이스가 아직 유효할 때 호출
-//    ID3D11Debug* debugDevice = nullptr;
-//    if (SUCCEEDED(_device->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void**>(&debugDevice))))
-//    {
-//        debugDevice->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
-//        debugDevice->Release();
-//    }
-//#endif
-
     ReleaseDeviceAndSwapChain();
 }
 
@@ -154,10 +145,23 @@ void CGraphics::CreateDeviceAndSwapChain() {
         _deviceContext.GetAddressOf()
     );
     assert(SUCCEEDED(hr));
+
+    //
+    //if (SUCCEEDED(_device->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void**>(&pDebug))))
+    //{
+    //    // 디버그 인터페이스를 성공적으로 획득했습니다.
+    //}
 }
 
 void CGraphics::ReleaseDeviceAndSwapChain() {
 
+    //
+    //if (pDebug)
+    //{
+    //    // D3D11_RLDO_DETAIL 옵션을 사용하여 상세한 객체 정보를 출력합니다.
+    //    pDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
+    //    pDebug->Release();
+    //}
     if (_deviceContext)
         _deviceContext->Flush();
     _renderTargetView.Reset();

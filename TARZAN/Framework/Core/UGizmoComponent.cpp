@@ -6,9 +6,9 @@
 
 UGizmoComponent::UGizmoComponent()
 {
-	ArrowX = new UArrowComponent(EPrimitiveColor::RED_X);
-	ArrowY = new UArrowComponent(EPrimitiveColor::GREEN_Y);
-	ArrowZ = new UArrowComponent(EPrimitiveColor::BLUE_Z);
+	ArrowX = std::make_unique<UArrowComponent>(EPrimitiveColor::RED_X);
+	ArrowY = std::make_unique<UArrowComponent>(EPrimitiveColor::GREEN_Y);
+	ArrowZ = std::make_unique<UArrowComponent>(EPrimitiveColor::BLUE_Z);
 
 	ArrowX->AttachToComponent(this);
 	ArrowY->AttachToComponent(this);
@@ -32,7 +32,10 @@ UGizmoComponent::~UGizmoComponent()
 	ArrowX->AttachToComponent(nullptr);
 	ArrowY->AttachToComponent(nullptr);
 	ArrowZ->AttachToComponent(nullptr);
-	ArrowX = ArrowY = ArrowZ = nullptr;
+	ArrowX = nullptr;
+	ArrowY = nullptr;
+	ArrowZ = nullptr;
+
 }
 
 void UGizmoComponent::Update()
@@ -61,9 +64,9 @@ void UGizmoComponent::Update()
 
 
 	UArrowComponent* selectedArrow = nullptr;
-	if (selectedAxis == EPrimitiveColor::RED_X) selectedArrow = ArrowX;
-	else if (selectedAxis == EPrimitiveColor::GREEN_Y) selectedArrow = ArrowY;
-	else if (selectedAxis == EPrimitiveColor::BLUE_Z) selectedArrow = ArrowZ;
+	if (selectedAxis == EPrimitiveColor::RED_X) selectedArrow = ArrowX.get();
+	else if (selectedAxis == EPrimitiveColor::GREEN_Y) selectedArrow = ArrowY.get();
+	else if (selectedAxis == EPrimitiveColor::BLUE_Z) selectedArrow = ArrowZ.get();
 	else {
 		if (temp) {
 			temp->renderFlags &= ~PRIMITIVE_FLAG_SELECTED;

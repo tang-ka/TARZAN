@@ -29,6 +29,8 @@ public:
 	void ClearDirty();
 	bool IsDirty() { return bIsDirty; }
 
+	void Shutdown();
+
 private:
 	void SetNewName(UObject* Actor, EPrimitiveType PrimitiveType);
 	void SetNewName(UObject* Actor, FString Name);
@@ -44,33 +46,35 @@ private:
 	TMap<uint32, UObject*> SpawnActorMap;
 
 	/* Active World */
-	UWorld* PrimaryWorld;
-
+	std::unique_ptr<UWorld> PrimaryWorld;
 	bool bIsDirty;
 };
 
 class SceneManagerView
 {
 public:
-	SceneManagerView(USceneManager* _SceneManager)
-	{
-		SceneManager = _SceneManager;
-	}
+	// USceneManager 객체는 외부에서 std::shared_ptr로 관리되며,
+	// SceneManagerView는 소유권을 갖지 않고 약한 참조(weak_ptr)로 보관합니다.
+	SceneManagerView(std::shared_ptr<USceneManager> _SceneManager)
+		: SceneManager(_SceneManager){}
 	~SceneManagerView() = default;
 
-	/* 상태가 변하면 업데이트가 됩니다. */
+	// 상태가 변화하면, 현재 SpawnActorMap을 복사하여 업데이트합니다.
 	void Update()
 	{
-		if (!SceneManager->IsDirty()) return;
+		if (auto sceneManagerShared = SceneManager.lock())
+		{
+			if (!sceneManagerShared->IsDirty())
+				return;
 
-		SpawnActorMapCopy = SceneManager->RetrieveActorMap();
-
-		SceneManager->ClearDirty();
+			SpawnActorMapCopy = sceneManagerShared->RetrieveActorMap();
+			sceneManagerShared->ClearDirty();
+		}
 	}
-
 	const TMap<uint32, UObject*> GetActors() const { return SpawnActorMapCopy; };
 
 private:
-	USceneManager* SceneManager = nullptr;
+	std::weak_ptr<USceneManager> SceneManager;
 	TMap<uint32, UObject*> SpawnActorMapCopy;
+
 };

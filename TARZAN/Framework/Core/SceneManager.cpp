@@ -18,7 +18,8 @@ void USceneManager::Initialize()
 {
 	if (nullptr == PrimaryWorld)
 	{
-		PrimaryWorld = new UWorld();
+		//PrimaryWorld = new UWorld();
+		PrimaryWorld = std::make_unique<UWorld>();
 	}
 }
 
@@ -124,6 +125,28 @@ void USceneManager::ClearDirty()
 	bIsDirty = false;
 }
 
+void USceneManager::Shutdown()
+{
+	// 먼저, SpawnActorMap에 저장된 모든 UObject*를 삭제합니다.
+	for (auto& pair : SpawnActorMap)
+	{
+		UObject* actor = pair.second;
+		if (actor)
+		{
+			delete actor;
+		}
+	}
+	SpawnActorMap.clear();
+
+	// 필요하다면, PrimaryWorld에 속한 액터들도 정리합니다.
+	if (PrimaryWorld)
+	{
+		PrimaryWorld->ClearWorld();
+		PrimaryWorld = nullptr;
+	}
+}
+
+
 void USceneManager::SetNewName(UObject* Actor, EPrimitiveType PrimitiveType)
 {
 	int& Count = NextIndices[PrimitiveType];
@@ -163,5 +186,5 @@ FString USceneManager::GetPrimitiveTypeString(EPrimitiveType PrimitiveType)
 
 UWorld* USceneManager::GetWorld()
 {
-	return PrimaryWorld;
+	return PrimaryWorld.get();
 }
