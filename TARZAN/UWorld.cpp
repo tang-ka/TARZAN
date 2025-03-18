@@ -7,8 +7,8 @@
 UWorld::UWorld()
 {
     UCameraComponent* camera = SpawnCamera();
-    camera->SetRelativeLocation({ 0.f, 1.f, 0.f });
-    camera->SetRelativeRotation({ -.8f, 0.f, 0.f });
+    camera->SetRelativeLocation({ 0.f, 8.f, -8.f });
+    camera->SetRelativeRotation({ -.7f, 0.f, 0.f });
     CRenderer::Instance()->SetMainCamera(camera);
     SpawnCoordArrowActor();
 }
