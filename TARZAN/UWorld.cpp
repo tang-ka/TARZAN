@@ -34,6 +34,7 @@ void UWorld::Render()
         auto current = comp;
         if (current)
         {
+            CRenderer::Instance()->SetIsTextToConstantBuffer(comp->ObjType);
             CTextureManager::GetInstance()->BindTextureToShader(comp->ObjType);
             comp->Render();
         }
