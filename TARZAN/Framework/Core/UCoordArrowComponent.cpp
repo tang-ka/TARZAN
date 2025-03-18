@@ -54,7 +54,6 @@ UCoordArrowComponent::UCoordArrowComponent()
 	_indexBuffer = std::make_unique<CIndexBuffer>(graphics->GetDevice());
 	_indexBuffer->Create(indices);
 
-	// 100 conflicts
 	DepthStencilState = std::make_unique<CDepthStencilState>(graphics->GetDevice());
 	DepthStencilState->SetDepthFlags(FALSE, D3D11_DEPTH_WRITE_MASK_ZERO, D3D11_COMPARISON_GREATER);
 	DepthStencilState->SetStencilFlags(FALSE, 0xFF, 0x00);

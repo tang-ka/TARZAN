@@ -72,6 +72,7 @@ UArrowComponent::UArrowComponent(EPrimitiveColor axis) : UPrimitiveComponent(), 
 
 UArrowComponent::~UArrowComponent()
 {
+	//DepthStencilState.reset();
 }
 
 void UArrowComponent::Render()

@@ -14,7 +14,6 @@ private:
     CRenderer();
     CRenderer(const CRenderer& ref) = delete;
     CRenderer& operator=(const CRenderer& ref) = delete;
-    // 소멸자에서는 std::unique_ptr가 자동으로 정리합니다.
     ~CRenderer() = default;
 
 public:

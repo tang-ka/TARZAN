@@ -8,7 +8,7 @@ using Microsoft::WRL::ComPtr;
 template <typename T>
 class CBuffer {
 public:
-    CBuffer(ID3D11Device* device) : _device(device) {}
+    CBuffer(ComPtr<ID3D11Device> device) : _device(device) {}
     virtual ~CBuffer() {}
 
     // 내부 raw pointer 반환
@@ -33,7 +33,7 @@ template <typename T>
 class CVertexBuffer : public CBuffer<T> {
 public:
     using Super = CBuffer<T>;
-    CVertexBuffer(ID3D11Device* device) : Super(device) {}
+    CVertexBuffer(ComPtr<ID3D11Device> device) : Super(device) {}
     ~CVertexBuffer() {}
 
     void Create(const std::vector<T>& vertices) override;
@@ -60,7 +60,7 @@ inline void CVertexBuffer<T>::Create(const std::vector<T>& vertices) {
 class CIndexBuffer : public CBuffer<UINT32> {
 public:
     using Super = CBuffer<UINT32>;
-    CIndexBuffer(ID3D11Device* device) : Super(device) {}
+    CIndexBuffer(ComPtr<ID3D11Device> device) : Super(device) {}
     ~CIndexBuffer() {}
     void Create(const std::vector<UINT32>& indices) override;
 };
@@ -91,7 +91,7 @@ template <typename T>
 class CConstantBuffer : public CBuffer<T> {
 public:
     using Super = CBuffer<T>;
-    CConstantBuffer(ID3D11Device* device, ID3D11DeviceContext* deviceContext)
+    CConstantBuffer(ComPtr<ID3D11Device> device, ComPtr<ID3D11DeviceContext> deviceContext)
         : Super(device), _deviceContext(deviceContext) {
     }
     ~CConstantBuffer() {}
@@ -101,7 +101,7 @@ public:
     void CopyData(const T& data);
 
 protected:
-    ID3D11DeviceContext* _deviceContext;
+    ComPtr<ID3D11DeviceContext> _deviceContext;
 };
 
 template<typename T>

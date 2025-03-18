@@ -17,7 +17,6 @@ public:
 	void SetFillMode(D3D11_FILL_MODE fillMode);
 
 	void ClearDepthStencilView();
-
 private:
 	HWND _hWnd;
 	uint32 _width = SCR_WIDTH;
@@ -30,9 +29,9 @@ private:
 	ComPtr<ID3D11Texture2D> _backBuffer;
 	ComPtr<ID3D11RenderTargetView> _renderTargetView;
 
-	ComPtr<ID3D11Texture2D> depthStencilBuffer;
-	ComPtr<ID3D11DepthStencilView> depthStencilView;
-	ComPtr<ID3D11DepthStencilState> depthStencilState;
+	ComPtr<ID3D11Texture2D> _depthStencilBuffer;
+	ComPtr<ID3D11DepthStencilView> _depthStencilView;
+	ComPtr<ID3D11DepthStencilState> _depthStencilState;
 
 
 	D3D11_VIEWPORT _viewPort = {};
@@ -46,6 +45,10 @@ private:
 	void CreateRenderTargetView();
 	void ReleaseRenderTargetView();
 	void CreateDepthStencilBuffer();
+
+	void ReleaseDepthStencilView();
+
+
 	void SetViewport(float, float);
 };
 

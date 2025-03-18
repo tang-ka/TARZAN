@@ -17,11 +17,10 @@ CGraphics::~CGraphics() {
 }
 
 void CGraphics::RenderBegin() {
-    // ComPtr를 사용할 경우 &(_renderTargetView) 대신 _renderTargetView.GetAddressOf() 사용
-    _deviceContext->OMSetRenderTargets(1, _renderTargetView.GetAddressOf(), depthStencilView.Get());
-    if (depthStencilView == nullptr)
+    _deviceContext->OMSetRenderTargets(1, _renderTargetView.GetAddressOf(), _depthStencilView.Get());
+    if (_depthStencilView == nullptr)
         return;
-    _deviceContext->ClearDepthStencilView(depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+    _deviceContext->ClearDepthStencilView(_depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
     _deviceContext->ClearRenderTargetView(_renderTargetView.Get(), _clearColor);
     _deviceContext->RSSetViewports(1, &_viewPort);
 }
@@ -32,6 +31,17 @@ void CGraphics::RenderEnd() {
 
 void CGraphics::Release() {
     ReleaseRenderTargetView();
+
+//#ifdef _DEBUG
+//    // 모든 리소스 Release() 후, 디바이스가 아직 유효할 때 호출
+//    ID3D11Debug* debugDevice = nullptr;
+//    if (SUCCEEDED(_device->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void**>(&debugDevice))))
+//    {
+//        debugDevice->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
+//        debugDevice->Release();
+//    }
+//#endif
+
     ReleaseDeviceAndSwapChain();
 }
 
@@ -44,9 +54,9 @@ void CGraphics::ResizeBuffers(int width, int height)
         {
             _renderTargetView.Reset();
         }
-        if (depthStencilView)
+        if (_depthStencilView)
         {
-            depthStencilView.Reset();
+            _depthStencilView.Reset();
         }
         if (_backBuffer)
         {
@@ -87,12 +97,12 @@ void CGraphics::ResizeBuffers(int width, int height)
         _deviceContext->RSSetViewports(1, &_viewPort);
 
         // 렌더 타겟과 깊이 스텐실 뷰 설정
-        _deviceContext->OMSetRenderTargets(1, _renderTargetView.GetAddressOf(), depthStencilView.Get());
+        _deviceContext->OMSetRenderTargets(1, _renderTargetView.GetAddressOf(), _depthStencilView.Get());
 
         // 새 백버퍼를 클리어하여 이전 내용 제거
         _deviceContext->ClearRenderTargetView(_renderTargetView.Get(), _clearColor);
-        if (depthStencilView)
-            _deviceContext->ClearDepthStencilView(depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+        if (_depthStencilView)
+            _deviceContext->ClearDepthStencilView(_depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
     }
 }
 
@@ -107,9 +117,8 @@ void CGraphics::SetFillMode(D3D11_FILL_MODE fillMode) {
 void CGraphics::ClearDepthStencilView()
 {
 	// Stencil Buffer to 0;
-	_deviceContext->ClearDepthStencilView(depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+	_deviceContext->ClearDepthStencilView(_depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 }
-
 
 
 void CGraphics::CreateDeviceAndSwapChain() {
@@ -148,9 +157,11 @@ void CGraphics::CreateDeviceAndSwapChain() {
 }
 
 void CGraphics::ReleaseDeviceAndSwapChain() {
+
     if (_deviceContext)
         _deviceContext->Flush();
     _renderTargetView.Reset();
+    _depthStencilView.Reset();
     _deviceContext.Reset();
     _device.Reset();
 }
@@ -186,7 +197,7 @@ void CGraphics::CreateDepthStencilBuffer() {
     descDepth.CPUAccessFlags = 0;
     descDepth.MiscFlags = 0;
 
-    HRESULT hr = _device->CreateTexture2D(&descDepth, nullptr, depthStencilBuffer.GetAddressOf());
+    HRESULT hr = _device->CreateTexture2D(&descDepth, nullptr, _depthStencilBuffer.GetAddressOf());
     if (FAILED(hr))
         return;
 
@@ -194,12 +205,12 @@ void CGraphics::CreateDepthStencilBuffer() {
     descDSV.Format = descDepth.Format;
     descDSV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
     descDSV.Texture2D.MipSlice = 0;
-    hr = _device->CreateDepthStencilView(depthStencilBuffer.Get(), &descDSV, depthStencilView.GetAddressOf());
+    hr = _device->CreateDepthStencilView(_depthStencilBuffer.Get(), &descDSV, _depthStencilView.GetAddressOf());
     if (FAILED(hr))
         return;
 
     // Release depthStencilBuffer if no longer needed
-    depthStencilBuffer.Reset();
+    _depthStencilBuffer.Reset();
 }
 
 void CGraphics::SetViewport(float width, float height) {
@@ -209,4 +220,12 @@ void CGraphics::SetViewport(float width, float height) {
     _viewPort.Height = height;
     _viewPort.MinDepth = 0.f;
     _viewPort.MaxDepth = 1.f;
+}
+
+// delete
+void CGraphics::ReleaseDepthStencilView()
+{
+    _depthStencilView.Reset();
+    _depthStencilState.Reset();
+    _depthStencilBuffer.Reset();
 }

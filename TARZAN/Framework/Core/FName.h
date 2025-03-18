@@ -28,7 +28,7 @@ public:
 	}
 
 public:
-	int32 FindOrAddNameEntry(const FString Name, EFindName FindType = EFindName::FNAME_Add)
+	int32 FindOrAddNameEntry(const FString& Name, EFindName FindType = EFindName::FNAME_Add)
 	{
 		auto Iter = NamePool.find(Name);
 		if (Iter != NamePool.end())
@@ -44,6 +44,7 @@ public:
 		NamePool.emplace(Name, ++NextId);
 		return NextId;
 	}
+
 
 	FString GetNameString(const int32 Index)
 	{
@@ -81,28 +82,18 @@ private:
 */
 struct FName
 {
-	FName()
-	{
-		*this = FName("NAME_NONE");
-	}
+	FName() : FName("NAME_NONE") {}
 
-	FName(char* pStr, EFindName FindType = EFindName::FNAME_Add)
-	{
-		FString tmpStr(pStr);
-		*this = FName(tmpStr);
-	}
+	FName(const char* pStr, EFindName FindType = EFindName::FNAME_Add): FName(FString(pStr), FindType) {}
 
-	FName(FString str, EFindName FindType = EFindName::FNAME_Add)
+	FName(const FString& str, EFindName FindType = EFindName::FNAME_Add)
 	{
-		DisplayIndex = FNameEntryRegistry::GetInstance().FindOrAddNameEntry(str);
+		DisplayIndex = FNameEntryRegistry::GetInstance().FindOrAddNameEntry(str, FindType);
 
 		FString LowerString = str;
-
 		TranslateLower(LowerString);
-
-		ComparisonIndex = FNameEntryRegistry::GetInstance().FindOrAddNameEntry(LowerString);
+		ComparisonIndex = FNameEntryRegistry::GetInstance().FindOrAddNameEntry(LowerString, FindType);
 	}
-
 	int32 DisplayIndex;
 	int32 ComparisonIndex;
 

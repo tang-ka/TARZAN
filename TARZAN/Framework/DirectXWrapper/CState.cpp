@@ -28,14 +28,13 @@ void CSamplerState::Create() {
 
 
 void CRasterzierState::Create(D3D11_FILL_MODE fillMode) {
-	D3D11_RASTERIZER_DESC desc = {};
 	//desc.FillMode = D3D11_FILL_SOLID;
-	desc.FillMode = fillMode;
-	desc.CullMode = D3D11_CULL_BACK;
+	_desc.FillMode = fillMode;
+	_desc.CullMode = D3D11_CULL_BACK;
 	//desc.CullMode = D3D11_CULL_FRONT;
-	desc.FrontCounterClockwise = false;
+	_desc.FrontCounterClockwise = false;
 
-	HRESULT hr = _device->CreateRasterizerState(&desc, &_rasterizerState);
+	HRESULT hr = _device->CreateRasterizerState(&_desc, _rasterizerState.GetAddressOf());
 	assert(SUCCEEDED(hr));
 }
 
@@ -60,35 +59,35 @@ void CBlendState::Create() {
 	_desc.RenderTarget[0].BlendEnable = true;
 	_desc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
-	HRESULT hr = _device->CreateBlendState(&_desc, _blendState->GetAddressOf());
+	HRESULT hr = _device->CreateBlendState(&_desc, _blendState.GetAddressOf());
 	assert(SUCCEEDED(hr));
 }
 
 void CDepthStencilState::Create()
 {
-	Desc.BackFace = Desc.FrontFace; // 현재는 BackFace에 관해 설정할 것이 없어서 이렇게 둠
+	_desc.BackFace = _desc.FrontFace; // 현재는 BackFace에 관해 설정할 것이 없어서 이렇게 둠
 
-	_device->CreateDepthStencilState(&Desc, &DSState);
+	_device->CreateDepthStencilState(&_desc, _depthStencilState.GetAddressOf());
 }
 
 void CDepthStencilState::SetDepthFlags(BOOL InDepthEnable, D3D11_DEPTH_WRITE_MASK InDepthWriteMask, D3D11_COMPARISON_FUNC InDepthFunc)
 {
-	Desc.DepthEnable = InDepthEnable;
-	Desc.DepthWriteMask = InDepthWriteMask;
-	Desc.DepthFunc = InDepthFunc;
+	_desc.DepthEnable = InDepthEnable;
+	_desc.DepthWriteMask = InDepthWriteMask;
+	_desc.DepthFunc = InDepthFunc;
 }
 
 void CDepthStencilState::SetStencilFlags(BOOL InStencilEnable, UINT8 InStencilReadMask, UINT8 InStencilWriteMask)
 {
-	Desc.StencilEnable = InStencilEnable;
-	Desc.StencilReadMask = InStencilReadMask;
-	Desc.StencilWriteMask = InStencilWriteMask;
+	_desc.StencilEnable = InStencilEnable;
+	_desc.StencilReadMask = InStencilReadMask;
+	_desc.StencilWriteMask = InStencilWriteMask;
 }
 
 void CDepthStencilState::SetFrontFaceFlags(D3D11_COMPARISON_FUNC InStencilFunc, D3D11_STENCIL_OP InStencilPassOp, D3D11_STENCIL_OP InStencilFailOp, D3D11_STENCIL_OP InDepthFailOp)
 {
-	Desc.FrontFace.StencilFunc = InStencilFunc;
-	Desc.FrontFace.StencilPassOp = InStencilPassOp;
-	Desc.FrontFace.StencilFailOp = InStencilFailOp;
-	Desc.FrontFace.StencilDepthFailOp = InDepthFailOp;
+	_desc.FrontFace.StencilFunc = InStencilFunc;
+	_desc.FrontFace.StencilPassOp = InStencilPassOp;
+	_desc.FrontFace.StencilFailOp = InStencilFailOp;
+	_desc.FrontFace.StencilDepthFailOp = InDepthFailOp;
 }

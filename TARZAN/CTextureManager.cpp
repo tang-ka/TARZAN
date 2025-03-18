@@ -63,7 +63,9 @@ ID3D11ShaderResourceView* CTextureManager::GetTextureView(const std::wstring& fi
 
 // 텍스처를 셰이더에 바인딩 (EObjectType에 따라)
 void CTextureManager::BindTextureToShader(EObjectType type) {
-    std::wstring path = TexturePaths[(int)type];
+    //std::wstring path = TexturePaths[(int)type];
+    const std::wstring& path = TexturePaths[(int)type];
+
     // PSSetShaderResources는 ID3D11ShaderResourceView* 배열를 기대합니다.
     ID3D11ShaderResourceView* srv = GetTextureView(path);
     Context->PSSetShaderResources(0, 1, &srv);
