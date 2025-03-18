@@ -16,7 +16,7 @@ FVector USceneComponent::Right() {
 }
 
 FVector USceneComponent::Up() {
-	FVector4 r = GetComponentTransform().r2();
+	FVector4 r = GetComponentTransform().r3();
 	return FVector(r.x, r.y, r.z).Normalized();
 }
 

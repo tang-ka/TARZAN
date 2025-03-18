@@ -2,6 +2,7 @@
 #include "UPrimitiveComponent.h"
 #include "Framework/Core/CRenderer.h"
 #include "FBoundingBox.h"
+#include <UTextComponent.h>
 
 UPrimitiveComponent::~UPrimitiveComponent() {}
 
@@ -37,8 +38,42 @@ void UPrimitiveComponent::Render() {
 
     if (isBill)
     {
+        UPrimitiveComponent* Selected = GuiController::GetInstance().GetSelectedObject();
         FVector cameraPos = CRenderer::Instance()->GetMainCamera()->RelativeLocation;
-        FVector myPos = RelativeLocation;
+        FVector myPos;
+        UTextComponent* text = dynamic_cast<UTextComponent*>(this);
+   
+
+        FMatrix trans = FMatrix::Identity;
+        if (Selected)
+        {  
+            if (text)
+            {
+                uint32 uid = Selected->GetUUID();
+                std::wstringstream wss;
+                wss << uid;  // 변환
+                text->UpdateText(wss.str());
+            }
+
+            trans = FMatrix::Translate
+            (Selected->GetRelativeLocation().x,
+                Selected->GetRelativeLocation().y + 3.f,
+                Selected->GetRelativeLocation().z);
+            myPos = Selected->GetRelativeLocation();
+            
+          
+        }
+        else
+        {
+            std::wstring wss = L"Welcome to Jungle";
+            text->UpdateText(wss);
+
+             myPos = RelativeLocation;
+            trans = FMatrix::Translate
+            (RelativeLocation);
+        }
+
+        
 
         FVector forward = cameraPos - myPos;
         forward = forward.Normalized();
@@ -58,24 +93,9 @@ void UPrimitiveComponent::Render() {
             0, 0, 0, 1
         };
 
-        UPrimitiveComponent* Selected = GuiController::GetInstance().GetSelectedObject();
+     
 
 
-        FMatrix trans = FMatrix::Identity;
-        if (Selected)
-        {
-             trans = FMatrix::Translate
-            (Selected->GetRelativeLocation().x,
-                Selected->GetRelativeLocation().y + 3.f,
-                Selected->GetRelativeLocation().z);
-
-        }
-        else
-        {
-
-             trans = FMatrix::Translate
-            (RelativeLocation);
-        }
 
         m = rotMat * trans;
     }

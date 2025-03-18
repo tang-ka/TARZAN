@@ -72,7 +72,16 @@ void UCameraComponent::RenderUI()
 
 FMatrix UCameraComponent::View()
 {
-	return GetRelativeTransform().Inverse();
+	FMatrix ZUpMatrix =
+	{
+		0.f,  0.f,  1.f,  0.f,   // X-axis (변경 없음)
+		1.f,  0.f,  0.f,  0.f,   // Y -> Z 변환
+		0.f, 1.f,  0.f,  0.f,   // Z -> -Y 변환
+		0.f,  0.f,  0.f,  1.f    // 변환 없음
+	};
+
+
+	return ZUpMatrix*GetRelativeTransform().Inverse();
 
 
 

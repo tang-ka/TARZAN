@@ -79,9 +79,11 @@ void CRenderer::SetTransformToConstantBuffer(FMatrix matrix,bool isBill) {
 	//FMatrix view = matrix * _mainCamera->GetRelativeTransform().Inverse();
 	FMatrix view = _mainCamera->View();
 	FMatrix projection = _mainCamera->Projection();
-
+   
 	matrix = matrix * view;
 	matrix = matrix * projection;
+
+
 	_matrixBuffer->CopyData(matrix);
 	ID3D11Buffer* constantBuffer = _matrixBuffer->Get();
 	_graphics->GetDeviceContext()->VSSetConstantBuffers(0, 1, &constantBuffer);
@@ -92,6 +94,7 @@ void CRenderer::SetFlagsToConstantBuffer(FPrimitiveFlags flags) {
     ID3D11Buffer* constantBuffer = _flagsBuffer->Get();
     _graphics->GetDeviceContext()->VSSetConstantBuffers(1, 1, &constantBuffer);
 }
+
 
 void CRenderer::SetIsTextToConstantBuffer(EObjectType type)
 {
