@@ -7,14 +7,12 @@ UTextComponent::UTextComponent()
    
 {   
     ObjType = EObjectType::Text; // 텍스트 UI 타입 설정
-    CreateBufferForText(L"Welcome to jungle");
-    SetVerticesToPipeline();
-}
+    
+    //SetRelativeLocationZ(10.0f);
+    //SetRelativeLocationX(-2.f);
 
+    Text = L"AGG";
 
-void UTextComponent::CreateBufferForText(std::wstring text)
-{
-    SetRelativeLocationY(3.f);
     isBill = true;
 
     float gap = 1.0f / 16.0f;
@@ -22,12 +20,12 @@ void UTextComponent::CreateBufferForText(std::wstring text)
     vertices.clear();  // 기존 vertices 초기화
     indices.clear();   // 기존 indices 초기화
 
-    float xOffset = text.size() * gap; // 텍스트의 x축 위치를 조정하기 위한 오프셋
+    float xOffset = Text.size() * gap; // 텍스트의 x축 위치를 조정하기 위한 오프셋
     float yOffset = 0.0f; // 텍스트의 y축 위치를 고정
 
-    for (size_t i = 0; i < text.size(); ++i) {
+    for (size_t i = 0; i < Text.size(); ++i) {
         // 각 문자의 아스키 코드 값 구하기
-        wchar_t character = text[i];
+        wchar_t character = Text[i];
         int charCode = (int)character;  // 아스키 코드 값
 
         // 해당 문자의 UV 좌표 계산
@@ -55,29 +53,11 @@ void UTextComponent::CreateBufferForText(std::wstring text)
         baseIndex += 4;
     }
 
-
-}
-
-void UTextComponent::SetVerticesToPipeline()
-{
-
     CGraphics* graphics = CRenderer::Instance()->GetGraphics();
     _vertexBuffer = std::make_unique<CVertexBuffer<FVertexSimple>>(graphics->GetDevice());
     _vertexBuffer->Create(vertices);
     _indexBuffer = std::make_unique<CIndexBuffer>(graphics->GetDevice());
     _indexBuffer->Create(indices);
 
-}
 
-void UTextComponent::UpdateText(std::wstring newText)
-{
-    // 기존 버퍼 삭제 (리소스 해제)
-    _vertexBuffer.reset();
-    _indexBuffer.reset();
-
-    // 새로운 텍스트로 버텍스와 인덱스 다시 생성
-    CreateBufferForText(newText);
-
-    // 새로운 버텍스와 인덱스를 다시 GPU에 업로드
-    SetVerticesToPipeline();
 }

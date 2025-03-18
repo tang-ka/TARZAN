@@ -39,8 +39,8 @@ void UWorldGridComponent::GenerateGrid(float posX, float posZ, int gridCount, fl
     {
         float x = posX + i * unitSize;
         FVertexSimple v1, v2;
-        v1.x = x; v1.z = 0.f; v1.y = posZ - gridCount * unitSize;
-        v2.x = x; v2.z = 0.f; v2.y = posZ + gridCount * unitSize;
+        v1.x = x; v1.y = 0.f; v1.z = posZ - gridCount * unitSize;
+        v2.x = x; v2.y = 0.f; v2.z = posZ + gridCount * unitSize;
         v1.r = gridColor.x; v1.g = gridColor.y; v1.b = gridColor.z; v1.a = gridColor.w;
         v2.r = gridColor.x; v2.g = gridColor.y; v2.b = gridColor.z; v2.a = gridColor.w;
         vertices.push_back(v1);
@@ -52,8 +52,8 @@ void UWorldGridComponent::GenerateGrid(float posX, float posZ, int gridCount, fl
     {
         float z = posZ + i * unitSize;
         FVertexSimple v1, v2;
-        v1.x = posX - gridCount * unitSize; v1.z = 0.f; v1.y = z;
-        v2.x = posX + gridCount * unitSize; v2.z = 0.f; v2.y = z;
+        v1.x = posX - gridCount * unitSize; v1.y = 0.f; v1.z = z;
+        v2.x = posX + gridCount * unitSize; v2.y = 0.f; v2.z = z;
         v1.r = gridColor.x; v1.g = gridColor.y; v1.b = gridColor.z; v1.a = gridColor.w;
         v2.r = gridColor.x; v2.g = gridColor.y; v2.b = gridColor.z; v2.a = gridColor.w;
         vertices.push_back(v1);

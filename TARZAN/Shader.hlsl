@@ -11,13 +11,6 @@ cbuffer IsTextureBuffer : register(b2)
     uint isText; // if  1 > text
 };
 
-float4x4 YtoZMatrix = float4x4(
-    1.0f, 0.0f, 0.0f, 0.0f, // X 축 그대로
-    0.0f, 0.0f, 1.0f, 0.0f, // Y -> Z (Y 축을 Z로 이동)
-    0.0f, -1.0f, 0.0f, 0.0f, // Z -> Y (Z 축을 Y로 이동하고, 반전)
-    0.0f, 0.0f, 0.0f, 1.0f // W 값은 그대로
-);
-
 // 텍스처 및 샘플러 상태 추가
 Texture2D tex : register(t0); // 텍스처를 t0 슬롯에 바인딩
 SamplerState samplerState : register(s0); // 샘플러를 s0 슬롯에 바인딩

@@ -11,9 +11,7 @@ class UTextComponent : public UPrimitiveComponent
 public:
     std::wstring Text;
     UTextComponent();
-    void SetVerticesToPipeline();
-    void CreateBufferForText(std::wstring text);
-    void UpdateText(std::wstring newText);
+
 private:
 
 };
