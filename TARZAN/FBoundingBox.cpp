@@ -49,6 +49,16 @@ void FBoundingBox::SetBoundaryPointsForPrimitive(EPrimitiveType type)
 			{-1.0f, 0.0f,  1.0f, 1.f}
 		};
 		break;
+	case SPOTLIGHT:
+		// SpotLight는 Plane과 같은 bounding box를 가지도록 함
+		boundaryPoints =
+		{
+			{-1.0f, 0.0f, -1.0f, 1.f},
+			{ 1.0f, 0.0f, -1.0f, 1.f},
+			{ 1.0f, 0.0f,  1.0f, 1.f},
+			{-1.0f, 0.0f,  1.0f, 1.f}
+		};
+		break;
 	default:
 		boundaryPoints = {};
 		break;

@@ -98,5 +98,6 @@ enum EPrimitiveType
 	CUBE,
 	SPHERE,
 	PLANE,
-	TEXT
+	TEXT,
+	SPOTLIGHT
 };

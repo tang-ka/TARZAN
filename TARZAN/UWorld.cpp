@@ -150,6 +150,11 @@ UPlaneComponent* UWorld::SpawnPlaneActor()
     return SpawnActor<UPlaneComponent>();
 }
 
+USpotLightComponent* UWorld::SpawnSpotLightActor()
+{
+    return SpawnActor<USpotLightComponent>();
+}
+
 UTextComponent* UWorld::SpawnTextActor()
 {
     return SpawnActor<UTextComponent>();
@@ -205,6 +210,13 @@ void UWorld::LoadWorld(const FString& fileName)
             plane->SetRelativeLocation(primitive.Location);
             plane->SetRelativeRotation(primitive.Rotation);
             plane->SetRelativeScale3D(primitive.Scale);
+        }
+        else if (primitive.Type == "SpotLight")
+        {
+            USpotLightComponent* spotLight = SpawnSpotLightActor();
+            spotLight->SetRelativeLocation(primitive.Location);
+            spotLight->SetRelativeRotation(primitive.Rotation);
+            spotLight->SetRelativeScale3D(primitive.Scale);
         }
     }
 }

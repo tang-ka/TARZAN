@@ -10,12 +10,14 @@
 #include "Framework/Core/UDiscComponent.h"
 #include "Framework/Core/UDiscHollowComponent.h"
 #include <UTextComponent.h>
+#include "USpotLightComponent.h"
 
 class UActorComponent;
 class UCubeComponent;
 class USphereComponent;
 class UPlaneComponent;
 class UCoordArrowComponent;
+class USpotLightComponent;
 
 struct PrimitiveData {
     FVector Location;
@@ -50,6 +52,7 @@ public:
     UCubeComponent* SpawnCubeActor();
     USphereComponent* SpawnSphereActor();
     UPlaneComponent* SpawnPlaneActor();
+    USpotLightComponent* SpawnSpotLightActor();
     UCoordArrowComponent* SpawnCoordArrowActor();
     CTextureManager* TextureManager;
 

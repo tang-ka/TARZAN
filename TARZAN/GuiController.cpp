@@ -209,7 +209,7 @@ void GuiController::RenderEditor() {
 
 	ImGui::SetNextWindowSizeConstraints(ImVec2(300.0f, 0.0f), ImVec2(300.0f, FLT_MAX));
 
-	const char* primitiveItems[] = { "Cube", "Sphere", "Plane","Text"};
+	const char* primitiveItems[] = { "Cube", "Sphere", "Plane","Text", "SpotLight"};
 	const char* viewModes[] = { "Lit", "Unlit", "Wireframe" };
 
 	D3D11_FILL_MODE currentFillMode = CRenderer::Instance()->GetGraphics()->GetFillMode();
@@ -241,6 +241,9 @@ void GuiController::RenderEditor() {
 				break;
 			case 3:
 				SceneManager->SpawnActor(EPrimitiveType::TEXT);
+				break;
+			case 4:
+				SceneManager->SpawnActor(EPrimitiveType::SPOTLIGHT);
 				break;
 			}
 		}
@@ -375,6 +378,8 @@ void GuiController::RenderEditor() {
 		ImGui::DragFloat3("scale", downcastScale, 0.1f);
 		downcast->SetRelativeScale3D(FVector(downcastScale[0], downcastScale[1], downcastScale[2]));
 
+		// 여기에서 downcast가 뭐 SpotLight면 뭐 등등
+		//downcast
 		if (ImGui::Button("Delete")) {
 			UEngine::GetInstance().GetGizmo()->Detach();
 			SceneManager->DeleteActorFromMap(_selected);
