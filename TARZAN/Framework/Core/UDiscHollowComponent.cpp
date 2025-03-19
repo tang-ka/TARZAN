@@ -63,7 +63,8 @@ UDiscHollowComponent::UDiscHollowComponent(EPrimitiveColor color, float innerRad
     _indexBuffer = std::make_unique<CIndexBuffer>(graphics->GetDevice());
     _indexBuffer->Create(indices);
 
-    DepthStencilState = new CDepthStencilState(graphics->GetDevice());
+    DepthStencilState = std::make_unique<CDepthStencilState>(graphics->GetDevice());
+    //DepthStencilState = new CDepthStencilState(graphics->GetDevice());
     DepthStencilState->SetDepthFlags(FALSE, D3D11_DEPTH_WRITE_MASK_ZERO, D3D11_COMPARISON_GREATER);
     DepthStencilState->SetStencilFlags(FALSE, 0xFF, 0x00);
     DepthStencilState->SetFrontFaceFlags(D3D11_COMPARISON_EQUAL, D3D11_STENCIL_OP_KEEP, D3D11_STENCIL_OP_KEEP, D3D11_STENCIL_OP_KEEP);
