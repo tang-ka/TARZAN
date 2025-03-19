@@ -100,7 +100,7 @@ FMatrix USceneComponent::GetComponentTransform() const
 	{
 		/* Scale 및 Rotation 고정 */
 		{
-			//FMatrix ParentMatrix = AttachParent->GetComponentTransform();
+			FMatrix ParentMatrix = AttachParent->GetComponentTransform();
 
 			//// 부모의 행렬의 각 축을 정규화하여 Scale 정보 제거
 			//FVector X = ParentMatrix.GetScaledAxis(EAxis::X).Normalized();
