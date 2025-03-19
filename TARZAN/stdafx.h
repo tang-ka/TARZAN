@@ -81,7 +81,10 @@ enum EPrimitiveColor
 	RED_X,
 	GREEN_Y,
 	BLUE_Z,
-	NONE
+	NONE,
+	RED_X_ROT,
+	GREEN_Y_ROT,
+	BLUE_Z_ROT
 };
 
 struct FPrimitiveFlags {
@@ -104,4 +107,11 @@ enum EPrimitiveType
 	SPHERE,
 	PLANE,
 	TEXT
+};
+
+enum EGizmoType
+{
+	Location,
+	Rotation,
+	Scaling
 };

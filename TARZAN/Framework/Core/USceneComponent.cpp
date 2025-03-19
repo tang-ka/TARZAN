@@ -98,25 +98,20 @@ FMatrix USceneComponent::GetComponentTransform() const
 	}
 	if (IsOverrideLocation || IsOverrideRotation || IsOverrideScale3D)
 	{
-		/* Scale 고정 */
+		/* Scale 및 Rotation 고정 */
 		{
-			FMatrix ParentMatrix =  AttachParent->GetComponentTransform();
-		
-			// 부모의 행렬의 각 축을 정규화하여 Scale 정보 제거
-			FVector X = ParentMatrix.GetScaledAxis(EAxis::X).Normalized();
-			FVector Y = ParentMatrix.GetScaledAxis(EAxis::Y).Normalized();
-			FVector Z = ParentMatrix.GetScaledAxis(EAxis::Z).Normalized();
+			FMatrix ParentMatrix = AttachParent->GetComponentTransform();
 			FVector T = ParentMatrix.GetOrigin();
 
 			// 정규화된 기저 벡터와 동일한 평행 이동으로 새로운 행렬 구성
-			FMatrix ParentNoScale = {
-				X.x, X.y, X.z, 0,
-				Y.x, Y.y, Y.z, 0,
-				Z.x, Z.y, Z.z, 0,
-				T.x, T.y, T.z, 1
+			FMatrix ParentNoRotation = {
+				1.0f, 0.0f, 0.0f, 0.0f,
+				0.0f, 1.0f, 0.0f, 0.0f,
+				0.0f, 0.0f, 1.0f, 0.0f,
+				T.x,  T.y,  T.z,  1.0f
 			};
 
-			return GetRelativeTransform() * ParentNoScale;
+			return GetRelativeTransform() * ParentNoRotation;
 		}
 	}
 	if (AttachParent != nullptr) 
