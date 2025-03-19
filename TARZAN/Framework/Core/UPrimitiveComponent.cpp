@@ -30,7 +30,9 @@ void UPrimitiveComponent::Render() {
 	graphics->GetDeviceContext()->IASetIndexBuffer(_indexBuffer->Get(), DXGI_FORMAT_R32_UINT, 0);
 	
     FMatrix m = FMatrix::Identity;
-  
+
+
+
     m = GetComponentTransform();
 
 	CRenderer::Instance()->SetTransformToConstantBuffer(m,isBill);

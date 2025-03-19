@@ -102,7 +102,7 @@ void GuiController::NewFrame()
 				if (downcast)
 				{
 					downcast->renderFlags &= ~PRIMITIVE_FLAG_SELECTED;
-					downcast->HideBoundingBox();
+					//downcast->HideBoundingBox();
 				}
 			}
 		}
