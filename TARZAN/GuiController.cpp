@@ -330,6 +330,11 @@ void GuiController::RenderEditor()
 	ImGui::Separator();
 	/*********************************/
 
+	if (ImGui::Checkbox("Show Flag", &showFlag))
+	{
+		World->SetShowFlag(showFlag);
+	}
+
 	ImGui::Text("Camera");
 	UCameraComponent* mainCam = CRenderer::Instance()->GetMainCamera();
 	if (mainCam)
