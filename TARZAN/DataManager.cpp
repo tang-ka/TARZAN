@@ -107,6 +107,7 @@ FString DataManager::GenerateWorldJson(UWorld* world)
         if (dynamic_cast<USphereComponent*>(comp)) type = "Sphere";
         else if (dynamic_cast<UCubeComponent*>(comp)) type = "Cube";
         else if (dynamic_cast<UPlaneComponent*>(comp)) type = "Plane";
+        else if (dynamic_cast<USpotLightComponent*>(comp)) type = "SpotLight";
         else continue;
 
         jsonWrite::JSON primitive = jsonWrite::Object();

@@ -13,12 +13,11 @@ void UPrimitiveComponent::Render() {
     {
         if (DepthStencilState == nullptr)
         {
-            DepthStencilState = new CDepthStencilState(graphics->GetDevice());
+            DepthStencilState = std::make_unique<CDepthStencilState>(graphics->GetDevice());
             DepthStencilState->SetDepthFlags(TRUE, D3D11_DEPTH_WRITE_MASK_ALL, D3D11_COMPARISON_LESS);
             DepthStencilState->SetStencilFlags(TRUE, 0xFF, 0xFF);
             DepthStencilState->SetFrontFaceFlags(D3D11_COMPARISON_ALWAYS, D3D11_STENCIL_OP_REPLACE, D3D11_STENCIL_OP_KEEP, D3D11_STENCIL_OP_KEEP);
             DepthStencilState->Create();
-
         }
 
         CRenderer::Instance()->SetDepthStencil(DepthStencilState->Get());

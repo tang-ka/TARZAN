@@ -23,7 +23,11 @@ void UWorld::Update()
     for (auto* comp : actorList)
     {
         auto current = comp;
-        if (current) comp->Update();
+        if (current)
+        {
+         
+            comp->Update();
+        }
     }
 }
 
@@ -34,9 +38,11 @@ void UWorld::Render()
         auto current = comp;
         if (current)
         {
-            CRenderer::Instance()->SetIsTextToConstantBuffer(comp->ObjType);
-            CTextureManager::GetInstance()->BindTextureToShader(comp->ObjType);
-            comp->Render();
+            if (current->ObjType == EObjectType::Text && !GetShowFlag()) continue;
+
+            CRenderer::Instance()->SetIsTextToConstantBuffer(current->ObjType);
+            CTextureManager::GetInstance()->BindTextureToShader(current->ObjType);
+            current->Render();
         }
     }
 }
@@ -97,7 +103,7 @@ UActorComponent* UWorld::PickingByRay(int mouse_X, int mouse_Y, float& dist)
     UActorComponent* nearestActorComp = nullptr;
     int intersect = FLT_MIN;
 	for (const auto& actorComp : actorList) {
-        if (!actorComp) continue;
+        if (!actorComp || actorComp->ObjType==EObjectType::Text) continue;
 		int bRes = actorComp->PickObjectByRayIntersection(pickPosition, viewMatrix, &hitDistance);
        if (bRes > intersect && hitDistance < nearestDistance) {
             nearestActorComp = actorComp;
@@ -151,6 +157,11 @@ UPlaneComponent* UWorld::SpawnPlaneActor()
     return SpawnActor<UPlaneComponent>();
 }
 
+USpotLightComponent* UWorld::SpawnSpotLightActor()
+{
+    return SpawnActor<USpotLightComponent>();
+}
+
 UTextComponent* UWorld::SpawnTextActor()
 {
     return SpawnActor<UTextComponent>();
@@ -169,6 +180,16 @@ UDiscComponent* UWorld::SpawnDiscActor()
 UDiscHollowComponent* UWorld::SpawnDiscHollowActor()
 {
     return SpawnActor<UDiscHollowComponent>();
+}
+
+bool UWorld::GetShowFlag()
+{
+    return bShowFlag;
+}
+
+void UWorld::SetShowFlag(bool flag)
+{
+    bShowFlag = flag;
 }
 
 void UWorld::SaveWorld(const FString& fileName)
@@ -206,6 +227,13 @@ void UWorld::LoadWorld(const FString& fileName)
             plane->SetRelativeLocation(primitive.Location);
             plane->SetRelativeRotation(primitive.Rotation);
             plane->SetRelativeScale3D(primitive.Scale);
+        }
+        else if (primitive.Type == "SpotLight")
+        {
+            USpotLightComponent* spotLight = SpawnSpotLightActor();
+            spotLight->SetRelativeLocation(primitive.Location);
+            spotLight->SetRelativeRotation(primitive.Rotation);
+            spotLight->SetRelativeScale3D(primitive.Scale);
         }
     }
 }

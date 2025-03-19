@@ -48,6 +48,11 @@ void USceneManager::SpawnActor(EPrimitiveType PrimitiveType)
 			SpawnActor = PrimaryWorld->SpawnTextActor();
 			break;
 		}
+		case SPOTLIGHT:
+		{
+			SpawnActor = PrimaryWorld->SpawnSpotLightActor();
+			break;
+		}
 		default:
 		{
 			SpawnActor = nullptr;
@@ -156,6 +161,8 @@ FString USceneManager::GetPrimitiveTypeString(EPrimitiveType PrimitiveType)
 			return FString("Plane");
 		case TEXT:
 			return FString("Text");
+		case SPOTLIGHT:
+			return FString("SpotLight");
 		default:
 			return FString("NAME_NONE");
 	}

@@ -1,8 +1,12 @@
 #pragma once
+#define GIZMO_SELECT_MOUSE_SPEED_ROTATION 30.0f;
+
 #include "USceneComponent.h"
 
 class UPrimitiveComponent;
 class UArrowComponent;
+class UScaleComponent;
+class UDiscHollowComponent;
 
 class UGizmoComponent :
     public USceneComponent
@@ -16,6 +20,8 @@ public:
     void AttachTo(UPrimitiveComponent* Parent);
     void Detach();
 
+    void SwitchGizmoType();
+
     EPrimitiveColor selectedAxis = EPrimitiveColor::NONE;
     bool isGizmoActivated = false;
     
@@ -23,5 +29,18 @@ public:
     UArrowComponent* ArrowY;
     UArrowComponent* ArrowZ;
     UArrowComponent* temp;
+
+    /* Rotation */
+    UDiscHollowComponent* RotationX;
+    UDiscHollowComponent* RotationY;
+    UDiscHollowComponent* RotationZ;
+    UDiscHollowComponent* temp1;
+
+    /* Scaling */
+    UScaleComponent* ScaleX;
+    UScaleComponent* ScaleY;
+    UScaleComponent* ScaleZ;
+
+    EGizmoType GizmoType;
 };
 

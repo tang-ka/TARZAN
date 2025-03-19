@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "UCameraComponent.h"
+#include "UGizmoComponent.h"
+#include "Engine.h"
 
 void UCameraComponent::Update() {
 	aspectRatio = SCR_WIDTH / (float)SCR_HEIGHT;
@@ -24,6 +26,10 @@ void UCameraComponent::Update() {
 		}
 		if ( Input::Instance()->IsKeyDown(DIK_Q) ) {
 			movement -= cameraUp();
+		}
+		if (Input::Instance()->IsKeyPressed(DIK_SPACE))
+		{
+			UEngine::GetInstance().GetGizmo()->SwitchGizmoType();
 		}
 	}
 	SetRelativeLocation(loc + movement * Time::GetDeltaTime() * CameraSpeed);

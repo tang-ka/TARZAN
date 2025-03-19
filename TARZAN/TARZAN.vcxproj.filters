@@ -128,6 +128,7 @@
     </ClCompile>
     <ClCompile Include="FBoundingBox.cpp" />
     <ClCompile Include="ConfigManager.cpp" />
+    <ClCompile Include="USpotLightComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -272,6 +273,7 @@
     </ClInclude>
     <ClInclude Include="FBoundingBox.h" />
     <ClInclude Include="ConfigManager.h" />
+    <ClInclude Include="USpotLightComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Sources">

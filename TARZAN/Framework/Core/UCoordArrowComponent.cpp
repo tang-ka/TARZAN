@@ -54,6 +54,18 @@ UCoordArrowComponent::UCoordArrowComponent()
 	_indexBuffer = std::make_unique<CIndexBuffer>(graphics->GetDevice());
 	_indexBuffer->Create(indices);
 
+	// 100 conflicts
+	DepthStencilState = std::make_unique<CDepthStencilState>(graphics->GetDevice());
+	DepthStencilState->SetDepthFlags(FALSE, D3D11_DEPTH_WRITE_MASK_ZERO, D3D11_COMPARISON_GREATER);
+	DepthStencilState->SetStencilFlags(FALSE, 0xFF, 0x00);
+	DepthStencilState->SetFrontFaceFlags(D3D11_COMPARISON_EQUAL, D3D11_STENCIL_OP_KEEP, D3D11_STENCIL_OP_KEEP, D3D11_STENCIL_OP_KEEP);
+	DepthStencilState->Create();
+
+	CoordBlendState = std::make_unique<CBlendState>(graphics->GetDevice());
+	CoordBlendState->SetDescBlend(D3D11_BLEND_INV_SRC_ALPHA, D3D11_BLEND_ZERO);
+	CoordBlendState->SetSrcBlend(D3D11_BLEND_SRC_ALPHA, D3D11_BLEND_ONE);
+	CoordBlendState->SetOp(D3D11_BLEND_OP_ADD, D3D11_BLEND_OP_ADD);
+	CoordBlendState->Create();
 }
 
 UCoordArrowComponent::~UCoordArrowComponent(){}
