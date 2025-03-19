@@ -267,31 +267,58 @@ void UGizmoComponent::Update()
     {
         // 스케일 조정 비율
         float scaleSpeed = 1.0f;
-
+        FVector mouseDirOnScreen = { dx, dy, 0 };
         FVector currentScale = GetAttachParent()->GetRelativeScale3D();
-
+        FVector arrowDirOnScreen = (FVector4(selectedComp->Right(), 0) * cam->View() * cam->PerspectiveProjection()).xyz();
+        float effectiveMovement = -mouseDirOnScreen.Dot(arrowDirOnScreen) * GIZMO_SELECT_MOUSE_SPEED;
+     
         switch (selectedAxis)
         {
         case EPrimitiveColor::RED_X:
             // X 축은 마우스의 x 값 사용
-            currentScale.x *= (1.0f + dx * scaleSpeed);
+            currentScale.x += effectiveMovement;
             break;
         case EPrimitiveColor::GREEN_Y:
             // Y 축은 마우스의 y 값 사용
-            currentScale.y *= (1.0f + dy * scaleSpeed);
+            currentScale.y += effectiveMovement;
             break;
         case EPrimitiveColor::BLUE_Z:
             // Z 축은 기본적으로 마우스의 x 값 사용 (필요에 따라 수정 가능)
-            currentScale.z *= (1.0f + dx * scaleSpeed);
+            currentScale.z += effectiveMovement;
             break;
         default:
             break;
         }
 
+        //switch (selectedAxis)
+        //{
+        //case EPrimitiveColor::RED_X:
+        //    // X 축은 마우스의 x 값 사용
+        //    currentScale.x *= (1.0f + dx * scaleSpeed);
+        //    break;
+        //case EPrimitiveColor::GREEN_Y:
+        //    // Y 축은 마우스의 y 값 사용
+        //    currentScale.y *= (1.0f + dy * scaleSpeed);
+        //    break;
+        //case EPrimitiveColor::BLUE_Z:
+        //    // Z 축은 기본적으로 마우스의 x 값 사용 (필요에 따라 수정 가능)
+        //    currentScale.z *= (1.0f + dx * scaleSpeed);
+        //    break;
+        //default:
+        //    break;
+        //}
+
+        //FVector mouseDirOnScreen = { dx, dy, 0 };
+        //FVector arrowDirOnScreen = (FVector4(selectedComp->Right(), 0) * cam->View() * cam->PerspectiveProjection()).xyz();
+        //float effectiveMovement = mouseDirOnScreen.Dot(arrowDirOnScreen) * GIZMO_SELECT_MOUSE_SPEED;
+        //auto newPos = selectedComp->Right() * effectiveMovement + GetAttachParent()->GetRelativeScale3D();
+        // GetAttachParent()->SetRelativeLocation(newPos);
+
+        //GetAttachParent()->SetRelativeScale3D(newPos);
         GetAttachParent()->SetRelativeScale3D(currentScale);
 
         ImGui::Begin("Gizmo Scale");
-        ImGui::Text("New Scale: %f %f %f", currentScale.x, currentScale.y, currentScale.z);
+        //ImGui::Text("New Scale: %f %f %f", currentScale.x, currentScale.y, currentScale.z);
         ImGui::End();
         break;
     }

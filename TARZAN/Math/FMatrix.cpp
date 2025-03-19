@@ -35,7 +35,7 @@ FMatrix::FMatrix(const FMatrix& other)
 {
 	for (int i = 0; i < 4; i++) {
 		for (int j = 0; j < 4; j++) {
-			m[i][j] = other.m[i][j];  // ���� ����
+			m[i][j] = other.m[i][j];  //
 		}
 	}
 }
