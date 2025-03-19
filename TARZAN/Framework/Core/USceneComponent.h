@@ -30,7 +30,7 @@ public:
 	FVector GetComponentLocation() const;
 	//FVector GetComponentRotation() const;
 	//FVector GetComponentScale() const;
-	FMatrix GetComponentTransform() const;
+	virtual FMatrix GetComponentTransform() const;
 	//FVector GetComponentVelocity() const;
 	FVector GetComponentX() const;
 	FVector GetComponentY() const;

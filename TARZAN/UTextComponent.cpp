@@ -1,12 +1,12 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "UTextComponent.h"
 
 
-// »ı¼ºÀÚ: ±âº» ÅØ½ºÆ®´Â "Default Text"·Î ¼³Á¤
+// ìƒì„±ì: ê¸°ë³¸ í…ìŠ¤íŠ¸ëŠ” "Default Text"ë¡œ ì„¤ì •
 UTextComponent::UTextComponent()
    
 {   
-    ObjType = EObjectType::Text; // ÅØ½ºÆ® UI Å¸ÀÔ ¼³Á¤
+    ObjType = EObjectType::Text; // í…ìŠ¤íŠ¸ UI íƒ€ì… ì„¤ì •
     
    
     CreateBufferForText(L"Deafult");
@@ -16,32 +16,32 @@ UTextComponent::UTextComponent()
 void UTextComponent::CreateBufferForText(std::wstring text)
 {
     SetRelativeLocationY(3.f);
-    isBill = true;
+    //isBill = true;
 
     float gap = 1.0f / 16.0f;
     size_t baseIndex = 0;
-    vertices.clear();  // ±âÁ¸ vertices ÃÊ±âÈ­
-    indices.clear();   // ±âÁ¸ indices ÃÊ±âÈ­
+    vertices.clear();  // ê¸°ì¡´ vertices ì´ˆê¸°í™”
+    indices.clear();   // ê¸°ì¡´ indices ì´ˆê¸°í™”
 
-    float xOffset = text.size() * gap; // ÅØ½ºÆ®ÀÇ xÃà À§Ä¡¸¦ Á¶Á¤ÇÏ±â À§ÇÑ ¿ÀÇÁ¼Â
-    float yOffset = 0.0f; // ÅØ½ºÆ®ÀÇ yÃà À§Ä¡¸¦ °íÁ¤
+    float xOffset = text.size() * gap; // í…ìŠ¤íŠ¸ì˜ xì¶• ìœ„ì¹˜ë¥¼ ì¡°ì •í•˜ê¸° ìœ„í•œ ì˜¤í”„ì…‹
+    float yOffset = 0.0f; // í…ìŠ¤íŠ¸ì˜ yì¶• ìœ„ì¹˜ë¥¼ ê³ ì •
 
     for (size_t i = 0; i < text.size(); ++i) {
-        // °¢ ¹®ÀÚÀÇ ¾Æ½ºÅ° ÄÚµå °ª ±¸ÇÏ±â
+        // ê° ë¬¸ìì˜ ì•„ìŠ¤í‚¤ ì½”ë“œ ê°’ êµ¬í•˜ê¸°
         wchar_t character = text[i];
-        int charCode = (int)character;  // ¾Æ½ºÅ° ÄÚµå °ª
+        int charCode = (int)character;  // ì•„ìŠ¤í‚¤ ì½”ë“œ ê°’
 
-        // ÇØ´ç ¹®ÀÚÀÇ UV ÁÂÇ¥ °è»ê
-        float u = (charCode % 16) * (1.0f / 16.0f); // u ÁÂÇ¥ (16x16 ±×¸®µå)
-        float v = (charCode / 16) * (1.0f / 16.0f); // v ÁÂÇ¥ (16x16 ±×¸®µå)
+        // í•´ë‹¹ ë¬¸ìì˜ UV ì¢Œí‘œ ê³„ì‚°
+        float u = (charCode % 16) * (1.0f / 16.0f); // u ì¢Œí‘œ (16x16 ê·¸ë¦¬ë“œ)
+        float v = (charCode / 16) * (1.0f / 16.0f); // v ì¢Œí‘œ (16x16 ê·¸ë¦¬ë“œ)
 
-        // °¢ ¹®ÀÚ¿¡ ´ëÇÑ ¹öÅØ½º °è»ê (»ç°¢ÇüÀ» ±×¸®±â À§ÇÑ 4°³ ¹öÅØ½º)
-        vertices.push_back({ xOffset + 1.f,  1.f + yOffset, 0.f, 1.f, 0.f, 0.f, 1.f, u + gap, v }); // ¿ì»ó´Ü
-        vertices.push_back({ xOffset + 1.f, -1.f + yOffset, 0.f, 0.f, 1.f, 0.f, 1.f, u + gap,v + gap }); // ¿ìÇÏ´Ü
-        vertices.push_back({ xOffset - 1.f, -1.f + yOffset, 0.f, 0.f, 0.f, 1.f, 1.f, u, v + gap });     // ÁÂÇÏ´Ü
-        vertices.push_back({ xOffset - 1.f,  1.f + yOffset, 0.f, 1.f, 1.f, 0.f, 1.f, u, v });     // ÁÂ»ó´Ü
+        // ê° ë¬¸ìì— ëŒ€í•œ ë²„í…ìŠ¤ ê³„ì‚° (ì‚¬ê°í˜•ì„ ê·¸ë¦¬ê¸° ìœ„í•œ 4ê°œ ë²„í…ìŠ¤)
+        vertices.push_back({ xOffset + 1.f,  1.f + yOffset, 0.f, 1.f, 0.f, 0.f, 1.f, u + gap, v }); // ìš°ìƒë‹¨
+        vertices.push_back({ xOffset + 1.f, -1.f + yOffset, 0.f, 0.f, 1.f, 0.f, 1.f, u + gap,v + gap }); // ìš°í•˜ë‹¨
+        vertices.push_back({ xOffset - 1.f, -1.f + yOffset, 0.f, 0.f, 0.f, 1.f, 1.f, u, v + gap });     // ì¢Œí•˜ë‹¨
+        vertices.push_back({ xOffset - 1.f,  1.f + yOffset, 0.f, 1.f, 1.f, 0.f, 1.f, u, v });     // ì¢Œìƒë‹¨
 
-        // ÀÎµ¦½º °è»ê (»ç°¢ÇüÀ» ±×¸®±â À§ÇÑ ÀÎµ¦½º)
+        // ì¸ë±ìŠ¤ ê³„ì‚° (ì‚¬ê°í˜•ì„ ê·¸ë¦¬ê¸° ìœ„í•œ ì¸ë±ìŠ¤)
         indices.push_back(baseIndex + 3);
         indices.push_back(baseIndex + 0);
         indices.push_back(baseIndex + 1);
@@ -49,10 +49,10 @@ void UTextComponent::CreateBufferForText(std::wstring text)
         indices.push_back(baseIndex + 1);
         indices.push_back(baseIndex + 2);
 
-        // xOffsetÀ» Áõ°¡½ÃÄÑ¼­ °¢ ¹®ÀÚ °£°İÀ» Á¶Á¤
+        // xOffsetì„ ì¦ê°€ì‹œì¼œì„œ ê° ë¬¸ì ê°„ê²©ì„ ì¡°ì •
         xOffset += 1.0f;
 
-        // ´ÙÀ½ ¹®ÀÚÀÇ ½ÃÀÛ ÀÎµ¦½º¸¦ °»½Å
+        // ë‹¤ìŒ ë¬¸ìì˜ ì‹œì‘ ì¸ë±ìŠ¤ë¥¼ ê°±ì‹ 
         baseIndex += 4;
     }
 
@@ -73,14 +73,80 @@ void UTextComponent::SetVerticesToPipeline()
 
 void UTextComponent::UpdateText(std::wstring newText)
 {
-    // ±âÁ¸ ¹öÆÛ »èÁ¦ (¸®¼Ò½º ÇØÁ¦)
+    // ê¸°ì¡´ ë²„í¼ ì‚­ì œ (ë¦¬ì†ŒìŠ¤ í•´ì œ)
     _vertexBuffer.reset();
     _indexBuffer.reset();
 
-    // »õ·Î¿î ÅØ½ºÆ®·Î ¹öÅØ½º¿Í ÀÎµ¦½º ´Ù½Ã »ı¼º
+    // ìƒˆë¡œìš´ í…ìŠ¤íŠ¸ë¡œ ë²„í…ìŠ¤ì™€ ì¸ë±ìŠ¤ ë‹¤ì‹œ ìƒì„±
     CreateBufferForText(newText);
 
-    // »õ·Î¿î ¹öÅØ½º¿Í ÀÎµ¦½º¸¦ ´Ù½Ã GPU¿¡ ¾÷·Îµå
+    // ìƒˆë¡œìš´ ë²„í…ìŠ¤ì™€ ì¸ë±ìŠ¤ë¥¼ ë‹¤ì‹œ GPUì— ì—…ë¡œë“œ
     SetVerticesToPipeline();
+}
+
+void UTextComponent::Update()
+{
+    UPrimitiveComponent* Selected = GuiController::GetInstance().GetSelectedObject();
+
+    if (Selected)
+    {
+        FString uid = Selected->GetName().ToString();
+
+        std::wstring wstr(uid.begin(), uid.end());
+
+        UpdateText(wstr);
+
+        translate = FMatrix::Translate
+        (Selected->GetRelativeLocation().x,
+            Selected->GetRelativeLocation().y,
+            Selected->GetRelativeLocation().z + 3.f);
+        myPos = Selected->GetRelativeLocation();
+    }
+    else
+    {
+        std::wstring wss = L"Welcome to Jungle";
+        UpdateText(wss);
+
+        myPos = RelativeLocation;
+        translate = FMatrix::Translate(RelativeLocation);
+    }
+}
+
+FMatrix UTextComponent::GetComponentTransform() const
+{
+
+    FMatrix viewMatrix = CRenderer::Instance()->GetMainCamera()->View();
+    //FVector cameraPos = FVector(viewMatrix.r3().x, viewMatrix.r3().y, viewMatrix.r3().z);
+    FVector cameraPos = CRenderer::Instance()->GetMainCamera()->GetRelativeLocation();
+
+    FVector forward = cameraPos - myPos;
+    forward = forward.Normalized();
+
+    // âœ… ì¹´ë©”ë¼ Up ë²¡í„°ë¥¼ ê¸°ë°˜ìœ¼ë¡œ right ë²¡í„° ê³„ì‚°
+    FVector cameraUp = FVector(viewMatrix.c2().x, viewMatrix.c2().y, viewMatrix.c2().z);
+
+    FVector right = forward.Cross(cameraUp);
+    //FVector right = cameraUp.Cross(forward);
+    right = right.Normalized(); // ì˜¤ë¥¸ìª½ ë²¡í„°
+
+    FVector up = right.Cross(forward);
+    //FVector up = forward.Cross(up);
+    up = up.Normalized(); // ìœ„ìª½ ë²¡í„°
+
+    FMatrix rotMat = FMatrix{
+        right.x, right.y, right.z, 0,  // Xì¶• (Right)
+        up.x, up.y, up.z, 0,          // Yì¶• (Up)
+        forward.x, forward.y, forward.z, 0, // Zì¶• (Forward)
+        translate.m[3][0], translate.m[3][1], translate.m[3][2], 1
+    };
+
+    //FMatrix rotMat = FMatrix{
+    //    forward.x, forward.y, forward.z, 0,  // Xì¶• (forward)
+    //    right.x, right.y, right.z, 0,          // Yì¶• (right)
+    //    up.x, up.y, up.z, 0, // Zì¶• (up)
+    //    translate.m[3][0], translate.m[3][1], translate.m[3][2], 1
+    //};
+
+    return rotMat;
 }
 

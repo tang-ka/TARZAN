@@ -24,86 +24,15 @@ void UPrimitiveComponent::Render() {
         CRenderer::Instance()->SetDepthStencil(DepthStencilState->Get());
     }
 
-
 	ID3D11Buffer* vertexBuffer = _vertexBuffer->Get();
 	uint32 stride = _vertexBuffer->GetStride();
 	uint32 offset = _vertexBuffer->GetOffset();
 	graphics->GetDeviceContext()->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
 	graphics->GetDeviceContext()->IASetIndexBuffer(_indexBuffer->Get(), DXGI_FORMAT_R32_UINT, 0);
 	
-
     FMatrix m = FMatrix::Identity;
-
-     
-
-
-    if (isBill)
-    {
-        UPrimitiveComponent* Selected = GuiController::GetInstance().GetSelectedObject();
-        FVector cameraPos = CRenderer::Instance()->GetMainCamera()->RelativeLocation;
-        FVector myPos;
-        UTextComponent* text = dynamic_cast<UTextComponent*>(this);
-
-
-        FMatrix trans = FMatrix::Identity;
-        if (Selected)
-        {
-            if (text)
-            {
-                FString uid = Selected->GetName().ToString();
-       
-                std::wstring wstr(uid.begin(), uid.end());
-
-                text->UpdateText(wstr);
-            }
-
-            trans = FMatrix::Translate
-            (Selected->GetRelativeLocation().x,
-                Selected->GetRelativeLocation().y + 3.f,
-                Selected->GetRelativeLocation().z);
-            myPos = Selected->GetRelativeLocation();
-
-
-        }
-        else
-        {
-            std::wstring wss = L"Welcome to Jungle";
-            text->UpdateText(wss);
-
-            myPos = RelativeLocation;
-            trans = FMatrix::Translate
-            (RelativeLocation);
-        }
-
-
-
-        FVector forward = cameraPos - myPos;
-        forward = forward.Normalized();
-
-        // ✅ 카메라 Up 벡터를 기반으로 right 벡터 계산
-        FVector cameraUp = CRenderer::Instance()->GetMainCamera()->Up();
-        FVector right = forward.Cross(cameraUp);
-        right = right.Normalized(); // 오른쪽 벡터
-
-        FVector up = right.Cross(forward);
-        up = up.Normalized(); // 위쪽 벡터
-
-        FMatrix rotMat = FMatrix{
-            right.x, right.y, right.z, 0,  // X축 (Right)
-            up.x, up.y, up.z, 0,          // Y축 (Up)
-            forward.x, forward.y, forward.z, 0, // Z축 (Forward)
-            0, 0, 0, 1
-        };
-
-
-
-
-
-        m = rotMat * trans;
-    }
-    else
-        m = GetComponentTransform();
   
+    m = GetComponentTransform();
 
 	CRenderer::Instance()->SetTransformToConstantBuffer(m,isBill);
 	CRenderer::Instance()->SetFlagsToConstantBuffer({ renderFlags });
@@ -146,7 +75,7 @@ int UPrimitiveComponent::PickObjectByRayIntersection(const FVector& pickPosition
         inters = CheckRayIntersection(pickRayOrigin,pickRayDirection, hitDistance);
 
 		if (inters)
-		{
+		{                                                      
 			OutputDebugString(L"Res :: hit!!!!-----------------\n");
 		}
 		else

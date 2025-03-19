@@ -8,22 +8,22 @@ void UCameraComponent::Update() {
 	if (allowKeyboardInput)
 	{
 		if ( Input::Instance()->IsKeyDown(DIK_A) ) {
-			movement -= Right();
+			movement -= cameraRight();
 		}
 		if ( Input::Instance()->IsKeyDown(DIK_D) ) {
-			movement += Right();
+			movement += cameraRight();
 		}
 		if ( Input::Instance()->IsKeyDown(DIK_W) ) {
-			movement += Front();
+			movement += cameraForward();
 		}
 		if ( Input::Instance()->IsKeyDown(DIK_S) ) {
-			movement -= Front();
+			movement -= cameraForward();
 		}
 		if ( Input::Instance()->IsKeyDown(DIK_E) ) {
-			movement += Up();
+			movement += cameraUp();
 		}
 		if ( Input::Instance()->IsKeyDown(DIK_Q) ) {
-			movement -= Up();
+			movement -= cameraUp();
 		}
 	}
 	SetRelativeLocation(loc + movement * Time::GetDeltaTime() * CameraSpeed);
@@ -31,7 +31,8 @@ void UCameraComponent::Update() {
 		int dx, dy;
 		Input::Instance()->GetMouseDelta(dx, dy);
 		auto rot = GetRelativeRotation();
-		SetRelativeRotation(rot - FVector(degToRad(dy) * mouseSensitive, degToRad(dx) * mouseSensitive, 0));
+		//SetRelativeRotation(rot - FVector(degToRad(dy) * mouseSensitive, degToRad(dx) * mouseSensitive, 0));
+		SetRelativeRotation(rot - FVector(0, degToRad(dy) * mouseSensitive, degToRad(dx) * mouseSensitive));
 
 		//RelativeRotation.y -= degToRad(dx) * mouseSensitive;
 		//RelativeRotation.x -= degToRad(dy) * mouseSensitive;
@@ -72,11 +73,25 @@ void UCameraComponent::RenderUI()
 
 FMatrix UCameraComponent::View()
 {
-	return GetRelativeTransform().Inverse();
+	//return GetRelativeTransform().Inverse();
 
+	auto original = GetRelativeTransform().Inverse();
 
+	FVector camPos = GetRelativeLocation();
+	FVector newCameraForward = Right();
+	FVector newCameraUp = PseudoUp;
+	FVector newCameraRight = newCameraUp.Cross(newCameraForward).Normalized();
+	newCameraUp = newCameraForward.Cross(newCameraRight).Normalized();
 
+	FMatrix viewMatrix =
+	{
+		newCameraRight.x, newCameraUp.x, newCameraForward.x, 0,
+		newCameraRight.y, newCameraUp.y, newCameraForward.y, 0,
+		newCameraRight.z, newCameraUp.z, newCameraForward.z, 0,
+		-newCameraRight.Dot(camPos), -newCameraUp.Dot(camPos), -newCameraForward.Dot(camPos), 1
+	};
 
+	return viewMatrix;
 
 	//FVector eye = GetRelativeLocation();
 	//FVector at = GetRelativeLocation() + FVector(0, 0, 1);
@@ -96,12 +111,9 @@ FMatrix UCameraComponent::View()
 	//	-eye.x, -eye.y, -eye.z, 1
 	//};
 
-
 	////view = view.Transpose();
 
 	//return view;
-
-
 
 	//FMatrix Trnasform = GetComponentTransform();
 	//FVector4 u = FVector4((FVector4(1, 0, 0, 0) * Trnasform).xyz(), 1.f);
@@ -171,4 +183,22 @@ FMatrix UCameraComponent::PerspectiveProjection() {
 	//	0, 0, (farDistance + nearDistance) / (farDistance - nearDistance), -farDistance * nearDistance / (farDistance - nearDistance),
 	//	0, 0, 1, 0
 	//	});
+}
+
+FVector UCameraComponent::cameraRight()
+{
+	FVector4 r = View().c1();
+	return FVector(r.x, r.y, r.z);
+}
+
+FVector UCameraComponent::cameraUp()
+{
+	FVector4 r = View().c2();
+	return FVector(r.x, r.y, r.z);
+}
+
+FVector UCameraComponent::cameraForward()
+{
+	FVector4 r = View().c3();
+	return FVector(r.x, r.y, r.z);
 }

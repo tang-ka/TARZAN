@@ -2,7 +2,7 @@
 #include "USceneComponent.h"
 #include "CRenderer.h"
 
-const FVector USceneComponent::PseudoUp = { 0,1,0 };
+const FVector USceneComponent::PseudoUp = { 0,0,1 };
 
 
 void USceneComponent::Update()
@@ -11,7 +11,7 @@ void USceneComponent::Update()
 }
 
 FVector USceneComponent::Right() {
-	FVector4 r = GetComponentTransform().r1(); // (1,0,0,0) * getcomponenttransform
+	FVector4 r = GetComponentTransform().r1();
 	return FVector(r.x, r.y, r.z).Normalized();
 }
 
@@ -33,7 +33,7 @@ FVector USceneComponent::GetRelativeLocation() const
 
 FVector4 USceneComponent::GetRelativeLocation4() const
 {
-	if (IsOverrideLocation) return FVector4(OverrideLocation,1);
+	if (IsOverrideLocation) return FVector4(OverrideLocation, 1);
 	return FVector4(RelativeLocation, 1);
 }
 
@@ -100,8 +100,8 @@ FMatrix USceneComponent::GetComponentTransform() const
 	{
 		/* Scale 고정 */
 		{
-			FMatrix ParentMatrix =  AttachParent->GetComponentTransform();
-		
+			FMatrix ParentMatrix = AttachParent->GetComponentTransform();
+
 			// 부모의 행렬의 각 축을 정규화하여 Scale 정보 제거
 			FVector X = ParentMatrix.GetScaledAxis(EAxis::X).Normalized();
 			FVector Y = ParentMatrix.GetScaledAxis(EAxis::Y).Normalized();
@@ -119,7 +119,7 @@ FMatrix USceneComponent::GetComponentTransform() const
 			return GetRelativeTransform() * ParentNoScale;
 		}
 	}
-	if (AttachParent != nullptr) 
+	if (AttachParent != nullptr)
 	{
 		return GetRelativeTransform() * AttachParent->GetComponentTransform();
 	}
@@ -146,7 +146,7 @@ FVector USceneComponent::GetComponentZ() const
 
 FVector USceneComponent::GetComponentInverseRotation() const
 {
-	
+
 	FMatrix inverseRotaion = FMatrix::Identity;
 
 	USceneComponent* ParentIterator = GetAttachParent();
@@ -156,7 +156,7 @@ FVector USceneComponent::GetComponentInverseRotation() const
 		FMatrix matRotZ = FMatrix::RotateZ(rot.z);
 		FMatrix matRotY = FMatrix::RotateZ(rot.y);
 		FMatrix matRotX = FMatrix::RotateZ(rot.x);
-		
+
 		inverseRotaion = inverseRotaion * matRotZ * matRotY * matRotX;
 		ParentIterator = ParentIterator->GetAttachParent();
 	}
@@ -266,7 +266,7 @@ void USceneComponent::SetValuesFromMatrix(const FMatrix mat)
 	assert(mat.m[3][3] == 1);
 
 	RelativeLocation = { mat.m[0][3] ,mat.m[1][3],mat.m[2][3] };
-	RelativeScale3D = sqrt(mat.m[0][0] * mat.m[0][0] + mat.m[0][1] * mat.m[0][1] * mat.m[0][2]*mat.m[0][2]);
+	RelativeScale3D = sqrt(mat.m[0][0] * mat.m[0][0] + mat.m[0][1] * mat.m[0][1] * mat.m[0][2] * mat.m[0][2]);
 
 	// https://www.geometrictools.com/Documentation/EulerAngles.pdf
 	FMatrix r = mat * (1.0 / RelativeScale3D.x);

@@ -7,8 +7,8 @@
 UWorld::UWorld()
 {
     UCameraComponent* camera = SpawnCamera();
-    camera->SetRelativeLocation({ 0.f, 8.f, -8.f });
-    camera->SetRelativeRotation({ -.7f, 0.f, 0.f });
+    camera->SetRelativeLocation({ -8.f, 0.f, 8.f });
+    camera->SetRelativeRotation({ 0.f, -7.f, 0.f });
     CRenderer::Instance()->SetMainCamera(camera);
     SpawnCoordArrowActor();
 }
@@ -78,7 +78,7 @@ void UWorld::ConvertNDC_VIEW(int mouse_X, int mouse_Y, FVector& pickPosition, FM
     if (!mainCamera) return;
 
     D3D11_VIEWPORT viewport = CRenderer::Instance()->GetGraphics()->GetViewport();
-    viewMatrix = mainCamera->GetComponentTransform().Inverse();
+    viewMatrix = mainCamera->View();
     FMatrix projectionMatrix = mainCamera->PerspectiveProjection();
     pickPosition.x = ((2.0f * mouse_X / viewport.Width) - 1) / projectionMatrix[0][0];
     pickPosition.y = -((2.0f * mouse_Y / viewport.Height) - 1) / projectionMatrix[1][1];
@@ -90,7 +90,7 @@ UActorComponent* UWorld::PickingByRay(int mouse_X, int mouse_Y, float& dist)
     FVector pickPosition;
     FMatrix viewMatrix = FMatrix::Identity;
    
-    ConvertNDC_VIEW(mouse_X, mouse_Y, pickPosition,viewMatrix);
+    ConvertNDC_VIEW(mouse_X, mouse_Y, pickPosition, viewMatrix);
     
     float hitDistance = FLT_MAX;
     float nearestDistance = FLT_MAX;

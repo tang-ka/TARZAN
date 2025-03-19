@@ -21,6 +21,10 @@ public:
 	bool allowKeyboardInput = true;
 
 	float CameraSpeed=1.f;
+
+	FVector cameraRight();
+	FVector cameraUp();
+	FVector cameraForward();
 private:
 	//FMatrix CalculateLookAtLHS(FVector front, FVector up, FVector pos);
 };

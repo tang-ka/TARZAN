@@ -14,6 +14,10 @@ public:
     void CreateBufferForText(std::wstring text);
     void SetVerticesToPipeline();
     void UpdateText(std::wstring newText);
-private:
+    virtual void Update() override;
+    virtual FMatrix GetComponentTransform() const override;
 
+private:
+    FVector myPos = FVector::Zero;
+    FMatrix translate = FMatrix::Identity;
 };

@@ -19,13 +19,14 @@ UWorldGridComponent::UWorldGridComponent()
     _indexBuffer = std::make_unique<CIndexBuffer>(graphics->GetDevice());
 
     lastPosX = std::floor(CRenderer::Instance()->GetMainCamera()->GetRelativeLocation().x);
-    lastPosZ = std::floor(CRenderer::Instance()->GetMainCamera()->GetRelativeLocation().z);
+    //lastPosZ = std::floor(CRenderer::Instance()->GetMainCamera()->GetRelativeLocation().z);
+    lastPosZ = std::floor(CRenderer::Instance()->GetMainCamera()->GetRelativeLocation().y);
 }
 
 // 소멸자: 할당한 리소스 해제
 UWorldGridComponent::~UWorldGridComponent() {}
 
-void UWorldGridComponent::GenerateGrid(float posX, float posZ, int gridCount, float unitSize)
+void UWorldGridComponent::GenerateGrid(float posY, float posX, int gridCount, float unitSize)
 {
     // 초기화
     vertices.clear();
@@ -35,12 +36,37 @@ void UWorldGridComponent::GenerateGrid(float posX, float posZ, int gridCount, fl
     const FVector4 gridColor = { 1.f, 1.f, 1.f, 0.1f };
 
     // X축 선
+    //for (int i = -gridCount; i <= gridCount; i++)
+    //{
+    //    float x = posX + i * unitSize;
+    //    FVertexSimple v1, v2;
+    //    v1.x = x; 
+    //    v1.y = 0.f; 
+    //    v1.z = posZ - gridCount * unitSize;
+
+    //    v2.x = x; 
+    //    v2.y = 0.f; 
+    //    v2.z = posZ + gridCount * unitSize;
+
+    //    v1.r = gridColor.x; v1.g = gridColor.y; v1.b = gridColor.z; v1.a = gridColor.w;
+    //    v2.r = gridColor.x; v2.g = gridColor.y; v2.b = gridColor.z; v2.a = gridColor.w;
+    //    vertices.push_back(v1);
+    //    vertices.push_back(v2);
+    //}
+
+    // X축 -> Y축 선
     for (int i = -gridCount; i <= gridCount; i++)
     {
-        float x = posX + i * unitSize;
+        float x = posY + i * unitSize;
         FVertexSimple v1, v2;
-        v1.x = x; v1.y = 0.f; v1.z = posZ - gridCount * unitSize;
-        v2.x = x; v2.y = 0.f; v2.z = posZ + gridCount * unitSize;
+        v1.y = x;
+        v1.z = 0.f;
+        v1.x = posX - gridCount * unitSize;
+
+        v2.y = x;
+        v2.z = 0.f;
+        v2.x = posX + gridCount * unitSize;
+
         v1.r = gridColor.x; v1.g = gridColor.y; v1.b = gridColor.z; v1.a = gridColor.w;
         v2.r = gridColor.x; v2.g = gridColor.y; v2.b = gridColor.z; v2.a = gridColor.w;
         vertices.push_back(v1);
@@ -48,12 +74,32 @@ void UWorldGridComponent::GenerateGrid(float posX, float posZ, int gridCount, fl
     }
 
     // Z축 선
+    //for (int i = -gridCount; i <= gridCount; i++)
+    //{
+    //    float z = posZ + i * unitSize;
+    //    FVertexSimple v1, v2;
+    //    v1.x = posX - gridCount * unitSize; v1.y = 0.f; v1.z = z;
+    //    v2.x = posX + gridCount * unitSize; v2.y = 0.f; v2.z = z;
+    //    v1.r = gridColor.x; v1.g = gridColor.y; v1.b = gridColor.z; v1.a = gridColor.w;
+    //    v2.r = gridColor.x; v2.g = gridColor.y; v2.b = gridColor.z; v2.a = gridColor.w;
+    //    vertices.push_back(v1);
+    //    vertices.push_back(v2);
+    //}
+
+    // Z축 -> X축 선
     for (int i = -gridCount; i <= gridCount; i++)
     {
-        float z = posZ + i * unitSize;
+        float z = posX + i * unitSize;
         FVertexSimple v1, v2;
-        v1.x = posX - gridCount * unitSize; v1.y = 0.f; v1.z = z;
-        v2.x = posX + gridCount * unitSize; v2.y = 0.f; v2.z = z;
+
+        v1.y = posY - gridCount * unitSize; 
+        v1.z = 0.f; 
+        v1.x = z;
+
+        v2.y = posY + gridCount * unitSize; 
+        v2.z = 0.f; 
+        v2.x = z;
+
         v1.r = gridColor.x; v1.g = gridColor.y; v1.b = gridColor.z; v1.a = gridColor.w;
         v2.r = gridColor.x; v2.g = gridColor.y; v2.b = gridColor.z; v2.a = gridColor.w;
         vertices.push_back(v1);
@@ -105,23 +151,26 @@ void UWorldGridComponent::UpdateGrid()
 {
     UCameraComponent* mainCam = CRenderer::Instance()->GetMainCamera();
     float camX = mainCam->GetRelativeLocation().x;
-    float camZ = mainCam->GetRelativeLocation().z;
+    //float camZ = mainCam->GetRelativeLocation().z;
+    float camY = mainCam->GetRelativeLocation().y;
 
     // 현재 gridScale의 배수로 새 원점을 계산합니다.
     float newOriginX = std::floor(camX / gridScale) * gridScale;
-    float newOriginZ = std::floor(camZ / gridScale) * gridScale;
+    //float newOriginZ = std::floor(camZ / gridScale) * gridScale;
+    float newOriginY = std::floor(camY / gridScale) * gridScale;
 
     // 만약 새 원점이 기존 원점과 다르다면, 그리드를 재생성합니다.
-    if (newOriginX != lastPosX || newOriginZ != lastPosZ)
+    if (newOriginX != lastPosX || newOriginY != lastPosZ)
     {
         // 새 원점 업데이트
         lastPosX = newOriginX;
-        lastPosZ = newOriginZ;
+        lastPosZ = newOriginY;
 
         // gridCount는 예시로 10, 필요에 따라 조정
         int gridCount = 10;
         // 새 원점과 gridScale을 사용해 grid를 재생성합니다.
-        GenerateGrid(lastPosX, lastPosZ, gridCount, gridScale);
+        //GenerateGrid(lastPosX, lastPosZ, gridCount, gridScale);
+        GenerateGrid(lastPosZ, lastPosX, gridCount, gridScale);
 
         return;
     }
@@ -129,7 +178,8 @@ void UWorldGridComponent::UpdateGrid()
     // 카메라가 아직 같은 grid cell 내에 있다면, 기존 로직으로 grid 위치를 미세하게 이동시킵니다.
     UCameraComponent* MainCamera = CRenderer::Instance()->GetMainCamera();
     float cameraX = std::floor(MainCamera->GetRelativeLocation().x);
-    float cameraZ = std::floor(MainCamera->GetRelativeLocation().z);
+    //float cameraZ = std::floor(MainCamera->GetRelativeLocation().z);
+    float cameraY = std::floor(MainCamera->GetRelativeLocation().y);
 
     FVector offset(0.f, 0.f, 0.f);
     if (cameraX >= lastPosX + gridScale)
@@ -141,11 +191,13 @@ void UWorldGridComponent::UpdateGrid()
         offset.x = -gridScale;
     }
 
-    if (cameraZ >= lastPosZ + gridScale)
+    //if (cameraZ >= lastPosZ + gridScale)
+    if (cameraY >= lastPosZ + gridScale)
     {
         offset.z = gridScale;
     }
-    else if (cameraZ <= lastPosZ - gridScale)
+    //else if (cameraZ <= lastPosZ - gridScale)
+    else if (cameraY <= lastPosZ - gridScale)
     {
         offset.z = -gridScale;
     }
@@ -154,7 +206,8 @@ void UWorldGridComponent::UpdateGrid()
     {
         SetRelativeLocation(GetRelativeLocation() + offset);
         lastPosX = cameraX;
-        lastPosZ = cameraZ;
+        //lastPosZ = cameraZ;
+        lastPosZ = cameraY;
     }
 }
 
