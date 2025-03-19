@@ -61,7 +61,6 @@ void UTextComponent::CreateBufferForText(std::wstring text)
 
 void UTextComponent::SetVerticesToPipeline()
 {
-
     CGraphics* graphics = CRenderer::Instance()->GetGraphics();
     _vertexBuffer = std::make_unique<CVertexBuffer<FVertexSimple>>(graphics->GetDevice());
     _vertexBuffer->Create(vertices);

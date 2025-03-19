@@ -34,8 +34,6 @@
 
 UCoordArrowComponent::UCoordArrowComponent()
 {
-
-
 	vertices =
 	{
 		{ 0.f, 0.f, 0.f, 5.f, 0.f, 0.f, 5.f},
