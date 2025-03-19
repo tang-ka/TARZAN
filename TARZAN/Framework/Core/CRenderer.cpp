@@ -13,6 +13,8 @@ void CRenderer::Init(HWND hWnd) {
     _matrixBuffer->Create();
     _flagsBuffer = std::make_unique<CConstantBuffer<FPrimitiveFlags>>(_graphics->GetDevice(), _graphics->GetDeviceContext());
     _flagsBuffer->Create();
+    _textCheckBuffer = std::make_unique<CConstantBuffer<FTextCheck>>(_graphics->GetDevice(), _graphics->GetDeviceContext());
+    _textCheckBuffer->Create();
 
     CTextureManager::SetDeviceAndContext(_graphics->GetDevice(), _graphics->GetDeviceContext());
 
@@ -45,6 +47,8 @@ void CRenderer::SetVertexShader(const FWString filename, FString funcname, FStri
     _graphics->GetDeviceContext()->VSSetShader(_vertexShader->Get(), nullptr, 0);
 }
 
+
+
 void CRenderer::ResetVertexShader() {
     _graphics->GetDeviceContext()->VSSetShader(nullptr, nullptr, 0);
     _vertexShader.reset();
@@ -76,8 +80,6 @@ void CRenderer::SetTransformToConstantBuffer(FMatrix matrix,bool isBill) {
 	FMatrix view = _mainCamera->View();
 	FMatrix projection = _mainCamera->Projection();
 
-
-
 	matrix = matrix * view;
 	matrix = matrix * projection;
 	_matrixBuffer->CopyData(matrix);
@@ -89,6 +91,19 @@ void CRenderer::SetFlagsToConstantBuffer(FPrimitiveFlags flags) {
     _flagsBuffer->CopyData(flags);
     ID3D11Buffer* constantBuffer = _flagsBuffer->Get();
     _graphics->GetDeviceContext()->VSSetConstantBuffers(1, 1, &constantBuffer);
+}
+
+void CRenderer::SetIsTextToConstantBuffer(EObjectType type)
+{
+    FTextCheck checkValue;
+    if (type == EObjectType::Text)
+        checkValue = { 1 };
+    else
+        checkValue = { 0 };
+
+    _textCheckBuffer->CopyData(checkValue);
+    ID3D11Buffer* constantBuffer = _textCheckBuffer->Get();
+    _graphics->GetDeviceContext()->PSSetConstantBuffers(2, 1, &constantBuffer);
 }
 
 UCameraComponent* CRenderer::GetMainCamera() const {

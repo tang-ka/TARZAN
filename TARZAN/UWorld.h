@@ -56,12 +56,17 @@ public:
     UCoordArrowComponent* SpawnCoordArrowActor();
     CTextureManager* TextureManager;
 
+    bool GetShowFlag();
+    void SetShowFlag(bool flag);
+
     void SaveWorld(const FString& fileName);
     void LoadWorld(const FString& fileName);
     UDiscComponent* SpawnDiscActor();
     UDiscHollowComponent* SpawnDiscHollowActor();
 
 private:
+    bool bShowFlag=true;
+
     TLinkedList<UActorComponent*> actorList = {};
 
     template <typename T>

@@ -23,7 +23,11 @@ void UWorld::Update()
     for (auto* comp : actorList)
     {
         auto current = comp;
-        if (current) comp->Update();
+        if (current)
+        {
+         
+            comp->Update();
+        }
     }
 }
 
@@ -34,8 +38,11 @@ void UWorld::Render()
         auto current = comp;
         if (current)
         {
-            CTextureManager::GetInstance()->BindTextureToShader(comp->ObjType);
-            comp->Render();
+            if (current->ObjType == EObjectType::Text && !GetShowFlag()) continue;
+
+            CRenderer::Instance()->SetIsTextToConstantBuffer(current->ObjType);
+            CTextureManager::GetInstance()->BindTextureToShader(current->ObjType);
+            current->Render();
         }
     }
 }
@@ -96,7 +103,7 @@ UActorComponent* UWorld::PickingByRay(int mouse_X, int mouse_Y, float& dist)
     UActorComponent* nearestActorComp = nullptr;
     int intersect = FLT_MIN;
 	for (const auto& actorComp : actorList) {
-        if (!actorComp) continue;
+        if (!actorComp || actorComp->ObjType==EObjectType::Text) continue;
 		int bRes = actorComp->PickObjectByRayIntersection(pickPosition, viewMatrix, &hitDistance);
        if (bRes > intersect && hitDistance < nearestDistance) {
             nearestActorComp = actorComp;
@@ -173,6 +180,16 @@ UDiscComponent* UWorld::SpawnDiscActor()
 UDiscHollowComponent* UWorld::SpawnDiscHollowActor()
 {
     return SpawnActor<UDiscHollowComponent>();
+}
+
+bool UWorld::GetShowFlag()
+{
+    return bShowFlag;
+}
+
+void UWorld::SetShowFlag(bool flag)
+{
+    bShowFlag = flag;
 }
 
 void UWorld::SaveWorld(const FString& fileName)

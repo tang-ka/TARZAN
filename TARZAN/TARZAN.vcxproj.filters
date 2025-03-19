@@ -328,8 +328,5 @@
     <FxCompile Include="Shader.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
-    <FxCompile Include="FontShader.hlsl">
-      <Filter>Shader</Filter>
-    </FxCompile>
   </ItemGroup>
 </Project>

@@ -12,7 +12,8 @@
 #include "Framework/Core/UWorldGridComponent.h"
 
 
-GuiController::~GuiController() {
+GuiController::~GuiController()
+{
 	ImGui_ImplDX11_Shutdown();
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
@@ -51,55 +52,70 @@ void GuiController::NewFrame()
 	_io->MouseDown[0] = Input::Instance()->IsMouseButtonDown(0);
 	_io->MouseDown[1] = Input::Instance()->IsMouseButtonDown(1);
 
-	if (Input::Instance()->IsMouseButtonPressed(0) && !_io->WantCaptureMouse) {
-		float nearestActorDistance;
-		float nearestGizmoDistance;
-		UActorComponent* neareastActorComp = GetNearestActorComponents(nearestActorDistance);
-		EPrimitiveColor neareastAxis = GetNearestGizmo(nearestGizmoDistance);
+	if (Input::Instance()->IsMouseButtonPressed(0) && !_io->WantCaptureMouse)
+	{
+		float nearestActorDistance = FLT_MAX;
+		float nearestGizmoDistance = FLT_MAX;
+		UActorComponent* nearestActorComp = GetNearestActorComponents(nearestActorDistance);
+		EPrimitiveColor nearestAxis = GetNearestGizmo(nearestGizmoDistance);
 
-		if (neareastActorComp == nullptr && neareastAxis == EPrimitiveColor::NONE)
+		// ¾Æ¹« °Íµµ ¼±ÅÃµÇÁö ¾Ê¾ÒÀ» °æ¿ì: ±âÁ¸ ¼±ÅÃ ÇØÁ¦ ¹× Gizmo Detach
+		if (nearestActorComp == nullptr && nearestAxis == EPrimitiveColor::NONE)
 		{
-			DeselectActor();
-		}
-		else {
-			// Gizmoï¿½ï¿½ È°ï¿½ï¿½È­ï¿½Ç¾ï¿½ ï¿½Ö°ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Gizmoï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
-			if (UEngine::GetInstance().GetGizmo()->isGizmoActivated && neareastAxis != EPrimitiveColor::NONE)
+			UEngine::GetInstance().GetGizmo()->Detach();
+			UPrimitiveComponent* downcast = dynamic_cast<UPrimitiveComponent*>(_selected);
+			if (downcast)
 			{
-				UEngine::GetInstance().GetGizmo()->selectedAxis = neareastAxis;
-				UPrimitiveComponent* downcast = dynamic_cast<UPrimitiveComponent*>(_selected);
-				if (downcast)
-					downcast->renderFlags &= ~PRIMITIVE_FLAG_SELECTED;
-				//_selected = nullptr; // Gizmoï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½Í´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+				downcast->renderFlags &= ~PRIMITIVE_FLAG_SELECTED;
+				downcast->HideBoundingBox();
 			}
-			// Gizmoï¿½ï¿½ ï¿½ï¿½ï¿½Å³ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½ï¿½ï¿½ï¿½
-			else if (neareastActorComp != nullptr)
+			_selected = nullptr;
+		}
+		else
+		{
+			// Actor¿Í Gizmo Áß ¾î´À ÂÊÀÌ ´õ °¡±î¿îÁö ºñ±³
+			if (nearestActorComp != nullptr && nearestActorDistance < nearestGizmoDistance)
 			{
+				// Actor ¼±ÅÃ Ã³¸®
 				UPrimitiveComponent* downcast = dynamic_cast<UPrimitiveComponent*>(_selected);
 				if (downcast)
 				{
 					downcast->renderFlags &= ~PRIMITIVE_FLAG_SELECTED;
 					downcast->HideBoundingBox();
 				}
-
-				_selected = neareastActorComp;
-
+				_selected = nearestActorComp;
 				downcast = dynamic_cast<UPrimitiveComponent*>(_selected);
-				if (downcast) {
+				if (downcast)
+				{
 					downcast->renderFlags |= PRIMITIVE_FLAG_SELECTED;
 					downcast->ShowBoundingBox();
 				}
-
 				UEngine::GetInstance().GetGizmo()->AttachTo(dynamic_cast<UPrimitiveComponent*>(_selected));
 				UEngine::GetInstance().GetGizmo()->selectedAxis = EPrimitiveColor::NONE;
 			}
+			else if (nearestAxis != EPrimitiveColor::NONE)
+			{
+				// Gizmo Ãà ¼±ÅÃ Ã³¸®
+				UEngine::GetInstance().GetGizmo()->selectedAxis = nearestAxis;
+				// ±âÁ¸¿¡ ¼±ÅÃµÈ Actor°¡ ÀÖ´Ù¸é ¼±ÅÃ ÇØÁ¦ (Gizmo ¼±ÅÃ ½Ã Actor ¼±ÅÃÀº À¯ÁöÇÏÁö ¾ÊÀ½)
+				UPrimitiveComponent* downcast = dynamic_cast<UPrimitiveComponent*>(_selected);
+				if (downcast)
+				{
+					downcast->renderFlags &= ~PRIMITIVE_FLAG_SELECTED;
+					downcast->HideBoundingBox();
+				}
+			}
 		}
 	}
-	if (Input::Instance()->IsMouseButtonReleased(0) && !_io->WantCaptureMouse) {
+
+	if (Input::Instance()->IsMouseButtonReleased(0) && !_io->WantCaptureMouse)
+	{
 		UEngine::GetInstance().GetGizmo()->selectedAxis = EPrimitiveColor::NONE;
 	}
 }
 
-UActorComponent* GuiController::GetNearestActorComponents(float& distance) {
+UActorComponent* GuiController::GetNearestActorComponents(float& distance)
+{
 	int x, y;
 
 	UWorld* World = UEngine::GetInstance().GetWorld();
@@ -123,26 +139,57 @@ EPrimitiveColor GuiController::GetNearestGizmo(float& distance)
 	FMatrix viewMatrix = FMatrix::Identity;
 	FVector pickPosition;
 	World->ConvertNDC_VIEW(x, y, pickPosition, viewMatrix);
-	float hitDistance[4]{ FLT_MAX,FLT_MAX,FLT_MAX,FLT_MAX };
+	float hitDistance[7]{ FLT_MAX,FLT_MAX,FLT_MAX,FLT_MAX,FLT_MAX,FLT_MAX ,FLT_MAX };
 	float minDistance = FLT_MAX;
 	EPrimitiveColor pickedAxis = EPrimitiveColor::NONE;
 
-	if (UEngine::GetInstance().GetGizmo()->ArrowX->PickObjectByRayIntersection(pickPosition, viewMatrix, &hitDistance[EPrimitiveColor::RED_X])) {
-		if (hitDistance[EPrimitiveColor::RED_X] < minDistance) {
+	if (UEngine::GetInstance().GetGizmo()->ArrowX->PickObjectByRayIntersection(pickPosition, viewMatrix, &hitDistance[EPrimitiveColor::RED_X]))
+	{
+		if (hitDistance[EPrimitiveColor::RED_X] < minDistance)
+		{
 			minDistance = hitDistance[EPrimitiveColor::RED_X];
 			pickedAxis = EPrimitiveColor::RED_X;
 		}
 	}
-	if (UEngine::GetInstance().GetGizmo()->ArrowY->PickObjectByRayIntersection(pickPosition, viewMatrix, &hitDistance[EPrimitiveColor::GREEN_Y])) {
-		if (hitDistance[EPrimitiveColor::GREEN_Y] < minDistance) {
+	if (UEngine::GetInstance().GetGizmo()->ArrowY->PickObjectByRayIntersection(pickPosition, viewMatrix, &hitDistance[EPrimitiveColor::GREEN_Y]))
+	{
+		if (hitDistance[EPrimitiveColor::GREEN_Y] < minDistance)
+		{
 			minDistance = hitDistance[EPrimitiveColor::GREEN_Y];
 			pickedAxis = EPrimitiveColor::GREEN_Y;
 		}
 	}
-	if (UEngine::GetInstance().GetGizmo()->ArrowZ->PickObjectByRayIntersection(pickPosition, viewMatrix, &hitDistance[EPrimitiveColor::BLUE_Z])) {
-		if (hitDistance[EPrimitiveColor::BLUE_Z] < minDistance) {
+	if (UEngine::GetInstance().GetGizmo()->ArrowZ->PickObjectByRayIntersection(pickPosition, viewMatrix, &hitDistance[EPrimitiveColor::BLUE_Z]))
+	{
+		if (hitDistance[EPrimitiveColor::BLUE_Z] < minDistance)
+		{
 			minDistance = hitDistance[EPrimitiveColor::BLUE_Z];
 			pickedAxis = EPrimitiveColor::BLUE_Z;
+		}
+	}
+
+	if (UEngine::GetInstance().GetGizmo()->RotationX->PickObjectByRayIntersection(pickPosition, viewMatrix, &hitDistance[EPrimitiveColor::RED_X_ROT]))
+	{
+		if (hitDistance[EPrimitiveColor::RED_X_ROT] < minDistance)
+		{
+			minDistance = hitDistance[EPrimitiveColor::RED_X_ROT];
+			pickedAxis = EPrimitiveColor::RED_X_ROT;
+		}
+	}
+	if (UEngine::GetInstance().GetGizmo()->RotationY->PickObjectByRayIntersection(pickPosition, viewMatrix, &hitDistance[EPrimitiveColor::GREEN_Y_ROT]))
+	{
+		if (hitDistance[EPrimitiveColor::GREEN_Y_ROT] < minDistance)
+		{
+			minDistance = hitDistance[EPrimitiveColor::GREEN_Y_ROT];
+			pickedAxis = EPrimitiveColor::GREEN_Y_ROT;
+		}
+	}
+	if (UEngine::GetInstance().GetGizmo()->RotationZ->PickObjectByRayIntersection(pickPosition, viewMatrix, &hitDistance[EPrimitiveColor::BLUE_Z_ROT]))
+	{
+		if (hitDistance[EPrimitiveColor::BLUE_Z_ROT] < minDistance)
+		{
+			minDistance = hitDistance[EPrimitiveColor::BLUE_Z_ROT];
+			pickedAxis = EPrimitiveColor::BLUE_Z_ROT;
 		}
 	}
 
@@ -193,7 +240,8 @@ void GuiController::RenderFrame()
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 }
 
-void GuiController::RenderEditor() {
+void GuiController::RenderEditor()
+{
 	UWorld* World = UEngine::GetInstance().GetWorld();
 	USceneManager* SceneManager = UEngine::GetInstance().GetSceneManager();
 
@@ -228,8 +276,10 @@ void GuiController::RenderEditor() {
 	ImGui::Combo("Primitive", &_selectedPrimitive, primitiveItems, ARRAYSIZE(primitiveItems));
 	if (ImGui::Button("Create"))
 	{
-		for (int i = 0; i < _spawnNumber; i++) {
-			switch (_selectedPrimitive) {
+		for (int i = 0; i < _spawnNumber; i++)
+		{
+			switch (_selectedPrimitive)
+			{
 			case 0:
 				SceneManager->SpawnActor(EPrimitiveType::CUBE);
 				break;
@@ -257,17 +307,20 @@ void GuiController::RenderEditor() {
 		_spawnNumber = 0;
 
 	ImGui::InputText("Scene Name", _sceneNameBuffer, ARRAYSIZE(_sceneNameBuffer));
-	if (ImGui::Button("New Scene")) {
+	if (ImGui::Button("New Scene"))
+	{
 		World->ClearWorld();
 		_selected = nullptr;
 		UPrimitiveComponent* downcast = dynamic_cast<UPrimitiveComponent*>(_selected);
 		if (downcast)
 			downcast->renderFlags &= ~PRIMITIVE_FLAG_SELECTED;
 	}
-	if (ImGui::Button("Save Scene")) {
+	if (ImGui::Button("Save Scene"))
+	{
 		World->SaveWorld(_sceneNameBuffer);
 	}
-	if (ImGui::Button("Load Scene")) {
+	if (ImGui::Button("Load Scene"))
+	{
 		World->LoadWorld(_sceneNameBuffer);
 		_selected = nullptr;
 		UPrimitiveComponent* downcast = dynamic_cast<UPrimitiveComponent*>(_selected);
@@ -279,7 +332,8 @@ void GuiController::RenderEditor() {
 
 	ImGui::Text("Camera");
 	UCameraComponent* mainCam = CRenderer::Instance()->GetMainCamera();
-	if (mainCam) {
+	if (mainCam)
+	{
 		mainCam->RenderUI();
 	}
 	ImGui::Separator();
@@ -309,20 +363,18 @@ void GuiController::RenderEditor() {
 	ImGui::SameLine();
 	if (ImGui::Combo("##GridScale", &_selectedGridScale, gridScaleItems, IM_ARRAYSIZE(gridScaleItems)))
 	{
-		// ï¿½ï¿½ï¿½Ãµï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Grid Scale ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
 		float newScale = gridScaleValues[_selectedGridScale];
-		// ConfigManagerï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
 
 		UWorld* World = UEngine::GetInstance().GetWorld();
-		if (World) {
+		if (World)
+		{
 			UCameraComponent* cam = CRenderer::Instance()->GetMainCamera();
-			if (cam) {
+			if (cam)
+			{
 				float camX = cam->GetRelativeLocation().x;
 				float camZ = cam->GetRelativeLocation().z;
-				// ï¿½ï¿½ï¿½Ã·ï¿½ gridCountï¿½ï¿½ 10ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 				int gridCount = 10;
 
-				// gridï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸é¼­ ï¿½ï¿½ï¿½Î¿ï¿½ grid scaleï¿½ï¿½ ï¿½Ý¿ï¿½
 				//UEngine::GetInstance().GetWorldGridComponent()->GenerateGrid(std::floor(camX), std::floor(camZ), gridCount, newScale);
 				UEngine::GetInstance().GetWorldGridComponent()->GenerateGrid(camX, camZ, gridCount, newScale);
 			}
@@ -330,14 +382,15 @@ void GuiController::RenderEditor() {
 	}
 	ImGui::Separator();
 	/***********************************/
-	const char* cameraSpeedItems[] = { "1","2", "5", "10"};
+	const char* cameraSpeedItems[] = { "1","2", "5", "10" };
 	const float cameraSpeedValues[4] = { 1.f,2.f, 5.f, 10.f };
 	ImGui::Text("Camera Speed");
 	ImGui::SameLine();
 	if (ImGui::Combo("##CameraSpeed", &_selectedCameraSpeed, cameraSpeedItems, IM_ARRAYSIZE(cameraSpeedItems)))
 	{
 		UWorld* World = UEngine::GetInstance().GetWorld();
-		if (World) {
+		if (World)
+		{
 			UCameraComponent* cam = CRenderer::Instance()->GetMainCamera();
 			if (cam)
 			{
@@ -360,7 +413,8 @@ void GuiController::RenderEditor() {
 	USceneComponent* downcast = nullptr;
 	if (_selected)
 		downcast = dynamic_cast<USceneComponent*>(_selected);
-	if (downcast != nullptr) {
+	if (downcast != nullptr)
+	{
 		ImGui::Text("UUID: %d", _selected->GetUUID());
 
 		FVector vec = downcast->GetRelativeLocation();
@@ -378,9 +432,8 @@ void GuiController::RenderEditor() {
 		ImGui::DragFloat3("scale", downcastScale, 0.1f);
 		downcast->SetRelativeScale3D(FVector(downcastScale[0], downcastScale[1], downcastScale[2]));
 
-		// ì—¬ê¸°ì—ì„œ downcastê°€ ë­ SpotLightë©´ ë­ ë“±ë“±
-		//downcast
-		if (ImGui::Button("Delete")) {
+		if (ImGui::Button("Delete"))
+		{
 			UEngine::GetInstance().GetGizmo()->Detach();
 			SceneManager->DeleteActorFromMap(_selected);
 			World->RemoveActor(_selected);
@@ -420,8 +473,6 @@ void GuiController::CreateSceneManagerPanel()
 
 			if (ImGui::Selectable(ActorName.c_str()))
 			{
-				// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½
-
 				if (_selected)
 				{
 					UEngine::GetInstance().GetGizmo()->Detach();
