@@ -115,36 +115,31 @@ FMatrix UTextComponent::GetComponentTransform() const
 {
 
     FMatrix viewMatrix = CRenderer::Instance()->GetMainCamera()->View();
-    //FVector cameraPos = FVector(viewMatrix.r3().x, viewMatrix.r3().y, viewMatrix.r3().z);
+   
     FVector cameraPos = CRenderer::Instance()->GetMainCamera()->GetRelativeLocation();
-
+   
+    // ✅ 카메라 위치벡터 - 오브젝트 위치벡터를 통한 forward 벡터 생성
     FVector forward = cameraPos - myPos;
     forward = forward.Normalized();
 
     // ✅ 카메라 Up 벡터를 기반으로 right 벡터 계산
     FVector cameraUp = FVector(viewMatrix.c2().x, viewMatrix.c2().y, viewMatrix.c2().z);
 
+    // ✅ forward 벡터, 카메라 Up벡터 외적으로 right계산 
     FVector right = forward.Cross(cameraUp);
-    //FVector right = cameraUp.Cross(forward);
-    right = right.Normalized(); // 오른쪽 벡터
+    right = right.Normalized(); 
 
+    // ✅ right 벡터,  forward벡터 외적으로 up계산 
     FVector up = right.Cross(forward);
-    //FVector up = forward.Cross(up);
-    up = up.Normalized(); // 위쪽 벡터
+    up = up.Normalized(); 
 
+    // ✅ 카메라 바라보는 행렬 생성
     FMatrix rotMat = FMatrix{
-        right.x, right.y, right.z, 0,  // X축 (Right)
-        up.x, up.y, up.z, 0,          // Y축 (Up)
-        forward.x, forward.y, forward.z, 0, // Z축 (Forward)
+        right.x, right.y, right.z, 0,  
+        up.x, up.y, up.z, 0,       
+        forward.x, forward.y, forward.z, 0, 
         translate.m[3][0], translate.m[3][1], translate.m[3][2], 1
     };
-
-    //FMatrix rotMat = FMatrix{
-    //    forward.x, forward.y, forward.z, 0,  // X축 (forward)
-    //    right.x, right.y, right.z, 0,          // Y축 (right)
-    //    up.x, up.y, up.z, 0, // Z축 (up)
-    //    translate.m[3][0], translate.m[3][1], translate.m[3][2], 1
-    //};
 
     return rotMat;
 }
